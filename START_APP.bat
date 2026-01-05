@@ -1,9 +1,9 @@
 @echo off
-REM Restaurant Finder - Easy Startup Script for Windows
+REM Dessertable - Easy Startup Script for Windows
 REM Double-click this file to launch the application
 
 echo ========================================
-echo Restaurant Finder - Launcher
+echo Dessertable - Launcher
 echo ========================================
 echo.
 
@@ -38,7 +38,7 @@ if errorlevel 1 (
 
 REM Launch the GUI launcher
 echo.
-echo Starting Restaurant Finder GUI Launcher...
+echo Starting Dessertable GUI Launcher...
 echo.
 python launcher.py
 

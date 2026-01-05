@@ -1,6 +1,6 @@
-# Restaurant Finder
+# Dessertable
 
-A Python web application that helps you find restaurants near your location (by zip code) with links to their websites, popular menu items, and detailed filtering options.
+A Python web application that helps you find dessert restaurants near your location (by zip code) with links to their websites, popular menu items, and detailed filtering options.
 
 ## Features
 

@@ -16,7 +16,10 @@
       "Bash(del datarestaurants.db)",
       "Bash(find:*)",
       "Bash(git init:*)",
-      "Bash(del nul)"
+      "Bash(del nul)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
     ]
   }
 }

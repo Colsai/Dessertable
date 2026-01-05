@@ -1,5 +1,5 @@
 """
-Restaurant Finder - GUI Launcher
+Dessertable - GUI Launcher
 Easy-to-use launcher for non-technical users
 """
 
@@ -17,7 +17,7 @@ from pathlib import Path
 class RestaurantFinderLauncher:
     def __init__(self, root):
         self.root = root
-        self.root.title("Restaurant Finder - Launcher")
+        self.root.title("Dessertable - Launcher")
         self.root.geometry("600x700")
         self.root.resizable(False, False)
 
@@ -52,7 +52,7 @@ class RestaurantFinderLauncher:
 
         title_label = tk.Label(
             header_frame,
-            text="Restaurant Finder",
+            text="Dessertable",
             font=('Arial', 24, 'bold'),
             bg='#0d6efd',
             fg='white'

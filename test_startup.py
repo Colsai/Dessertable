@@ -1,7 +1,7 @@
 """Quick startup test to verify the app works"""
 import sys
 
-print("Testing Restaurant Finder startup...")
+print("Testing Dessertable startup...")
 print("-" * 50)
 
 # Test 1: Import Flask

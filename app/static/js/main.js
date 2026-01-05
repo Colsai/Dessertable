@@ -1,4 +1,4 @@
-// Client-side JavaScript for Restaurant Finder
+// Client-side JavaScript for Dessertable
 
 document.addEventListener('DOMContentLoaded', function() {
     // Get form and button elements

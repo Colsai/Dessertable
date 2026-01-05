@@ -1,9 +1,9 @@
 @echo off
-REM Restaurant Finder - Troubleshooting Script
+REM Dessertable - Troubleshooting Script
 REM Run this to diagnose issues with the app
 
 echo ========================================
-echo Restaurant Finder - Troubleshooting
+echo Dessertable - Troubleshooting
 echo ========================================
 echo.
 

@@ -1,4 +1,4 @@
-# Restaurant Finder - User Guide
+# Dessertable - User Guide
 
 ## Table of Contents
 1. [Getting Started](#getting-started)

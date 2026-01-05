@@ -1,9 +1,9 @@
 #!/bin/bash
-# Restaurant Finder - Easy Startup Script for Mac/Linux
+# Dessertable - Easy Startup Script for Mac/Linux
 # Run this script to launch the application
 
 echo "========================================"
-echo "Restaurant Finder - Launcher"
+echo "Dessertable - Launcher"
 echo "========================================"
 echo ""
 
@@ -38,7 +38,7 @@ fi
 
 # Launch the GUI launcher
 echo ""
-echo "Starting Restaurant Finder GUI Launcher..."
+echo "Starting Dessertable GUI Launcher..."
 echo ""
 python launcher.py
 

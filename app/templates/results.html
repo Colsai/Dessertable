@@ -14,11 +14,11 @@
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
             <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
                 {% if loop.index == 1 %}
-                    <img src="{{ url_for('static', filename='../assets/sprites/sprite_13.png') }}" class="result-sprite" alt="">
+                    <img src="{{ url_for('static', filename='sprites/sprite_13.png') }}" class="result-sprite" alt="">
                 {% elif loop.index == 2 %}
-                    <img src="{{ url_for('static', filename='../assets/sprites/sprite_14.png') }}" class="result-sprite" alt="">
+                    <img src="{{ url_for('static', filename='sprites/sprite_14.png') }}" class="result-sprite" alt="">
                 {% else %}
-                    <img src="{{ url_for('static', filename='../assets/sprites/sprite_16.png') }}" class="result-sprite" alt="">
+                    <img src="{{ url_for('static', filename='sprites/sprite_16.png') }}" class="result-sprite" alt="">
                 {% endif %}
                 <h2 class="restaurant-name" style="margin: 0;">
                     <a href="{{ restaurant.get_google_maps_url() }}" target="_blank">

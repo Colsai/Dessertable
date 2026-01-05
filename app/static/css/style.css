@@ -192,7 +192,7 @@ main {
 .results-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0;
+    gap: 4px;
     margin-bottom: 2rem;
 }
 
@@ -207,14 +207,19 @@ main {
 
 .restaurant-card.horizontal-card {
     margin-bottom: 0;
-    border-right: none;
+    border: none;
+    border-left: 1px solid #fefefe;
     min-height: 500px;
     display: flex;
     flex-direction: column;
 }
 
+.restaurant-card.horizontal-card:first-child {
+    border-left: none;
+}
+
 .restaurant-card.horizontal-card:last-child {
-    border-right: 2px solid var(--zen-black);
+    border-right: none;
 }
 
 .restaurant-card:hover {

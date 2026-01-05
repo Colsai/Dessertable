@@ -1,314 +1,296 @@
-# Dessertable
+# Dessertable 🍰
 
-A Python web application that helps you find dessert restaurants near your location (by zip code) with links to their websites, popular menu items, and detailed filtering options.
+**Find the best dessert spots near you with ease.**
+
+Dessertable is a simple, elegant web application that helps you discover top-rated dessert restaurants, bakeries, ice cream shops, and sweet treat locations in your area. Just enter your address, and we'll show you the top 3 dessert destinations nearby with ratings, reviews, and directions.
+
+![GitHub repo size](https://img.shields.io/github/repo-size/Colsai/Dessertable)
+![GitHub license](https://img.shields.io/github/license/Colsai/Dessertable)
+
+---
+
+## What Does It Do?
+
+Dessertable takes the stress out of finding great desserts. Instead of scrolling through endless restaurant listings, you get:
+
+- **Top 3 Results Only**: We show you the best 3 dessert spots based on ratings and reviews
+- **Location-Based Search**: Enter any US address or zip code
+- **Rich Details**: See ratings, addresses, hours, and popular menu items
+- **Search History**: All your searches are saved locally for quick reference
+- **One-Click Access**: Direct links to Google Maps and restaurant websites
+
+Perfect for when you're craving something sweet and don't want to spend time researching!
+
+---
+
+## Quick Start
+
+### Windows
+1. Download or clone this repository
+2. Double-click `START_APP.bat`
+3. Follow the on-screen instructions to set up your API key
+4. Click "Start Server" and search for desserts!
+
+### Mac/Linux
+1. Download or clone this repository
+2. Open Terminal and run: `./START_APP.sh`
+3. Follow the on-screen instructions to set up your API key
+4. Click "Start Server" and search for desserts!
+
+**That's it!** The application will open automatically in your browser.
+
+---
 
 ## Features
 
-- **Search by Zip Code**: Find restaurants near any US zip code
-- **Filter by Cuisine**: Choose from 15+ cuisine types (Italian, Chinese, Mexican, etc.)
-- **Filter by Price Range**: Select restaurants by price level ($, $$, $$$, $$$$)
-- **Sort Results**: Sort by highest rating, closest distance, or newest restaurants
-- **Restaurant Details**: View ratings, addresses, phone numbers, and links to websites
-- **Popular Menu Items**: Discover popular dishes mentioned in customer reviews
-- **Search History**: All searches automatically saved to SQLite database
-- **GUI Launcher**: Easy-to-use desktop launcher for non-technical users
-- **Clean Web Interface**: Responsive Bootstrap 5 design that works on all devices
+### 🔍 Smart Search
+- Enter any US address or zip code
+- Automatically finds dessert-focused businesses nearby (bakeries, ice cream shops, dessert cafes, etc.)
+- Shows only the **top 3** results to reduce decision fatigue
 
-## Quick Start (Easy Method for Non-Programmers)
+### 📊 Detailed Information
+Each result includes:
+- ⭐ Google ratings and review counts
+- 📍 Full address with distance from your location
+- 🚗 Estimated driving time
+- 🕐 Operating hours and open/closed status
+- 🍰 Popular menu items extracted from customer reviews
+- 🔗 Direct links to Google Maps and restaurant websites
 
-**This is the easiest way to use the app - no coding knowledge required!**
+### 📚 Search History
+- All searches automatically saved to a local database
+- View past search results instantly without using the API again
+- See statistics: total searches, restaurants found, and more
+- Access your history anytime through the "History" tab
 
-### Windows Users:
-1. Make sure Python is installed (download from https://www.python.org/)
-2. Get your Google Places API Key (see "Get API Key" section below)
-3. Double-click `START_APP.bat`
-4. Enter your API key in the launcher window and click "Save API Key"
-5. Click "Start Server"
-6. The app will automatically open in your browser!
+### 🖥️ Easy-to-Use Launcher
+- Simple desktop application to start/stop the server
+- No command line knowledge needed
+- Visual API key setup
+- Real-time server status and logs
 
-### Mac/Linux Users:
-1. Make sure Python 3 is installed
-2. Get your Google Places API Key (see "Get API Key" section below)
-3. Open Terminal and navigate to the project folder
-4. Run: `./START_APP.sh`
-5. Enter your API key in the launcher window and click "Save API Key"
-6. Click "Start Server"
-7. The app will automatically open in your browser!
+---
 
-### Using the GUI Launcher
+## Screenshots
 
-The launcher provides:
-- **Easy API Key Setup**: Enter and save your API key visually
-- **One-Click Start/Stop**: Start and stop the server with buttons
-- **Automatic Browser Launch**: Opens your browser automatically
-- **Server Status**: See if the server is running
-- **Server Logs**: View real-time logs in the window
+### Search Page
+The main search interface where you enter your location:
 
-## Technology Stack
+![Search Interface](assets/screenshot-search.png)
 
-- **Backend**: Python 3.8+, Flask
-- **API**: Google Places API (Geocoding, Nearby Search, Place Details)
-- **Frontend**: Bootstrap 5, Jinja2 templates
-- **Libraries**: googlemaps, python-dotenv, requests
+### Results Page
+Top 3 dessert spots with all the details you need:
 
-## Prerequisites
+![Results Display](assets/screenshot-results.png)
 
-- Python 3.8 or higher
-- Google Cloud account with Places API enabled
-- Google Places API key
+### History Page
+Quickly access your previous searches:
 
-## Setup Instructions
+![Search History](assets/screenshot-history.png)
 
-### 1. Clone or Download the Repository
+---
 
-```bash
-cd pick_it_whatever
-```
+## Requirements
 
-### 2. Create a Virtual Environment
+- **Python 3.8+** ([Download here](https://www.python.org/downloads/))
+- **Google Places API Key** (Free tier includes $200/month credit)
+  - [Get your API key here](https://console.cloud.google.com/)
+  - Enable: Geocoding API and Places API
+  - See [setup guide](USER_GUIDE.md) for detailed instructions
 
-**Windows:**
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
+---
 
-**macOS/Linux:**
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Get Google Places API Key
+## How to Get a Google API Key
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select an existing one
-3. Enable the following APIs:
-   - Geocoding API
-   - Places API
-4. Go to "Credentials" and create an API key
-5. (Recommended) Restrict your API key:
-   - Set application restrictions (HTTP referrers for web)
-   - Set API restrictions to only allow Geocoding and Places APIs
+2. Create a new project (or select an existing one)
+3. Enable these APIs:
+   - **Geocoding API**
+   - **Places API**
+4. Go to **Credentials** → **Create Credentials** → **API Key**
+5. Copy your API key
+6. When you first run the app, paste your API key into the launcher
 
-**Note**: Google offers $200 in free credit per month. Typical costs:
-- Geocoding: $5 per 1,000 requests
-- Places Nearby Search: $32 per 1,000 requests
-- Place Details: $17 per 1,000 requests
+**Note:** Google provides $200 in free monthly credits. For typical personal use, you won't exceed this limit.
 
-### 5. Configure Environment Variables
+---
 
-Copy the example environment file:
+## Installation (For Developers)
+
+If you prefer to set things up manually:
 
 ```bash
+# Clone the repository
+git clone https://github.com/Colsai/Dessertable.git
+cd Dessertable
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create .env file
 cp .env.example .env
-```
+# Edit .env and add your GOOGLE_PLACES_API_KEY
 
-Edit `.env` and add your API key:
-
-```
-GOOGLE_PLACES_API_KEY=your_actual_api_key_here
-FLASK_ENV=development
-SECRET_KEY=your_secret_key_here
-```
-
-To generate a secure secret key in Python:
-```python
-import secrets
-print(secrets.token_hex(16))
-```
-
-### 6. Run the Application
-
-```bash
+# Run the application
 python run.py
 ```
 
-The application will start at: http://localhost:5000
+Visit http://localhost:5000 in your browser.
 
-## Usage
+---
 
-### Searching for Restaurants
+## Usage Tips
 
-1. **Enter Zip Code**: Type a 5-digit US zip code (e.g., 10001, 90210, 60601)
-2. **Select Filters** (Optional):
-   - Choose a cuisine type from the dropdown
-   - Select one or more price ranges
-   - Choose how to sort results
-3. **Click "Search Restaurants"**: View results with restaurant details
-4. **Explore Results**: Click on restaurant names or "View on Maps" to learn more
+1. **Be Specific**: Use full addresses for best results (e.g., "123 Main St, New York, NY" instead of just "New York")
+2. **Try Nearby Areas**: If you don't find what you want, try a nearby zip code or neighborhood
+3. **Check History**: Before searching again, check your history tab - you might have already searched that area!
+4. **Popular Items**: The "Popular Menu Items" are extracted from real customer reviews, so they're great recommendations
 
-### Viewing Search History
+---
 
-All your searches are automatically saved to a local SQLite database!
+## Technology Stack
 
-1. **Access History**: Click "History" in the navigation bar
-2. **View Statistics**: See your total searches, restaurants found, and top cuisines
-3. **Browse Past Searches**: View all your previous searches in a table
-4. **Re-view Results**: Click "View Results" to see the restaurants from any past search
-5. **No Internet Required**: Past searches are loaded from the local database
+Built with modern, reliable technologies:
 
-**Database Location**: `data/restaurants.db`
+- **Backend**: Python + Flask
+- **Database**: SQLite (local, no setup needed)
+- **API**: Google Places API
+- **Frontend**: Bootstrap 5 (responsive design)
+- **Launcher**: Tkinter (built-in with Python)
 
-The database stores:
-- All search parameters (zip code, cuisine, price range, sort method)
-- Complete restaurant details from each search
-- Search timestamps for tracking
-- Statistics about your search patterns
+---
 
 ## Project Structure
 
 ```
-pick_it_whatever/
-├── app/
-│   ├── __init__.py              # Flask app factory
-│   ├── routes.py                # Route handlers (with history routes)
-│   ├── models/
-│   │   ├── restaurant.py        # Restaurant data model
-│   │   └── database.py          # SQLite database manager
-│   ├── services/
-│   │   ├── places_api.py        # Google Places API wrapper
-│   │   └── restaurant_service.py # Business logic
-│   ├── utils/
-│   │   └── filters.py           # Template filters
-│   ├── static/
-│   │   ├── css/style.css        # Custom styles
-│   │   └── js/main.js           # Client-side JavaScript
-│   └── templates/
-│       ├── base.html            # Base template
-│       ├── index.html           # Search form
-│       ├── results.html         # Results display
-│       └── history.html         # Search history page
-├── data/
-│   └── restaurants.db           # SQLite database (auto-created)
-├── tests/                       # Test files
-├── launcher.py                  # GUI launcher for easy startup
-├── START_APP.bat                # Windows startup script
-├── START_APP.sh                 # Mac/Linux startup script
-├── .env.example                 # Environment variables template
-├── .gitignore                   # Git ignore rules
-├── config.py                    # Configuration management
-├── requirements.txt             # Python dependencies
-├── run.py                       # Application entry point
-└── README.md                    # This file
+Dessertable/
+├── app/                    # Main application code
+│   ├── routes.py          # Web routes and logic
+│   ├── models/            # Database models
+│   ├── services/          # API integration
+│   └── templates/         # HTML pages
+├── data/                  # SQLite database (auto-created)
+├── launcher.py            # GUI launcher
+├── START_APP.bat          # Windows startup script
+├── START_APP.sh           # Mac/Linux startup script
+└── requirements.txt       # Python dependencies
 ```
 
-## Configuration
+---
 
-Edit `config.py` to customize:
-- `DEFAULT_SEARCH_RADIUS`: Search radius in meters (default: 5000m / ~3 miles)
-- `MAX_RESULTS`: Maximum number of results to return (default: 20)
-- `CACHE_TIMEOUT`: Cache timeout in seconds (default: 60)
+## Version History
 
-## Development
+### Version 1.1.0 (2026-01-05)
+- Rebranded from "Restaurant Finder" to "Dessertable"
+- Simplified to focus exclusively on dessert establishments
+- Streamlined UI for faster, easier searches
+- Added comprehensive search history feature
+- Implemented Top 3 results display to reduce decision fatigue
+- Updated all documentation and branding
 
-### Running in Development Mode
+### Version 1.0.0 (2025-12-29)
+- Initial release as "Restaurant Finder"
+- Core search functionality with Google Places API
+- Basic filtering and sorting (backend implementation)
+- Search history database
+- GUI launcher for easy startup
+- Bootstrap 5 responsive design
 
-The app runs in development mode by default with debug enabled and auto-reload.
-
-### Running Tests
-
-```bash
-pytest
-```
-
-### Code Structure
-
-- **Models** (`app/models/`): Data structures for restaurants
-- **Services** (`app/services/`): Business logic and API integration
-- **Routes** (`app/routes.py`): HTTP request handlers
-- **Templates** (`app/templates/`): HTML templates with Jinja2
-- **Static** (`app/static/`): CSS, JavaScript, and images
-
-## Production Deployment
-
-### Using Gunicorn
-
-```bash
-gunicorn -w 4 -b 0.0.0.0:5000 run:app
-```
-
-### Environment Variables for Production
-
-```
-FLASK_ENV=production
-GOOGLE_PLACES_API_KEY=your_production_api_key
-SECRET_KEY=your_strong_secret_key
-```
-
-### Deployment Platforms
-
-- **Heroku**: Add `Procfile` with `web: gunicorn run:app`
-- **Google Cloud Run**: Deploy as a containerized application
-- **AWS Elastic Beanstalk**: Deploy Python application directly
+---
 
 ## Troubleshooting
 
-### "API key is not configured" Error
-- Make sure `.env` file exists with `GOOGLE_PLACES_API_KEY`
-- Verify the API key is correct and has no extra spaces
-- Ensure Geocoding and Places APIs are enabled in Google Cloud Console
+### App won't start
+- Make sure Python 3.8+ is installed: `python --version`
+- Try running `TROUBLESHOOT.bat` (Windows) for automated diagnostics
+- Check that your API key is correctly set in the `.env` file
 
-### "Could not find location for zip code" Error
-- Verify you entered a valid US zip code
-- Check that Geocoding API is enabled
-- Ensure you have API quota remaining
+### "API key not configured" error
+1. Make sure you created a `.env` file (copy from `.env.example`)
+2. Verify your API key is pasted correctly (no extra spaces)
+3. Restart the launcher after adding the API key
 
-### No Menu Items Displayed
-- Menu items are extracted from reviews, which may not always be available
-- Some restaurants may have limited review data
-- This is normal and not an error
+### No results found
+- Double-check your address is in the United States
+- Try a more specific address (include street, city, state)
+- Make sure your Google API key has the Geocoding and Places APIs enabled
 
-### Slow Search Results
-- First search after app start may be slower (no cache)
-- Complex searches fetch details for up to 20 restaurants
-- Enable caching to speed up repeated searches
+### Port 5000 already in use
+- Another application might be using port 5000
+- Close any other Flask apps or web servers
+- Or edit `run.py` to use a different port
 
-## API Rate Limiting and Costs
+For more help, see the [User Guide](USER_GUIDE.md) or open an issue on GitHub.
 
-The app implements caching to minimize API calls:
-- Geocoding results cached for 60 seconds
-- Restaurant search results cached for 60 seconds
-- Place details cached for 60 seconds
+---
 
-**Estimated costs per search**:
-- With cache: ~$0.054 (1 geocode + 1 nearby search + up to 20 details)
-- Without cache: Same as above
-- 1,000 searches ≈ $54
+## FAQ
 
-## Future Enhancements
+**Q: Is this free to use?**
+A: Yes! The app is free and open source. Google Places API includes $200/month in free credits, which is plenty for personal use.
 
-- User authentication and saved favorites
-- Map view of results
-- More advanced menu item extraction (NLP)
-- Restaurant comparison feature
-- Email notifications for new restaurants
-- Support for non-US locations
-- Mobile app version
+**Q: Does it work outside the US?**
+A: Currently, the app is optimized for US addresses. International support may be added in future versions.
+
+**Q: Why only 3 results?**
+A: Research shows that too many choices can be overwhelming. We show you the top 3 to make decision-making easier and faster.
+
+**Q: Can I change the search radius?**
+A: Yes! Developers can edit `config.py` and change `DEFAULT_SEARCH_RADIUS` (default is 5000 meters / ~3 miles).
+
+**Q: Is my search data private?**
+A: Yes! All searches are stored locally on your computer in a SQLite database. Nothing is sent to external servers except the Google Places API queries.
+
+---
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit pull requests or open issues.
+We welcome contributions! If you'd like to improve Dessertable:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
 
 ## License
 
-This project is open source and available under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
 
 ## Acknowledgments
 
-- Powered by Google Places API
-- Built with Flask and Bootstrap
-- Icons and UI components from Bootstrap 5
+- Powered by [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview)
+- Built with [Flask](https://flask.palletsprojects.com/)
+- Styled with [Bootstrap 5](https://getbootstrap.com/)
+- Icons from [Bootstrap Icons](https://icons.getbootstrap.com/)
+
+---
 
 ## Support
 
-For issues or questions:
-1. Check the Troubleshooting section above
-2. Review Google Places API documentation
-3. Open an issue in the repository
+Having issues? Need help?
+
+- 📖 Check the [User Guide](USER_GUIDE.md) for detailed instructions
+- 🐛 [Open an issue](https://github.com/Colsai/Dessertable/issues) on GitHub
+- 💡 Have a feature idea? Let us know in the issues!
+
+---
+
+**Happy dessert hunting!** 🍰🍦🧁
+
+---
+
+Made with ❤️ by the Dessertable team

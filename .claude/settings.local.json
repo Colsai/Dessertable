@@ -23,7 +23,10 @@
       "Bash(git commit:*)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/test_scoring_algorithm.py -v)",
       "Bash(git add:*)",
-      "Bash(./venv/Scripts/python.exe -m pytest tests/test_scoring_algorithm.py -v --tb=short)"
+      "Bash(./venv/Scripts/python.exe -m pytest tests/test_scoring_algorithm.py -v --tb=short)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/test_scoring_algorithm.py --co -q)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/test_scoring_algorithm.py --tb=line -q)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/test_scoring_algorithm.py -q --co)"
     ]
   }
 }

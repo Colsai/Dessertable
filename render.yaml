@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: dessertable
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: GOOGLE_PLACES_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+    disk:
+      name: dessertable-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

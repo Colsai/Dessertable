@@ -37,17 +37,20 @@ gunicorn -w 4 -b 0.0.0.0:5000 run:app
 
 ### Testing
 ```bash
-# Run all tests
+# Run all tests with pytest
 pytest
 
-# Run startup verification test
-python test_startup.py
+# Run specific test files
+pytest tests/test_scoring_algorithm.py        # Unit tests for scoring algorithm
+python test_startup.py                         # Quick startup verification
+python test_runtime.py                         # Runtime integration tests
+python test_complete.py                        # Complete test suite
 
-# Run runtime tests
-python test_runtime.py
+# Run tests with verbose output
+pytest -v
 
-# Run complete test suite
-python test_complete.py
+# Run tests with coverage
+pytest --cov=app
 ```
 
 ### Database Management
@@ -201,9 +204,18 @@ The top 3 limit is set in `app/routes.py:71` (`top_restaurants = restaurants[:3]
 
 ## Testing Strategy
 
-Three test files provide different verification levels:
-- `test_startup.py`: Quick verification that imports work and database initializes
-- `test_runtime.py`: Requires API key, tests actual Google Places API integration
-- `test_complete.py`: Comprehensive test suite
+Four test suites provide comprehensive coverage:
 
-When making changes to API integration or business logic, run the runtime tests to ensure functionality with real API calls.
+1. **Unit Tests** (`tests/test_scoring_algorithm.py`): 33 unit tests covering the composite scoring algorithm
+   - Tests each scoring component independently (rating, distance, cuisine match, newness, proximity)
+   - Tests edge cases (None values, boundary conditions, zero values)
+   - Integration tests for complete scoring behavior
+   - Documents a quirk: `distance=0` evaluates as falsy in Python, preventing scoring
+
+2. **Startup Tests** (`test_startup.py`): Quick verification that imports work and database initializes
+
+3. **Runtime Tests** (`test_runtime.py`): Requires API key, tests actual Google Places API integration
+
+4. **Complete Test Suite** (`test_complete.py`): Comprehensive integration tests for all app functionality
+
+When making changes to the scoring algorithm, run `pytest tests/test_scoring_algorithm.py` to verify the logic. For API integration changes, run the runtime tests.

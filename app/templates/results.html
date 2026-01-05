@@ -3,29 +3,31 @@
 {% block title %}Results - Dessertable{% endblock %}
 
 {% block content %}
-<div class="results-container" style="max-width: 700px; margin: 3rem auto;">
+<div class="results-container" style="max-width: 1400px; margin: 3rem auto; padding: 0 2rem;">
 
     <div style="text-align: right; margin-bottom: 2rem; padding: 0.5rem 1rem; color: #666; font-size: 0.9rem;">
         {{ now.strftime('%A, %B %d') }} · {{ now.strftime('%I:%M %p') }}
     </div>
 
+    <div class="results-grid">
     {% for restaurant in restaurants[:3] %}
-    <div class="restaurant-card">
+    <div class="restaurant-card horizontal-card">
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+            {% if loop.index == 1 %}
+                <img src="{{ url_for('static', filename='sprites/sprite_13.png') }}" class="result-sprite" alt="">
+            {% elif loop.index == 2 %}
+                <img src="{{ url_for('static', filename='sprites/sprite_14.png') }}" class="result-sprite" alt="">
+            {% else %}
+                <img src="{{ url_for('static', filename='sprites/sprite_16.png') }}" class="result-sprite" alt="">
+            {% endif %}
+        </div>
+
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-            <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
-                {% if loop.index == 1 %}
-                    <img src="{{ url_for('static', filename='sprites/sprite_13.png') }}" class="result-sprite" alt="">
-                {% elif loop.index == 2 %}
-                    <img src="{{ url_for('static', filename='sprites/sprite_14.png') }}" class="result-sprite" alt="">
-                {% else %}
-                    <img src="{{ url_for('static', filename='sprites/sprite_16.png') }}" class="result-sprite" alt="">
-                {% endif %}
-                <h2 class="restaurant-name" style="margin: 0;">
-                    <a href="{{ restaurant.get_google_maps_url() }}" target="_blank">
-                        {{ restaurant.name }}
-                    </a>
-                </h2>
-            </div>
+            <h2 class="restaurant-name" style="margin: 0; flex: 1;">
+                <a href="{{ restaurant.get_google_maps_url() }}" target="_blank">
+                    {{ restaurant.name }}
+                </a>
+            </h2>
 
             {% set is_open = restaurant.is_open_now() %}
             {% if is_open == True %}
@@ -76,6 +78,7 @@
         {% endif %}
     </div>
     {% endfor %}
+    </div>
 
     <div style="text-align: center; margin-top: 4rem;">
         <a href="{{ url_for('main.index') }}"

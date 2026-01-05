@@ -112,19 +112,80 @@ main {
     font-weight: 400;
     color: var(--zen-black);
     background: var(--zen-white);
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    animation: breatheBorder 4s ease-in-out infinite;
+}
+
+@keyframes breatheBorder {
+    0%, 100% {
+        border-width: 2px;
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+    50% {
+        border-width: 2px;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+    }
+}
+
+.form-control:hover {
+    border-color: var(--zen-black);
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+    animation: none;
 }
 
 .form-control:focus {
-    border-color: var(--zen-blue);
-    box-shadow: none;
+    border-color: var(--zen-black);
+    border-width: 3px;
+    box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.08);
     outline: none;
-    background: var(--zen-offwhite);
+    background: var(--zen-white);
+    animation: focusPulse 0.6s ease-out;
+    padding: calc(1rem - 1px) calc(1.25rem - 1px);
+}
+
+@keyframes focusPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
+    }
+    100% {
+        box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.08);
+    }
+}
+
+.form-control::placeholder {
+    color: var(--zen-gray);
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.form-control:focus::placeholder {
+    opacity: 0.4;
+    animation: placeholderShift 0.5s ease-out;
+}
+
+@keyframes placeholderShift {
+    0% {
+        transform: translateX(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateX(4px);
+        opacity: 0.2;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 0.4;
+    }
 }
 
 .form-control-lg {
     padding: 1.25rem 1.5rem;
     font-size: 1.5rem;
+}
+
+.form-control-lg:focus {
+    padding: calc(1.25rem - 1px) calc(1.5rem - 1px);
 }
 
 /* Restaurant Cards */

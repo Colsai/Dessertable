@@ -1,0 +1,271 @@
+/* 5-to-Dine - Japanese Zen Minimal Design */
+
+/* Color Palette - Bold Minimalism */
+:root {
+    --zen-white: #ffffff;
+    --zen-offwhite: #fafafa;
+    --zen-lightgray: #e0e0e0;
+    --zen-gray: #666666;
+    --zen-darkgray: #1a1a1a;
+    --zen-black: #000000;
+    --zen-blue: #224680;
+}
+
+/* Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--zen-white);
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
+    font-weight: 400;
+    color: var(--zen-black);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+}
+
+main {
+    flex: 1;
+}
+
+/* Navbar */
+.navbar {
+    background: var(--zen-white);
+    border-bottom: 2px solid var(--zen-black);
+    padding: 2rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--zen-black) !important;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+}
+
+.navbar-brand:hover {
+    color: var(--zen-blue) !important;
+}
+
+.navbar-nav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    list-style: none;
+}
+
+.nav-link {
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--zen-gray) !important;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: var(--zen-black) !important;
+}
+
+/* Buttons */
+.btn {
+    font-weight: 600;
+    border-radius: 0;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: var(--zen-black);
+    border: 2px solid var(--zen-black);
+    color: white;
+    padding: 1rem 2.5rem;
+}
+
+.btn-primary:hover {
+    background: var(--zen-white);
+    border-color: var(--zen-black);
+    color: var(--zen-black);
+}
+
+.btn-lg {
+    padding: 1.25rem 3rem;
+    font-size: 1.25rem;
+}
+
+/* Forms */
+.form-control {
+    border: 2px solid var(--zen-black);
+    border-radius: 0;
+    padding: 1rem 1.25rem;
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--zen-black);
+    background: var(--zen-white);
+    transition: all 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--zen-blue);
+    box-shadow: none;
+    outline: none;
+    background: var(--zen-offwhite);
+}
+
+.form-control-lg {
+    padding: 1.25rem 1.5rem;
+    font-size: 1.5rem;
+}
+
+/* Restaurant Cards */
+.restaurant-card {
+    border: 2px solid var(--zen-black);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    border-radius: 0;
+    transition: all 0.2s;
+}
+
+.restaurant-card:hover {
+    background: var(--zen-black);
+}
+
+.restaurant-card a {
+    color: var(--zen-black);
+    text-decoration: none;
+    transition: color 0.2s;
+    font-weight: 600;
+    font-size: 1.75rem;
+    display: block;
+}
+
+.restaurant-card:hover a {
+    color: var(--zen-white);
+}
+
+.restaurant-card .restaurant-meta {
+    color: var(--zen-gray);
+    font-size: 1.1rem;
+    margin-top: 0.75rem;
+    transition: color 0.2s;
+}
+
+.restaurant-card:hover .restaurant-meta {
+    color: var(--zen-lightgray);
+}
+
+.restaurant-card .dessert-description {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.2s, max-height 0.2s;
+}
+
+.restaurant-card:hover .dessert-description {
+    opacity: 1;
+    max-height: 100px;
+}
+
+.restaurant-card .restaurant-distance {
+    transition: color 0.2s;
+}
+
+.restaurant-card:hover .restaurant-distance {
+    color: var(--zen-white) !important;
+}
+
+.restaurant-card .restaurant-hours {
+    transition: color 0.2s;
+}
+
+.restaurant-card:hover .restaurant-hours {
+    color: var(--zen-white) !important;
+}
+
+/* Alerts */
+.alert {
+    border-radius: 4px;
+    border: 1px solid;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.alert-danger {
+    background: #fff5f5;
+    border-color: #fed7d7;
+    color: #c53030;
+}
+
+.alert-success {
+    background: #f0fff4;
+    border-color: #c6f6d5;
+    color: #276749;
+}
+
+.alert-info {
+    background: #ebf8ff;
+    border-color: #bee3f8;
+    color: #2c5282;
+}
+
+/* Footer */
+.footer {
+    margin-top: auto;
+    padding: 2rem 0;
+    border-top: 2px solid var(--zen-black);
+}
+
+.text-muted {
+    color: var(--zen-gray) !important;
+    font-size: 1rem;
+}
+
+/* Utility */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.ms-auto {
+    margin-left: auto;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
+
+.mt-5 {
+    margin-top: 3rem;
+}
+
+/* Remove Bootstrap overrides */
+.card,
+.card-header,
+.card-body,
+.card-title,
+.badge,
+.pixel-border,
+.result-number,
+.top-result,
+.retro-text {
+    all: unset;
+}

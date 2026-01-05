@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(if [ -d \"venv\" ])",
+      "Bash(then echo \"Virtual environment exists\")",
+      "Bash(else echo \"Virtual environment NOT found\")",
+      "Bash(fi)",
+      "Bash(python -m venv:*)",
+      "Bash(./venv/Scripts/pip:*)",
+      "Bash(./venv/Scripts/python:*)",
+      "Bash(timeout:*)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(if exist datarestaurants.db del datarestaurants.db)",
+      "Bash(del \"C:\\\\Users\\\\schir\\\\pick_it_whatever\\\\data\\\\restaurants.db\")",
+      "Bash(del datarestaurants.db)",
+      "Bash(find:*)",
+      "Bash(git init:*)",
+      "Bash(del nul)"
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-/* 5-to-Dine - Japanese Zen Minimal Design */
+/* Dessertable - Japanese Zen Minimal Design */
 
 /* Color Palette - Bold Minimalism */
 :root {
@@ -271,46 +271,18 @@ main {
 }
 
 /* Sprite Styling */
-.navbar-sprite {
-    height: 32px;
-    width: auto;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    margin-right: 0.75rem;
-    vertical-align: middle;
-    opacity: 0.9;
-    transition: opacity 0.2s;
-}
-
-.navbar-brand:hover .navbar-sprite {
-    opacity: 1;
-}
-
-.footer-sprite {
-    height: 28px;
-    width: auto;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    margin: 0 1rem;
-    opacity: 0.6;
-    vertical-align: middle;
-}
-
 .page-sprite {
-    height: 48px;
+    height: 80px;
     width: auto;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
-    margin: 0 0.5rem;
     opacity: 0.85;
     display: inline-block;
 }
 
 .result-sprite {
-    height: 40px;
+    height: 64px;
     width: auto;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}5-to-Dine{% endblock %}</title>
+    <title>{% block title %}Dessertable{% endblock %}</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,8 +16,7 @@
     <nav class="navbar">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('main.index') }}">
-                <img src="{{ url_for('static', filename='sprites/sprite_05.png') }}" class="navbar-sprite" alt="">
-                5-to-Dine
+                Dessertable
             </a>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
@@ -48,9 +47,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
-            <img src="{{ url_for('static', filename='sprites/sprite_12.png') }}" class="footer-sprite" alt="">
-            <span class="text-muted">© 2025 5-to-Dine</span>
-            <img src="{{ url_for('static', filename='sprites/sprite_08.png') }}" class="footer-sprite" alt="">
+            <span class="text-muted">© 2025 Dessertable</span>
         </div>
     </footer>
 

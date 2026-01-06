@@ -416,3 +416,23 @@ main {
     opacity: 1;
     transform: scale(1.08);
 }
+
+/* Favorite button styling */
+.favorite-btn {
+    opacity: 0.6;
+    transition: opacity 0.2s, transform 0.2s, color 0.2s;
+}
+
+.favorite-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.heart-icon {
+    display: inline-block;
+}
+
+/* Show heart more prominently on card hover */
+.restaurant-card:hover .favorite-btn {
+    opacity: 1;
+}

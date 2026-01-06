@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}My Favorites - DessertAble{% endblock %}
+
+{% block content %}
+<div style="max-width: 1400px; margin: 3rem auto; padding: 0 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3rem;">
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <img src="{{ url_for('static', filename='sprites/sprite_13.png') }}" class="page-sprite" alt="">
+            <h1 style="font-weight: 700; font-size: 2.5rem; margin: 0; color: #000; letter-spacing: -1px;">
+                My Favorites
+            </h1>
+        </div>
+        <div style="color: #666; font-size: 1rem;">
+            {{ count }} favorite{% if count != 1 %}s{% endif %}
+        </div>
+    </div>
+
+    {% if restaurants %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;">
+        {% for restaurant in restaurants %}
+        <div class="restaurant-card" style="position: relative; padding: 2rem; border: 2px solid #000;" data-place-id="{{ restaurant.place_id }}">
+
+            <!-- Remove button -->
+            <button onclick="removeFavorite('{{ restaurant.place_id }}')"
+                    style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.5rem; opacity: 0.5; transition: opacity 0.2s; font-weight: bold; color: #000;"
+                    onmouseover="this.style.opacity='1'"
+                    onmouseout="this.style.opacity='0.5'"
+                    title="Remove from favorites">
+                ✕
+            </button>
+
+            <!-- Restaurant Info -->
+            <h2 style="font-weight: 600; font-size: 1.5rem; margin-bottom: 1rem; padding-right: 2rem;">
+                <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" style="color: #000; text-decoration: none;">
+                    {{ restaurant.name }}
+                </a>
+            </h2>
+
+            <div class="restaurant-meta" style="margin-bottom: 1rem; color: #666; font-size: 0.95rem;">
+                {% if restaurant.cuisine_type %}
+                    {{ restaurant.cuisine_type }}
+                {% endif %}
+
+                {% if restaurant.rating %}
+                    {% if restaurant.cuisine_type %} · {% endif %}
+                    {{ restaurant.rating }} / 5
+                {% endif %}
+            </div>
+
+            {% if restaurant.address %}
+            <div style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
+                {{ restaurant.address }}
+            </div>
+            {% endif %}
+
+            {% if restaurant.ai_description %}
+            <div style="font-size: 0.9rem; font-style: italic; color: #000; margin-bottom: 1.5rem; line-height: 1.4;">
+                "{{ restaurant.ai_description }}"
+            </div>
+            {% endif %}
+
+            <!-- Note Section -->
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
+                <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; color: #000;">
+                    My Notes:
+                </div>
+                <textarea
+                    class="note-textarea"
+                    placeholder="Add a note..."
+                    style="width: 100%; min-height: 80px; padding: 0.75rem; border: 1px solid #e0e0e0; font-family: inherit; font-size: 0.9rem; resize: vertical;"
+                    onchange="updateNote('{{ restaurant.place_id }}', this.value)"
+                >{{ restaurant._note if restaurant._note else '' }}</textarea>
+            </div>
+
+            <div style="color: #999; font-size: 0.8rem; margin-top: 1rem;">
+                Added {{ restaurant._favorited_at[:10] }}
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+
+    {% else %}
+        <div style="padding: 4rem 0; text-align: center;">
+            <p style="color: #666; margin-bottom: 2rem; font-size: 1.2rem;">
+                No favorites yet
+            </p>
+            <a href="{{ url_for('main.index') }}"
+               style="color: #224680; text-decoration: none; font-size: 1.1rem; font-weight: 500;">
+                Start searching →
+            </a>
+        </div>
+    {% endif %}
+
+    <div style="text-align: center; margin-top: 4rem;">
+        <a href="{{ url_for('main.index') }}"
+           style="color: #666; text-decoration: none; font-size: 1.1rem; font-weight: 500;">
+            ← New search
+        </a>
+    </div>
+</div>
+
+<script>
+// Remove favorite
+function removeFavorite(placeId) {
+    if (!confirm('Remove from favorites?')) return;
+
+    fetch('/api/favorites/remove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ place_id: placeId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove card from DOM
+            const card = document.querySelector(`[data-place-id="${placeId}"]`);
+            card.style.opacity = '0';
+            card.style.transition = 'opacity 0.3s';
+            setTimeout(() => {
+                card.remove();
+                // Reload if no favorites left
+                if (document.querySelectorAll('.restaurant-card').length === 0) {
+                    location.reload();
+                }
+            }, 300);
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Failed to remove favorite');
+        console.error(error);
+    });
+}
+
+// Update note
+let noteTimeout;
+function updateNote(placeId, note) {
+    // Debounce to avoid too many requests
+    clearTimeout(noteTimeout);
+    noteTimeout = setTimeout(() => {
+        fetch('/api/favorites/note', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ place_id: placeId, note: note })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Failed to update note:', error);
+        });
+    }, 1000);
+}
+</script>
+{% endblock %}

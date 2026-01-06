@@ -14,14 +14,42 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="container">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
             <a class="navbar-brand brand-text" href="{{ url_for('main.index') }}">
                 DessertAble
             </a>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.history') }}" style="font-size: 0.85rem; color: #ccc;">history</a>
-                </li>
+            <ul class="navbar-nav" style="display: flex; flex-direction: row; gap: 1.5rem; list-style: none; margin: 0; padding: 0; align-items: center;">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.favorites') }}" style="font-size: 0.85rem; color: #ccc;">
+                            favorites
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.history') }}" style="font-size: 0.85rem; color: #ccc;">
+                            history
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <span style="font-size: 0.85rem; color: #999;">{{ current_user.username }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.logout') }}" style="font-size: 0.85rem; color: #ccc;">
+                            logout
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.login') }}" style="font-size: 0.85rem; color: #ccc;">
+                            login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.register') }}" style="font-size: 0.85rem; color: #ccc;">
+                            sign up
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </nav>

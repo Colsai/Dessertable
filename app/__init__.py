@@ -1,6 +1,10 @@
 from flask import Flask
+from flask_login import LoginManager
 from config import config
 import os
+
+# Initialize Flask-Login
+login_manager = LoginManager()
 
 
 def create_app(config_name=None):
@@ -10,6 +14,20 @@ def create_app(config_name=None):
 
     app = Flask(__name__)
     app.config.from_object(config[config_name])
+
+    # Initialize Flask-Login
+    login_manager.init_app(app)
+    login_manager.login_view = 'main.login'
+    login_manager.login_message = 'Please log in to access this page'
+    login_manager.login_message_category = 'info'
+
+    # User loader callback for Flask-Login
+    from app.models.database import Database
+    db = Database()
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return db.get_user_by_id(int(user_id))
 
     # Register blueprints
     from app.routes import main_bp

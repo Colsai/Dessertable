@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,6 +13,11 @@ class Config:
     # Flask config
     DEBUG = False
     TESTING = False
+
+    # Session security
+    SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to cookies
+    SESSION_COOKIE_SAMESITE = 'Lax'  # CSRF protection
+    PERMANENT_SESSION_LIFETIME = timedelta(days=7)  # Session expires after 7 days
 
     # Application config
     DEFAULT_SEARCH_RADIUS = 5000  # meters (about 3 miles)

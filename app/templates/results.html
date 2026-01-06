@@ -16,7 +16,19 @@
 
         <div class="results-grid" id="resultsGrid">
         {% for restaurant in restaurants[:5] %}
-        <div class="restaurant-card horizontal-card" data-index="{{ loop.index0 }}" style="display: {% if loop.index0 < 3 %}block{% else %}none{% endif %}; grid-column: {{ (loop.index0 % 3) + 1 }}; transition: opacity 0.3s;">
+        <div class="restaurant-card horizontal-card" data-index="{{ loop.index0 }}" style="display: {% if loop.index0 < 3 %}block{% else %}none{% endif %}; grid-column: {{ (loop.index0 % 3) + 1 }}; transition: opacity 0.3s; position: relative;">
+
+        <!-- Heart icon - only show if logged in -->
+        {% if current_user.is_authenticated %}
+        <button class="favorite-btn"
+                data-place-id="{{ restaurant.place_id }}"
+                data-favorited="false"
+                onclick="toggleFavorite(this, {{ loop.index0 }})"
+                style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.5rem; z-index: 10; transition: transform 0.2s, color 0.2s; color: #000;">
+            <span class="heart-icon">♡</span>
+        </button>
+        {% endif %}
+
         <!-- Sprite -->
         <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
             {% if loop.index == 1 %}
@@ -159,5 +171,74 @@ document.getElementById('nextBtn').addEventListener('mouseenter', function() {
 document.getElementById('nextBtn').addEventListener('mouseleave', function() {
     this.style.opacity = '0.3';
 });
+
+// ========== FAVORITES FUNCTIONALITY ==========
+
+function toggleFavorite(button, index) {
+    const placeId = button.dataset.placeId;
+    const isFavorited = button.dataset.favorited === 'true';
+
+    if (isFavorited) {
+        // Remove from favorites
+        removeFavoriteFromResults(placeId, button);
+    } else {
+        // Add to favorites
+        addFavoriteFromResults(placeId, button, index);
+    }
+}
+
+function addFavoriteFromResults(placeId, button, index) {
+    // Get restaurant data from the results
+    const restaurants = {{ restaurants | tojson }};
+    const restaurant = restaurants[index];
+
+    fetch('/api/favorites/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(restaurant)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            button.dataset.favorited = 'true';
+            button.querySelector('.heart-icon').textContent = '♥';
+            button.style.color = '#224680';
+            button.style.transform = 'scale(1.2)';
+            setTimeout(() => button.style.transform = 'scale(1)', 200);
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Failed to add favorite');
+        console.error(error);
+    });
+}
+
+function removeFavoriteFromResults(placeId, button) {
+    fetch('/api/favorites/remove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ place_id: placeId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            button.dataset.favorited = 'false';
+            button.querySelector('.heart-icon').textContent = '♡';
+            button.style.color = '#000';
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Failed to remove favorite');
+        console.error(error);
+    });
+}
 </script>
 {% endblock %}

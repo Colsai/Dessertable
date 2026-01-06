@@ -1,6 +1,6 @@
-# Dessertable - Deployment Guide
+# DessertAble - Deployment Guide
 
-This guide covers multiple hosting options for deploying your Dessertable application to production.
+This guide covers multiple hosting options for deploying your DessertAble application to production.
 
 ---
 
@@ -35,7 +35,7 @@ Before deploying, ensure you have:
 2. **Create New Web Service**
    - Click "New +" → "Web Service"
    - Connect your GitHub repository
-   - Select the `Dessertable` repository
+   - Select the `DessertAble` repository
 
 3. **Configure Service**
    ```
@@ -84,7 +84,7 @@ Before deploying, ensure you have:
 
 2. **Deploy from GitHub**
    - Click "New Project" → "Deploy from GitHub repo"
-   - Select your `Dessertable` repository
+   - Select your `DessertAble` repository
    - Railway auto-detects Python and Flask
 
 3. **Add Environment Variables**
@@ -124,7 +124,7 @@ Before deploying, ensure you have:
 
 2. **Initialize Elastic Beanstalk**
    ```bash
-   cd /path/to/Dessertable
+   cd /path/to/DessertAble
    eb init
    ```
    - Choose your region
@@ -190,8 +190,8 @@ Before deploying, ensure you have:
 
 4. **Clone Repository**
    ```bash
-   git clone https://github.com/yourusername/Dessertable.git
-   cd Dessertable
+   git clone https://github.com/yourusername/DessertAble.git
+   cd DessertAble
    ```
 
 5. **Setup Application**
@@ -220,14 +220,14 @@ Before deploying, ensure you have:
    Add:
    ```ini
    [Unit]
-   Description=Dessertable Flask App
+   Description=DessertAble Flask App
    After=network.target
 
    [Service]
    User=ubuntu
-   WorkingDirectory=/home/ubuntu/Dessertable
-   Environment="PATH=/home/ubuntu/Dessertable/venv/bin"
-   ExecStart=/home/ubuntu/Dessertable/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 run:app
+   WorkingDirectory=/home/ubuntu/DessertAble
+   Environment="PATH=/home/ubuntu/DessertAble/venv/bin"
+   ExecStart=/home/ubuntu/DessertAble/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 run:app
 
    [Install]
    WantedBy=multi-user.target
@@ -251,7 +251,7 @@ Before deploying, ensure you have:
        }
 
        location /static {
-           alias /home/ubuntu/Dessertable/app/static;
+           alias /home/ubuntu/DessertAble/app/static;
        }
    }
    ```
@@ -348,7 +348,7 @@ Before deploying, ensure you have:
 3. **Create Virtual Environment**
    ```bash
    mkvirtualenv dessertable --python=python3.11
-   cd Dessertable
+   cd DessertAble
    pip install -r requirements.txt
    ```
 
@@ -357,7 +357,7 @@ Before deploying, ensure you have:
    - Add new web app
    - Framework: Flask
    - Python version: 3.11
-   - Path to Flask app: `/home/yourusername/Dessertable/run.py`
+   - Path to Flask app: `/home/yourusername/DessertAble/run.py`
 
 5. **Set Environment Variables**
    - In Web tab, scroll to "Environment variables"

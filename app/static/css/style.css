@@ -267,8 +267,8 @@ main {
 }
 
 .restaurant-card .dessert-description {
-    opacity: 0;
-    max-height: 0;
+    opacity: 1;
+    max-height: 100px;
     overflow: hidden;
     transition: opacity 0.2s, max-height 0.2s;
 }

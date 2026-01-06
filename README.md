@@ -1,17 +1,17 @@
-# Dessertable 🍰
+# DessertAble 🍰
 
 **Find the best dessert spots near you with ease.**
 
-Dessertable is a simple, elegant web application that helps you discover top-rated dessert restaurants, bakeries, ice cream shops, and sweet treat locations in your area. Just enter your address, and we'll show you the top 3 dessert destinations nearby with ratings, reviews, and directions.
+DessertAble is a simple, elegant web application that helps you discover top-rated dessert restaurants, bakeries, ice cream shops, and sweet treat locations in your area. Just enter your address, and we'll show you the top 3 dessert destinations nearby with ratings, reviews, and directions.
 
-![GitHub repo size](https://img.shields.io/github/repo-size/Colsai/Dessertable)
-![GitHub license](https://img.shields.io/github/license/Colsai/Dessertable)
+![GitHub repo size](https://img.shields.io/github/repo-size/Colsai/DessertAble)
+![GitHub license](https://img.shields.io/github/license/Colsai/DessertAble)
 
 ---
 
 ## What Does It Do?
 
-Dessertable takes the stress out of finding great desserts. Instead of scrolling through endless restaurant listings, you get:
+DessertAble takes the stress out of finding great desserts. Instead of scrolling through endless restaurant listings, you get:
 
 - **Top 3 Results Only**: We show you the best 3 dessert spots based on ratings and reviews
 - **Location-Based Search**: Enter any US address or zip code
@@ -121,8 +121,8 @@ If you prefer to set things up manually:
 
 ```bash
 # Clone the repository
-git clone https://github.com/Colsai/Dessertable.git
-cd Dessertable
+git clone https://github.com/Colsai/DessertAble.git
+cd DessertAble
 
 # Create virtual environment
 python -m venv venv
@@ -172,7 +172,7 @@ Built with modern, reliable technologies:
 ## Project Structure
 
 ```
-Dessertable/
+DessertAble/
 ├── app/                    # Main application code
 │   ├── routes.py          # Web routes and logic
 │   ├── models/            # Database models
@@ -190,7 +190,7 @@ Dessertable/
 ## Version History
 
 ### Version 1.1.0 (2026-01-05)
-- Rebranded from "Restaurant Finder" to "Dessertable"
+- Rebranded from "Restaurant Finder" to "DessertAble"
 - Simplified to focus exclusively on dessert establishments
 - Streamlined UI for faster, easier searches
 - Added comprehensive search history feature
@@ -254,7 +254,7 @@ A: Yes! All searches are stored locally on your computer in a SQLite database. N
 
 ## Contributing
 
-We welcome contributions! If you'd like to improve Dessertable:
+We welcome contributions! If you'd like to improve DessertAble:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -284,7 +284,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Having issues? Need help?
 
 - 📖 Check the [User Guide](USER_GUIDE.md) for detailed instructions
-- 🐛 [Open an issue](https://github.com/Colsai/Dessertable/issues) on GitHub
+- 🐛 [Open an issue](https://github.com/Colsai/DessertAble/issues) on GitHub
 - 💡 Have a feature idea? Let us know in the issues!
 
 ---
@@ -293,4 +293,4 @@ Having issues? Need help?
 
 ---
 
-Made with ❤️ by the Dessertable team
+Made with ❤️ by the DessertAble team

@@ -5,6 +5,7 @@ from collections import Counter
 
 from app.models.restaurant import Restaurant
 from app.services.places_api import PlacesAPI, PlacesAPIError
+from app.services.deepseek_service import DeepSeekService
 
 
 class RestaurantService:
@@ -12,6 +13,13 @@ class RestaurantService:
 
     def __init__(self, places_api: PlacesAPI):
         self.places_api = places_api
+
+        # Initialize DeepSeek service (optional - requires API key)
+        try:
+            self.deepseek_service = DeepSeekService()
+        except (ValueError, Exception) as e:
+            print(f"Warning: DeepSeek service not available: {e}")
+            self.deepseek_service = None
 
     def find_restaurants(
         self,
@@ -84,8 +92,29 @@ class RestaurantService:
                 print(f"Warning: Failed to parse restaurant: {e}")
                 continue
 
-        # Apply filters
-        restaurants = self.apply_filters(restaurants, cuisine, price_range, min_reviews=25, max_distance_miles=5.0)
+        # Apply filters with progressive relaxation to ensure at least 5 results
+        min_results = 5
+        filter_attempts = [
+            {'min_reviews': 25, 'max_distance_miles': 5.0},
+            {'min_reviews': 15, 'max_distance_miles': 7.0},
+            {'min_reviews': 10, 'max_distance_miles': 10.0},
+            {'min_reviews': 5, 'max_distance_miles': 15.0},
+            {'min_reviews': 0, 'max_distance_miles': 20.0},
+        ]
+
+        restaurants_filtered = []
+        for attempt in filter_attempts:
+            restaurants_filtered = self.apply_filters(
+                restaurants,
+                cuisine,
+                price_range,
+                min_reviews=attempt['min_reviews'],
+                max_distance_miles=attempt['max_distance_miles']
+            )
+            if len(restaurants_filtered) >= min_results:
+                break
+
+        restaurants = restaurants_filtered
 
         # Fetch detailed info for remaining restaurants (limited to prevent excessive API calls)
         max_details = 20  # Limit detailed fetches
@@ -389,6 +418,13 @@ class RestaurantService:
         # Extract menu items from reviews
         if 'reviews' in details:
             restaurant.menu_items = self.extract_menu_items(details['reviews'])
+
+            # Generate AI description from reviews using DeepSeek
+            if self.deepseek_service:
+                restaurant.ai_description = self.deepseek_service.generate_dessert_description(
+                    restaurant_name=restaurant.name,
+                    reviews=details['reviews']
+                )
 
         # Try to extract opening date
         # Note: Google doesn't directly provide opening date in standard API

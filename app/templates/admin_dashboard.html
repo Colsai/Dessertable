@@ -1,0 +1,539 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - DessertAble{% endblock %}
+
+{% block content %}
+<div style="margin: 2rem 0; animation: fadeIn 0.5s ease-in;">
+    <!-- Header with Actions -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-weight: 700; font-size: 2.5rem; color: #000; letter-spacing: -1px; margin: 0;">
+                📊 Admin Dashboard
+            </h1>
+            <p style="color: #666; font-size: 0.9rem; margin: 0.5rem 0 0;">Real-time analytics and insights</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <button onclick="exportDashboardData()" class="btn btn-primary" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                <span style="font-size: 1.1rem;">📊</span> Export Data
+            </button>
+            <button onclick="location.reload()" class="btn btn-outline-secondary" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem;">
+                <span style="font-size: 1.1rem;">🔄</span> Refresh
+            </button>
+            <a href="{{ url_for('main.admin_logout') }}" class="btn btn-outline-secondary" style="padding: 0.5rem 1rem;">
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Overview Stats Cards -->
+    <div class="row g-3 mb-4">
+        <!-- Users Card -->
+        <div class="col-md-3 col-sm-6">
+            <div class="admin-stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px) scale(1.02)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.3)'">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h6 style="color: rgba(255,255,255,0.9); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.5px;">Total Users</h6>
+                        <h2 style="font-weight: 700; font-size: 2.5rem; margin: 0; color: white;">{{ analytics.total_users }}</h2>
+                        <p style="color: rgba(255,255,255,0.85); font-size: 0.8rem; margin: 0.75rem 0 0;">
+                            <span style="background: rgba(255,255,255,0.2); padding: 0.2rem 0.5rem; border-radius: 12px; font-weight: 600;">+{{ analytics.users_last_7_days }}</span> last 7 days
+                        </p>
+                    </div>
+                    <div style="font-size: 2.5rem; opacity: 0.3;">👥</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Searches Card -->
+        <div class="col-md-3 col-sm-6">
+            <div class="admin-stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px) scale(1.02)'; this.style.boxShadow='0 8px 25px rgba(240, 147, 251, 0.4)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 15px rgba(240, 147, 251, 0.3)'">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h6 style="color: rgba(255,255,255,0.9); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.5px;">Total Searches</h6>
+                        <h2 style="font-weight: 700; font-size: 2.5rem; margin: 0; color: white;">{{ analytics.total_searches }}</h2>
+                        <p style="color: rgba(255,255,255,0.85); font-size: 0.8rem; margin: 0.75rem 0 0;">
+                            <span style="background: rgba(255,255,255,0.2); padding: 0.2rem 0.5rem; border-radius: 12px; font-weight: 600;">+{{ analytics.searches_last_7_days }}</span> last 7 days
+                        </p>
+                    </div>
+                    <div style="font-size: 2.5rem; opacity: 0.3;">🔍</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favorites Card -->
+        <div class="col-md-3 col-sm-6">
+            <div class="admin-stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px) scale(1.02)'; this.style.boxShadow='0 8px 25px rgba(79, 172, 254, 0.4)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 15px rgba(79, 172, 254, 0.3)'">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h6 style="color: rgba(255,255,255,0.9); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.5px;">Total Favorites</h6>
+                        <h2 style="font-weight: 700; font-size: 2.5rem; margin: 0; color: white;">{{ analytics.total_favorites }}</h2>
+                        <p style="color: rgba(255,255,255,0.85); font-size: 0.8rem; margin: 0.75rem 0 0;">
+                            <span style="background: rgba(255,255,255,0.2); padding: 0.2rem 0.5rem; border-radius: 12px; font-weight: 600;">{{ analytics.users_with_favorites }}</span> users
+                        </p>
+                    </div>
+                    <div style="font-size: 2.5rem; opacity: 0.3;">❤️</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avg Results Card -->
+        <div class="col-md-3 col-sm-6">
+            <div class="admin-stat-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(250, 112, 154, 0.3); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px) scale(1.02)'; this.style.boxShadow='0 8px 25px rgba(250, 112, 154, 0.4)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 15px rgba(250, 112, 154, 0.3)'">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h6 style="color: rgba(255,255,255,0.9); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.5px;">Avg Results</h6>
+                        <h2 style="font-weight: 700; font-size: 2.5rem; margin: 0; color: white;">{{ analytics.avg_results_per_search }}</h2>
+                        <p style="color: rgba(255,255,255,0.85); font-size: 0.8rem; margin: 0.75rem 0 0;">
+                            per search
+                        </p>
+                    </div>
+                    <div style="font-size: 2.5rem; opacity: 0.3;">📈</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Row -->
+    <div class="row g-3 mb-4">
+        <!-- Top Locations (Last 30 Days) -->
+        <div class="col-md-6">
+            <div class="card" style="border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,0.12)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.08)'">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+                        <span style="font-size: 1.5rem;">📍</span>
+                        <h5 style="font-weight: 600; font-size: 1.1rem; margin: 0; color: #000;">
+                            Top Locations <span style="color: #666; font-size: 0.85rem; font-weight: 400;">(Last 30 Days)</span>
+                        </h5>
+                    </div>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        {% if analytics.top_locations_30d %}
+                            {% for location in analytics.top_locations_30d %}
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem; margin-bottom: 0.5rem; background: #f8f9fa; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='#e9ecef'; this.style.transform='translateX(5px)'" onmouseout="this.style.background='#f8f9fa'; this.style.transform='translateX(0)'">
+                                <span style="font-size: 0.9rem; color: #333; font-weight: 500;">{{ location.location }}</span>
+                                <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem;">{{ location.count }}</span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="text-align: center; padding: 3rem 1rem;">
+                                <div style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;">📍</div>
+                                <p style="color: #999; font-size: 0.95rem; margin: 0;">No location data yet</p>
+                                <p style="color: #ccc; font-size: 0.8rem; margin: 0.5rem 0 0;">Start searching to see top locations!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Cuisines -->
+        <div class="col-md-6">
+            <div class="card" style="border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,0.12)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.08)'">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+                        <span style="font-size: 1.5rem;">🍰</span>
+                        <h5 style="font-weight: 600; font-size: 1.1rem; margin: 0; color: #000;">
+                            Popular Cuisines
+                        </h5>
+                    </div>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        {% if analytics.popular_cuisines %}
+                            {% for cuisine in analytics.popular_cuisines %}
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem; margin-bottom: 0.5rem; background: #f8f9fa; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='#e9ecef'; this.style.transform='translateX(5px)'" onmouseout="this.style.background='#f8f9fa'; this.style.transform='translateX(0)'">
+                                <span style="font-size: 0.9rem; color: #333; font-weight: 500;">{{ cuisine.cuisine }}</span>
+                                <span style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem;">{{ cuisine.count }}</span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="text-align: center; padding: 3rem 1rem;">
+                                <div style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;">🍰</div>
+                                <p style="color: #999; font-size: 0.95rem; margin: 0;">No cuisine data yet</p>
+                                <p style="color: #ccc; font-size: 0.8rem; margin: 0.5rem 0 0;">Cuisine preferences will appear here!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-12">
+            <div class="card" style="border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,0.12)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.08)'">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+                        <span style="font-size: 1.5rem;">⚡</span>
+                        <h5 style="font-weight: 600; font-size: 1.1rem; margin: 0; color: #000;">
+                            Recent Activity
+                        </h5>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="table table-sm" style="font-size: 0.85rem; margin: 0;">
+                            <thead>
+                                <tr style="background: linear-gradient(to right, #f8f9fa, #ffffff); border-radius: 8px;">
+                                    <th style="border: none; padding: 1rem 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;">📍 Location</th>
+                                    <th style="border: none; padding: 1rem 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;">📅 Date</th>
+                                    <th style="border: none; padding: 1rem 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; text-align: right;">📊 Results</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if analytics.recent_searches %}
+                                    {% for search in analytics.recent_searches[:10] %}
+                                    <tr style="transition: all 0.2s ease;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+                                        <td style="padding: 0.9rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: #333; font-weight: 500;">{{ search.location }}</td>
+                                        <td style="padding: 0.9rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: #666;">{{ search.search_date[:16] }}</td>
+                                        <td style="padding: 0.9rem 0.75rem; border-bottom: 1px solid #f0f0f0; text-align: right;">
+                                            <span style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 0.25rem 0.65rem; border-radius: 12px; font-weight: 600; font-size: 0.8rem;">{{ search.results_count }}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="3" style="padding: 3rem; border: none;">
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;">⚡</div>
+                                                <p style="color: #999; font-size: 0.95rem; margin: 0;">No searches yet</p>
+                                                <p style="color: #ccc; font-size: 0.8rem; margin: 0.5rem 0 0;">Recent activity will appear here!</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Management -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-12">
+            <div class="card" style="border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,0.12)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.08)'">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="font-size: 1.5rem;">👥</span>
+                            <h5 style="font-weight: 600; font-size: 1.1rem; margin: 0; color: #000;">
+                                Registered Users
+                            </h5>
+                        </div>
+                        {% if users %}
+                        <span style="background: #f8f9fa; color: #666; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">{{ users|length }} total</span>
+                        {% endif %}
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="table table-sm" style="font-size: 0.85rem; margin: 0;">
+                            <thead>
+                                <tr style="background: linear-gradient(to right, #f8f9fa, #ffffff); border-radius: 8px;">
+                                    <th style="border: none; padding: 1rem 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;">#</th>
+                                    <th style="border: none; padding: 1rem 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;">👤 Username</th>
+                                    <th style="border: none; padding: 1rem 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;">📅 Joined</th>
+                                    <th style="border: none; padding: 1rem 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; text-align: right;">❤️ Favorites</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if users %}
+                                    {% for user in users %}
+                                    <tr style="transition: all 0.2s ease;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+                                        <td style="padding: 0.9rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: #999; font-weight: 500;">{{ user.id }}</td>
+                                        <td style="padding: 0.9rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: #333; font-weight: 600;">{{ user.username }}</td>
+                                        <td style="padding: 0.9rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: #666;">{{ user.created_at[:10] }}</td>
+                                        <td style="padding: 0.9rem 0.75rem; border-bottom: 1px solid #f0f0f0; text-align: right;">
+                                            {% if user.favorite_count > 0 %}
+                                            <span style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 0.25rem 0.65rem; border-radius: 12px; font-weight: 600; font-size: 0.8rem;">{{ user.favorite_count }}</span>
+                                            {% else %}
+                                            <span style="color: #ccc; font-size: 0.8rem;">0</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" style="padding: 3rem; border: none;">
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;">👥</div>
+                                                <p style="color: #999; font-size: 0.95rem; margin: 0;">No users yet</p>
+                                                <p style="color: #ccc; font-size: 0.8rem; margin: 0.5rem 0 0;">New users will appear here!</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Trends -->
+    <div class="row g-3 mb-4">
+        <!-- Search Trend -->
+        <div class="col-md-6">
+            <div class="card" style="border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,0.12)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.08)'">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+                        <span style="font-size: 1.5rem;">📈</span>
+                        <h5 style="font-weight: 600; font-size: 1.1rem; margin: 0; color: #000;">
+                            Search Activity <span style="color: #666; font-size: 0.85rem; font-weight: 400;">(Last 30 Days)</span>
+                        </h5>
+                    </div>
+                    <div style="max-height: 350px; overflow-y: auto; padding-right: 0.5rem;">
+                        {% if analytics.search_trend %}
+                            {% set max_count = analytics.search_trend | map(attribute='count') | max %}
+                            {% for day in analytics.search_trend %}
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid #f5f5f5; transition: all 0.2s ease;" onmouseover="this.style.background='#f8f9fa'; this.style.paddingLeft='0.5rem'" onmouseout="this.style.background='transparent'; this.style.paddingLeft='0'">
+                                <span style="font-size: 0.8rem; color: #666; font-weight: 500; min-width: 85px;">{{ day.date }}</span>
+                                <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+                                    <div style="flex: 1; background: #f0f0f0; height: 8px; border-radius: 10px; overflow: hidden;">
+                                        <div style="background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%); height: 100%; width: {{ (day.count / max_count * 100) if max_count > 0 else 0 }}%; border-radius: 10px; transition: width 0.5s ease;"></div>
+                                    </div>
+                                    <span style="font-size: 0.85rem; font-weight: 700; color: #f5576c; min-width: 30px; text-align: right;">{{ day.count }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="text-align: center; padding: 3rem 1rem;">
+                                <div style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;">📈</div>
+                                <p style="color: #999; font-size: 0.95rem; margin: 0;">No trend data yet</p>
+                                <p style="color: #ccc; font-size: 0.8rem; margin: 0.5rem 0 0;">Search trends will appear here!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Trend -->
+        <div class="col-md-6">
+            <div class="card" style="border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,0.12)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.08)'">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+                        <span style="font-size: 1.5rem;">👤</span>
+                        <h5 style="font-weight: 600; font-size: 1.1rem; margin: 0; color: #000;">
+                            User Registrations <span style="color: #666; font-size: 0.85rem; font-weight: 400;">(Last 30 Days)</span>
+                        </h5>
+                    </div>
+                    <div style="max-height: 350px; overflow-y: auto; padding-right: 0.5rem;">
+                        {% if analytics.user_trend %}
+                            {% set max_count = analytics.user_trend | map(attribute='count') | max %}
+                            {% for day in analytics.user_trend %}
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid #f5f5f5; transition: all 0.2s ease;" onmouseover="this.style.background='#f8f9fa'; this.style.paddingLeft='0.5rem'" onmouseout="this.style.background='transparent'; this.style.paddingLeft='0'">
+                                <span style="font-size: 0.8rem; color: #666; font-weight: 500; min-width: 85px;">{{ day.date }}</span>
+                                <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+                                    <div style="flex: 1; background: #f0f0f0; height: 8px; border-radius: 10px; overflow: hidden;">
+                                        <div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); height: 100%; width: {{ (day.count / max_count * 100) if max_count > 0 else 0 }}%; border-radius: 10px; transition: width 0.5s ease;"></div>
+                                    </div>
+                                    <span style="font-size: 0.85rem; font-weight: 700; color: #764ba2; min-width: 30px; text-align: right;">{{ day.count }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="text-align: center; padding: 3rem 1rem;">
+                                <div style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;">👤</div>
+                                <p style="color: #999; font-size: 0.95rem; margin: 0;">No registration data yet</p>
+                                <p style="color: #ccc; font-size: 0.8rem; margin: 0.5rem 0 0;">User registration trends will appear here!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-12">
+            <div class="card" style="border: none; border-radius: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);">
+                <div class="card-body" style="padding: 1.75rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="font-size: 2.5rem;">💾</span>
+                            <div>
+                                <h6 style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 0.5px;">Database Information</h6>
+                                <p style="font-size: 0.75rem; color: rgba(255,255,255,0.7); margin: 0;">Real-time system metrics</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 2.5rem; flex-wrap: wrap;">
+                            <div style="text-align: center;">
+                                <p style="font-size: 0.7rem; color: rgba(255,255,255,0.7); margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Restaurants</p>
+                                <p style="font-size: 1.75rem; font-weight: 700; color: white; margin: 0.25rem 0 0;">{{ analytics.total_restaurants_cached }}</p>
+                            </div>
+                            <div style="height: 50px; width: 1px; background: rgba(255,255,255,0.2);"></div>
+                            <div style="text-align: center;">
+                                <p style="font-size: 0.7rem; color: rgba(255,255,255,0.7); margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Searches</p>
+                                <p style="font-size: 1.75rem; font-weight: 700; color: white; margin: 0.25rem 0 0;">{{ analytics.total_searches }}</p>
+                            </div>
+                            <div style="height: 50px; width: 1px; background: rgba(255,255,255,0.2);"></div>
+                            <div style="text-align: center;">
+                                <p style="font-size: 0.7rem; color: rgba(255,255,255,0.7); margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Favorites</p>
+                                <p style="font-size: 1.75rem; font-weight: 700; color: white; margin: 0.25rem 0 0;">{{ analytics.total_favorites }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export functionality -->
+<script>
+function exportDashboardData() {
+    // Prepare data summary
+    const data = {
+        "Export Date": new Date().toISOString().split('T')[0],
+        "Total Users": {{ analytics.total_users }},
+        "Users (Last 7 Days)": {{ analytics.users_last_7_days }},
+        "Total Searches": {{ analytics.total_searches }},
+        "Searches (Last 7 Days)": {{ analytics.searches_last_7_days }},
+        "Total Favorites": {{ analytics.total_favorites }},
+        "Users with Favorites": {{ analytics.users_with_favorites }},
+        "Avg Results Per Search": {{ analytics.avg_results_per_search }},
+        "Restaurants Cached": {{ analytics.total_restaurants_cached }}
+    };
+
+    // Convert to CSV format
+    let csv = "Metric,Value\n";
+    for (const [key, value] of Object.entries(data)) {
+        csv += `"${key}","${value}"\n`;
+    }
+
+    // Create and download file
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dessertable_analytics_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+
+    // Show success message
+    alert('✅ Dashboard data exported successfully!');
+}
+</script>
+
+<!-- Add fade-in animation -->
+<style>
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Smooth scrollbar styling */
+div[style*="overflow-y: auto"]::-webkit-scrollbar {
+    width: 8px;
+}
+
+div[style*="overflow-y: auto"]::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+
+div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+}
+
+div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .admin-stat-card {
+        margin-bottom: 1rem;
+    }
+
+    h1 {
+        font-size: 1.75rem !important;
+    }
+
+    .card-body {
+        padding: 1rem !important;
+    }
+
+    /* Stack action buttons vertically on mobile */
+    div[style*="display: flex; gap: 0.75rem"] {
+        flex-direction: column !important;
+        width: 100%;
+    }
+
+    div[style*="display: flex; gap: 0.75rem"] button,
+    div[style*="display: flex; gap: 0.75rem"] a {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Better spacing for stat cards on mobile */
+    .admin-stat-card div[style*="display: flex"] {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+    }
+
+    /* Database stats better layout on mobile */
+    div[style*="display: flex; gap: 2.5rem"] {
+        gap: 1.5rem !important;
+        justify-content: center !important;
+    }
+
+    /* Smaller font sizes for mobile */
+    h2 {
+        font-size: 2rem !important;
+    }
+
+    /* Tables scroll horizontally on small screens */
+    .table {
+        font-size: 0.75rem !important;
+    }
+
+    /* Hide some columns on very small screens */
+    @media (max-width: 480px) {
+        table th:first-child,
+        table td:first-child {
+            display: none;
+        }
+    }
+}
+
+/* Tablet responsiveness */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .col-md-3 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* Print styles */
+@media print {
+    .btn,
+    button {
+        display: none !important;
+    }
+
+    .card {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+
+    body {
+        background: white !important;
+    }
+}
+</style>
+{% endblock %}

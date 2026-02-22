@@ -9,6 +9,17 @@
     </h1>
 
     <form method="POST" action="{{ url_for('main.register') }}">
+        <!-- Invite Code Field -->
+        <div class="mb-4">
+            <input type="text"
+                   class="form-control form-control-lg"
+                   name="invite_code"
+                   required
+                   placeholder="Invite code (required)"
+                   autocomplete="off"
+                   style="font-size: 1.1rem;">
+        </div>
+
         <div class="mb-4">
             <input type="text"
                    class="form-control form-control-lg"

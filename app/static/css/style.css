@@ -214,6 +214,28 @@ main {
     margin-bottom: 2rem;
 }
 
+/* Full-card clickable overlay (mouse only, excluded from tab order) */
+.card-link-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Keyboard-accessible restaurant name link */
+.card-name-link {
+    position: relative;
+    z-index: 3;
+    color: inherit;
+    text-decoration: none;
+}
+
+.card-name-link:focus {
+    outline: 2px solid var(--zen-black);
+    outline-offset: 3px;
+}
+
 /* Restaurant Cards */
 .restaurant-card {
     border: 2px solid var(--zen-black);
@@ -241,7 +263,8 @@ main {
 }
 
 .restaurant-card:hover {
-    background: var(--zen-black);
+    box-shadow: 0 0 0 3px var(--zen-black);
+    transition: box-shadow 0.15s ease;
     z-index: 1;
 }
 
@@ -255,47 +278,29 @@ main {
     line-height: 1.2;
 }
 
-.restaurant-card:hover a {
-    color: var(--zen-white);
+.restaurant-card .restaurant-name {
+    color: var(--zen-black);
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.2;
 }
 
 .restaurant-card .restaurant-meta {
     color: var(--zen-gray);
     font-size: 0.95rem;
     margin-top: 0.75rem;
-    transition: color 0.2s;
-}
-
-.restaurant-card:hover .restaurant-meta {
-    color: var(--zen-lightgray);
 }
 
 .restaurant-card .dessert-description {
     opacity: 1;
     max-height: 100px;
     overflow: hidden;
-    transition: opacity 0.2s, max-height 0.2s;
-}
-
-.restaurant-card:hover .dessert-description {
-    opacity: 1;
-    max-height: 100px;
 }
 
 .restaurant-card .restaurant-distance {
-    transition: color 0.2s;
-}
-
-.restaurant-card:hover .restaurant-distance {
-    color: var(--zen-white) !important;
 }
 
 .restaurant-card .restaurant-hours {
-    transition: color 0.2s;
-}
-
-.restaurant-card:hover .restaurant-hours {
-    color: var(--zen-white) !important;
 }
 
 /* Responsive: Stack on mobile */
@@ -877,18 +882,7 @@ main {
 
     /* Remove hover effects on touch devices */
     .restaurant-card:hover {
-        background: var(--zen-white);
-    }
-
-    .restaurant-card:hover a,
-    .restaurant-card:hover .restaurant-meta,
-    .restaurant-card:hover .restaurant-distance,
-    .restaurant-card:hover .restaurant-hours {
-        color: var(--zen-black) !important;
-    }
-
-    .restaurant-card:hover .dessert-description {
-        opacity: 1;
+        box-shadow: none;
     }
 
     .restaurant-card:hover .result-sprite {

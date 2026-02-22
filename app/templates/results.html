@@ -16,7 +16,10 @@
 
         <div class="results-grid" id="resultsGrid">
         {% for restaurant in restaurants[:5] %}
-        <div class="restaurant-card horizontal-card" data-index="{{ loop.index0 }}" style="display: {% if loop.index0 < 3 %}block{% else %}none{% endif %}; grid-column: {{ (loop.index0 % 3) + 1 }}; transition: opacity 0.3s; position: relative;">
+        <div class="restaurant-card horizontal-card" data-index="{{ loop.index0 }}" style="display: {% if loop.index0 < 3 %}block{% else %}none{% endif %}; grid-column: {{ (loop.index0 % 3) + 1 }}; transition: opacity 0.3s; position: relative; cursor: pointer;">
+
+        <!-- Full-card link overlay (mouse only — excluded from keyboard tab order) -->
+        <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" rel="noopener noreferrer" class="card-link-overlay" tabindex="-1" aria-hidden="true"></a>
 
         <!-- Heart icon - only show if logged in -->
         {% if current_user.is_authenticated %}
@@ -42,7 +45,7 @@
 
         <!-- 1. Title (fixed height for consistency) -->
         <h2 class="restaurant-name" style="margin: 0 0 1.5rem 0; min-height: 3.6rem; display: flex; align-items: center; justify-content: center; text-align: center;">
-            <a href="{{ restaurant.get_google_maps_url() }}" target="_blank">
+            <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" rel="noopener noreferrer" class="card-name-link">
                 {{ restaurant.name }}
             </a>
         </h2>
@@ -208,11 +211,11 @@ function addFavoriteFromResults(placeId, button, index) {
             button.style.transform = 'scale(1.2)';
             setTimeout(() => button.style.transform = 'scale(1)', 200);
         } else {
-            alert('Error: ' + data.error);
+            showToast('Error: ' + data.error);
         }
     })
     .catch(error => {
-        alert('Failed to add favorite');
+        showToast('Failed to add favorite');
         console.error(error);
     });
 }
@@ -232,11 +235,11 @@ function removeFavoriteFromResults(placeId, button) {
             button.querySelector('.heart-icon').textContent = '♡';
             button.style.color = '#000';
         } else {
-            alert('Error: ' + data.error);
+            showToast('Error: ' + data.error);
         }
     })
     .catch(error => {
-        alert('Failed to remove favorite');
+        showToast('Failed to remove favorite');
         console.error(error);
     });
 }

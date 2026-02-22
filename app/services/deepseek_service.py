@@ -43,43 +43,46 @@ class DeepSeekService:
         # Combine reviews into prompt
         combined_reviews = "\n\n".join(review_texts)
 
-        prompt = f"""Based on these customer reviews for {restaurant_name}, write a single complete sentence that summarizes the positive aspects of their desserts.
+        prompt = f"""Based on these customer reviews for {restaurant_name}, write a single short sentence capturing what makes their desserts special.
 
 Reviews:
 {combined_reviews}
 
 Requirements:
-- Write ONE complete grammatical sentence
+- Write ONE short, complete sentence
 - Focus ONLY on desserts (ice cream, cakes, pastries, sweet treats, etc.)
-- Summarize what customers love about the desserts
-- Use 10-15 words
-- Make it sound natural and enticing, like: "Place has excellent matcha drinks for good moments"
+- Use 10 words or fewer — be punchy and vivid
+- Sound warm and personal, like something a happy customer would say
+- Examples: "Great pastries that make me happy", "Delicious banana bread in a quiet environment", "Dreamy ice cream that hits every time"
 - Do NOT mention service, atmosphere, or non-dessert items
 
-Respond with ONLY the sentence, nothing else. No fragments or incomplete phrases."""
+Respond with ONLY the sentence, nothing else."""
 
         try:
             response = self.client.chat.completions.create(
                 model="deepseek-chat",
                 messages=[
-                    {"role": "system", "content": "You are a persuasive food marketer who creates compelling sales pitches for dessert restaurants. Focus exclusively on desserts and make people crave them."},
+                    {"role": "system", "content": "You are a happy dessert lover summarizing your favorite spots in one short, vivid sentence. Keep it under 10 words and make it feel personal and warm."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=50,
-                temperature=0.7
+                max_tokens=30,
+                temperature=0.8
             )
 
             description = response.choices[0].message.content.strip()
 
-            # Verify it's 10-15 words
+            # Strip surrounding quotes if the model added them
+            if description.startswith('"') and description.endswith('"'):
+                description = description[1:-1].strip()
+
+            # Enforce 10-word max by truncating
             word_count = len(description.split())
-            if word_count < 10:
-                # If too short, return None to use fallback
-                return None
-            elif word_count > 15:
-                # Truncate to 15 words
-                words = description.split()[:15]
+            if word_count > 10:
+                words = description.split()[:10]
                 description = ' '.join(words)
+
+            if not description:
+                return None
 
             return description
 

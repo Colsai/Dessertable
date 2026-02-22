@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, flash, current_app, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, flash, current_app, redirect, url_for, jsonify, session
 import re
+import os
 from datetime import datetime
 from flask_login import login_user, logout_user, login_required, current_user
 
@@ -189,6 +190,22 @@ def register():
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '')
         confirm_password = request.form.get('confirm_password', '')
+        invite_code = request.form.get('invite_code', '').strip()
+
+        # Validate invite code (case-insensitive)
+        expected_code = current_app.config.get('INVITE_CODE')
+
+        if not expected_code:
+            flash('Registration is currently disabled. Invite code system not configured.', 'error')
+            return render_template('register.html')
+
+        if not invite_code:
+            flash('Invite code is required', 'error')
+            return render_template('register.html')
+
+        if invite_code.lower() != expected_code.lower():
+            flash('Invalid invite code', 'error')
+            return render_template('register.html')
 
         # Validation
         if not username or len(username) < 3:
@@ -403,3 +420,72 @@ def update_favorite_note_api():
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# ========== ADMIN ROUTES ==========
+
+def check_admin_auth():
+    """Check if user is authenticated as admin"""
+    return session.get('is_admin', False)
+
+
+@main_bp.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    """Admin login page"""
+    # Check if already logged in as admin
+    if session.get('is_admin'):
+        return redirect(url_for('main.admin_dashboard'))
+
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        admin_password = current_app.config.get('ADMIN_PASSWORD') or os.getenv('ADMIN_PASSWORD')
+
+        if not admin_password:
+            flash('Admin access is not configured. Set ADMIN_PASSWORD in environment variables.', 'error')
+            return render_template('admin_login.html')
+
+        if password == admin_password:
+            session['is_admin'] = True
+            flash('Admin access granted', 'success')
+            return redirect(url_for('main.admin_dashboard'))
+        else:
+            flash('Invalid admin password', 'error')
+            return render_template('admin_login.html')
+
+    return render_template('admin_login.html')
+
+
+@main_bp.route('/admin/logout')
+def admin_logout():
+    """Admin logout"""
+    session.pop('is_admin', None)
+    flash('Logged out from admin panel', 'info')
+    return redirect(url_for('main.index'))
+
+
+@main_bp.route('/admin')
+@main_bp.route('/admin/dashboard')
+def admin_dashboard():
+    """Admin dashboard with analytics"""
+    # Check admin authentication
+    if not session.get('is_admin'):
+        flash('Admin access required', 'error')
+        return redirect(url_for('main.admin_login'))
+
+    try:
+        # Get comprehensive analytics
+        analytics = db.get_admin_analytics()
+
+        # Get user list
+        users = db.get_all_users(limit=50)
+
+        return render_template(
+            'admin_dashboard.html',
+            analytics=analytics,
+            users=users,
+            now=datetime.now()
+        )
+
+    except Exception as e:
+        flash(f'Error loading admin dashboard: {str(e)}', 'error')
+        return redirect(url_for('main.index'))

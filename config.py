@@ -9,6 +9,8 @@ class Config:
     """Base configuration"""
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
     GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY')
+    ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')  # Admin dashboard password
+    INVITE_CODE = os.getenv('INVITE_CODE')  # Required for user registration
 
     # Flask config
     DEBUG = False
@@ -33,6 +35,10 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     """Production configuration"""
     DEBUG = False
+
+    # Security enhancements
+    SESSION_COOKIE_SECURE = True  # Require HTTPS for cookies
+    PREFERRED_URL_SCHEME = 'https'
 
 
 class TestingConfig(Config):

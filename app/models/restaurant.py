@@ -173,26 +173,19 @@ class Restaurant:
 
     def get_dessert_description(self) -> str:
         """Generate a short description of desserts available"""
-        # If we have menu items, use the top 3
-        if self.menu_items and len(self.menu_items) > 0:
-            if len(self.menu_items) <= 3:
-                return ", ".join(self.menu_items)
-            else:
-                return ", ".join(self.menu_items[:3])
-
-        # Otherwise, generate based on cuisine type
+        # Sentence-style descriptions by cuisine type
         cuisine_descriptions = {
-            'Ice Cream': 'Ice cream, sundaes, milkshakes',
-            'Bakery': 'Fresh baked pastries, cakes, cookies',
-            'Desserts': 'Sweet treats and desserts',
-            'Cafe': 'Coffee and desserts',
-            'Coffee & Desserts': 'Coffee, pastries, desserts',
-            'Donuts': 'Donuts, coffee, breakfast pastries',
-            'Cupcakes': 'Cupcakes, cakes, sweet treats',
+            'Ice Cream': 'Creamy scoops that make every visit worthwhile.',
+            'Bakery': 'Fresh pastries baked to golden perfection daily.',
+            'Desserts': 'Sweet treats that leave you wanting more.',
+            'Cafe': 'Cozy spot with coffee and delightful sweets.',
+            'Coffee & Desserts': 'Perfect pastries paired with a great cup.',
+            'Donuts': 'Fluffy donuts that are hard to resist.',
+            'Cupcakes': 'Beautiful cupcakes packed with incredible flavor.',
         }
 
         if self.cuisine_type and self.cuisine_type in cuisine_descriptions:
             return cuisine_descriptions[self.cuisine_type]
 
         # Default fallback
-        return 'Sweet treats and desserts'
+        return 'Delicious desserts worth every single bite.'

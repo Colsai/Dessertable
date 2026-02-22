@@ -22,7 +22,7 @@
         <div class="restaurant-card" style="position: relative; padding: 2rem; border: 2px solid #000;" data-place-id="{{ restaurant.place_id }}">
 
             <!-- Remove button -->
-            <button class="remove-favorite-btn" onclick="removeFavorite('{{ restaurant.place_id }}')"
+            <button class="remove-favorite-btn" onclick="removeFavorite('{{ restaurant.place_id }}', '{{ restaurant.name | replace("'", "\\'") }}')"
                     style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.5rem; opacity: 0.5; transition: opacity 0.2s; font-weight: bold; color: #000;"
                     onmouseover="this.style.opacity='1'"
                     onmouseout="this.style.opacity='0.5'"
@@ -69,7 +69,7 @@
                     class="note-textarea"
                     placeholder="Add a note..."
                     style="width: 100%; min-height: 80px; padding: 0.75rem; border: 1px solid #e0e0e0; font-family: inherit; font-size: 0.9rem; resize: vertical;"
-                    onchange="updateNote('{{ restaurant.place_id }}', this.value)"
+                    oninput="updateNote('{{ restaurant.place_id }}', this.value)"
                 >{{ restaurant._note if restaurant._note else '' }}</textarea>
             </div>
 
@@ -102,8 +102,8 @@
 
 <script>
 // Remove favorite
-function removeFavorite(placeId) {
-    if (!confirm('Remove from favorites?')) return;
+function removeFavorite(placeId, name) {
+    if (!confirm('Remove "' + name + '" from favorites?')) return;
 
     fetch('/api/favorites/remove', {
         method: 'POST',
@@ -127,11 +127,11 @@ function removeFavorite(placeId) {
                 }
             }, 300);
         } else {
-            alert('Error: ' + data.error);
+            showToast('Error: ' + data.error);
         }
     })
     .catch(error => {
-        alert('Failed to remove favorite');
+        showToast('Failed to remove favorite');
         console.error(error);
     });
 }
@@ -152,7 +152,7 @@ function updateNote(placeId, note) {
         .then(response => response.json())
         .then(data => {
             if (!data.success) {
-                alert('Error: ' + data.error);
+                showToast('Error: ' + data.error);
             }
         })
         .catch(error => {

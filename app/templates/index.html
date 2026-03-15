@@ -9,28 +9,55 @@
     </h1>
 
     <form method="POST" action="{{ url_for('main.search') }}" id="searchForm">
-        <div class="mb-4">
+        <div class="mb-4 search-input-wrapper">
             <input type="text"
                    class="form-control form-control-lg"
+                   id="addressInput"
                    name="address"
                    required
                    placeholder="Enter your address"
-                   autocomplete="street-address">
+                   autocomplete="street-address"
+                   style="padding-right: 3rem;">
+            <button type="button" class="input-clear-btn" id="clearBtn" aria-label="Clear address">×</button>
         </div>
 
         <button type="submit" class="btn btn-primary w-100 btn-lg" id="searchBtn">
             <span class="btn-label">Search</span>
-            <span class="btn-loading" style="display: none;">Finding desserts...</span>
         </button>
     </form>
 </div>
 
+<div id="loadingMessage" style="display: none; text-align: center; margin-top: 3rem;">
+    <p style="font-size: 1.05rem; color: #666; letter-spacing: 0.5px; font-weight: 400;">
+        looking for your desserts<span id="loadingDots"></span>
+    </p>
+</div>
+
 <script>
+var addressInput = document.getElementById('addressInput');
+var clearBtn = document.getElementById('clearBtn');
+
+addressInput.addEventListener('input', function() {
+    clearBtn.style.display = this.value ? 'block' : 'none';
+});
+
+clearBtn.addEventListener('click', function() {
+    addressInput.value = '';
+    clearBtn.style.display = 'none';
+    addressInput.focus();
+});
+
 document.getElementById('searchForm').addEventListener('submit', function() {
     var btn = document.getElementById('searchBtn');
     btn.disabled = true;
-    btn.querySelector('.btn-label').style.display = 'none';
-    btn.querySelector('.btn-loading').style.display = 'inline';
+    document.getElementById('loadingMessage').style.display = 'block';
+
+    var dots = ['', '.', '..', '...'];
+    var dotIndex = 0;
+    setInterval(function() {
+        dotIndex = (dotIndex + 1) % dots.length;
+        document.getElementById('loadingDots').textContent = dots[dotIndex];
+    }, 400);
 });
 </script>
 {% endblock %}

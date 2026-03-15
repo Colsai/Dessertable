@@ -78,19 +78,39 @@ The application uses a **service-oriented architecture** separating concerns:
    - Composite scoring algorithm (see below)
 
 ### Database Layer
-- SQLite database managed by `Database` class (`app/models/database.py`)
-- Database location: `data/restaurants.db` (created automatically)
+- `Database` class (`app/models/database.py`) supports **both SQLite and PostgreSQL**
+- Auto-detects via `DATABASE_URL` env var: PostgreSQL in production, SQLite in development
+- Database location (SQLite): `data/restaurants.db` (created automatically)
 - Four main tables:
   - `searches` - Search history with parameters
   - `restaurants` - Cached restaurant data linked to searches
   - `users` - User accounts with password hashing
   - `favorites` - User-restaurant many-to-many with notes
+- Key DB helper methods for cross-DB compatibility:
+  - `get_connection()` - returns connection with proper row factory
+  - `placeholder()` - returns `?` (SQLite) or `%s` (PostgreSQL)
+  - `execute_insert()` - INSERT returning last row ID for either DB
+  - `date_interval(days)` - DB-specific date arithmetic
 
 ### Authentication
 - Flask-Login integration in `app/__init__.py`
 - User model implements `UserMixin` interface
 - Password hashing with werkzeug security utilities
 - Session-based authentication with 7-day persistence
+- **Invite-code-gated registration**: `INVITE_CODE` env var required to create accounts
+
+### Admin Panel
+- Separate session-based admin auth at `/admin/login` (not Flask-Login)
+- Protected by `ADMIN_PASSWORD` env var; session key `is_admin`
+- Dashboard at `/admin` (also `/admin/dashboard`) powered by `db.get_admin_analytics()` and `db.get_all_users(limit=50)`
+- **Stat cards**: Total Users, Total Searches, Total Favorites, Avg Results — each with a +N last-7-days badge
+- **Top Locations** (last 30 days) and **Popular Cuisines** panels with hover-slide rows
+- **Recent Activity** table: last 10 searches with location, date, result count
+- **User Management** table: all registered users with join date and favorite count
+- **Search Activity** and **User Registrations** trend charts: bar-style rows for each of the last 30 days, normalized to max
+- **Database Information** strip: cached restaurant count, total searches, total favorites
+- **Export Data** button: downloads a CSV of the key metrics via `Blob` URL (client-side, no server call)
+- Templates: `admin_login.html`, `admin_dashboard.html`
 
 ## Critical Algorithm: Composite Scoring
 
@@ -138,15 +158,15 @@ This ensures users always get results while preferring well-reviewed nearby opti
 7. `RestaurantService.calculate_composite_score()` scores each restaurant
 8. Results sorted by composite score descending
 9. Database saves search + top 3 results
-10. Template renders top 3 to user
+10. Route passes top 3 (`restaurants[:3]`) to template; results template renders up to 5 in a 3-per-page carousel
 
 ## Key Design Decisions
 
-### Why SQLite?
-- Zero configuration for local development
-- Persistent search history without external dependencies
-- User data and favorites stored reliably
-- **Production Note**: Consider PostgreSQL for high-concurrency deployments (see DEPLOYMENT.md)
+### Why Dual-Database (SQLite + PostgreSQL)?
+- SQLite for zero-config local development; PostgreSQL for production (Render)
+- `Database` class auto-detects via `DATABASE_URL` env var — no code changes needed
+- `render.yaml` provisions a free PostgreSQL instance and injects `DATABASE_URL` automatically
+- See `infrastructure/ARCHITECTURE.md` for deployment architecture details
 
 ### Why Progressive Filtering?
 - Guarantees non-empty results (critical UX requirement)
@@ -164,6 +184,18 @@ This ensures users always get results while preferring well-reviewed nearby opti
 - Limits detailed fetches to top 20 candidates only
 - DeepSeek gracefully degrades without breaking functionality
 
+### UI / UX Design Decisions
+- **Full-card click**: result cards use an overlay `<a>` link to the restaurant website (no nested links)
+- **Toast notifications**: `alert()` replaced with toast messages across all pages for non-blocking feedback; defined globally in `base.html` as `showToast(message, duration)` with slide-in / fade-out CSS animations
+- **Search loading state**: button disables and an animated dot-ellipsis loading message appears during API calls to prevent double-submit
+- **Search input clear button**: an `×` clear button (`.input-clear-btn`) appears inside the address field when text is present
+- **Results carousel**: results page shows up to 3 cards at a time in a CSS grid with prev/next arrow buttons and dot indicators; carousel hides on mobile (all cards shown stacked)
+- **Hamburger nav**: mobile (≤480px) replaces desktop nav with a slide-out drawer (`mobile-menu`), a dark overlay (`mobile-nav-overlay`), and closes on link click / overlay tap / Escape key / window resize above 480px
+- **Mobile-first CSS**: 44×44px minimum touch targets, `safe-area-inset` support for notched phones; breakpoints at 375px (iPhone SE), 480px (phone), 481–768px (tablet, 2-col grid), 1024px (stack cards to 1-col)
+- **Touch device block**: `@media (hover: none) and (pointer: coarse)` removes hover effects and adds active-state scale feedback for touch devices
+- **CSS animations**: `breatheBorder` (idle input pulse), `focusPulse` (focus ring expand), `placeholderShift` (placeholder nudge on focus), `fadeIn` (page entrance), `toastSlideIn` / `toastFadeOut`
+- **AI descriptions**: DeepSeek generates ≤10-word personal sentences (e.g., "The croissants here changed my mornings.")
+
 ## Environment Variables
 
 Required in `.env` file:
@@ -178,6 +210,15 @@ FLASK_ENV=production
 
 # Optional - AI descriptions
 DEEPSEEK_API_KEY=your_deepseek_api_key
+
+# Optional - controls who can register
+INVITE_CODE=your_invite_code
+
+# Optional - admin dashboard access
+ADMIN_PASSWORD=your_admin_password
+
+# Set automatically by Render (PostgreSQL); omit for local SQLite
+DATABASE_URL=postgresql://...
 ```
 
 **Getting API Keys:**
@@ -210,19 +251,19 @@ score += (restaurant.rating / 5.0) * 60  # Adjust 60
 **Important**: Update tests in `test_scoring_algorithm.py` to match new weights.
 
 ### Adding New Database Fields
-1. Add column in `Database._init_database()` CREATE TABLE statements
+1. Add column in **both** `Database._init_database_sqlite()` and `Database._init_database_postgres()` CREATE TABLE statements
 2. Update corresponding model class (`User`, `Restaurant`)
 3. Handle migration (SQLite doesn't support ALTER TABLE well; recommend recreating DB in dev)
-4. Update insert/select queries in database methods
+4. Update insert/select queries in database methods — use `self.placeholder()` for parameterized values
 
 ## File Structure
 
 ```
 app/
   __init__.py           # Application factory, Flask-Login setup
-  routes.py             # All routes (main blueprint)
+  routes.py             # All routes (main blueprint + admin routes)
   models/
-    database.py         # SQLite database manager
+    database.py         # Dual-database manager (SQLite/PostgreSQL)
     restaurant.py       # Restaurant data model
     user.py             # User model with authentication
   services/
@@ -232,13 +273,25 @@ app/
   utils/
     filters.py          # Jinja2 template filters
   static/               # CSS, JS, images
-  templates/            # Jinja2 HTML templates
+  templates/
+    base.html             # Base layout: navbar, toast JS, hamburger menu JS
+    index.html            # Search form with clear button and loading state
+    results.html          # Carousel results (up to 5, 3 per page) with favorites AJAX
+    favorites.html        # Favorites grid with inline note editing (debounced)
+    history.html          # Past searches list with links to view_search
+    login.html            # Login form
+    register.html         # Invite-code-gated registration form
+    admin_dashboard.html  # Admin analytics dashboard (stats, trends, users, export)
+    admin_login.html      # Admin session login
 
-config.py              # Config classes (Dev, Prod, Test)
+config.py              # Config classes (Dev, Prod, Test) — includes ADMIN_PASSWORD, INVITE_CODE
 run.py                 # Application entry point
+render.yaml            # Render deployment config (web service + PostgreSQL DB)
 requirements.txt       # Python dependencies
 tests/                 # Pytest test suite
-data/                  # SQLite database location (auto-created)
+data/                  # SQLite database location (auto-created, dev only)
+infrastructure/
+  ARCHITECTURE.md      # Deployment architecture documentation
 ```
 
 ## Security Considerations
@@ -251,14 +304,17 @@ data/                  # SQLite database location (auto-created)
 
 ## Deployment
 
-See `DEPLOYMENT.md` for comprehensive deployment guides covering:
-- Render (recommended for beginners)
-- Railway, Fly.io, PythonAnywhere
-- AWS Elastic Beanstalk, AWS Lightsail
+**Render (primary, configured via `render.yaml`):**
+- Provisions a free PostgreSQL database (`dessertable-db`) and injects `DATABASE_URL`
+- Start command: `gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --threads 2 --timeout 60`
+- Required env vars to set manually: `GOOGLE_PLACES_API_KEY`, `DEEPSEEK_API_KEY`, `INVITE_CODE`, `ADMIN_PASSWORD`
+- `SECRET_KEY` is auto-generated by Render
+
+See `DEPLOYMENT.md` for additional platform guides (Railway, Fly.io, PythonAnywhere, AWS).
 
 **Key production changes:**
 - Set `FLASK_ENV=production`
 - Generate secure `SECRET_KEY`
 - Use Gunicorn with multiple workers
-- Consider PostgreSQL for database
+- PostgreSQL auto-provided on Render via `render.yaml`
 - Enable HTTPS (automatic on most platforms)

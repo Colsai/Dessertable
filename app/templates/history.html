@@ -36,6 +36,8 @@
 
     {% else %}
         <div style="padding: 4rem 0; text-align: center;">
+            <img src="{{ url_for('static', filename='sprites/sprite_10.png') }}" class="page-sprite" alt=""
+                 style="height: 100px; opacity: 0.4; margin-bottom: 2rem; display: block; margin-left: auto; margin-right: auto;">
             <p style="color: #666; margin-bottom: 2rem; font-size: 1.2rem;">No searches yet</p>
             <a href="{{ url_for('main.index') }}"
                style="color: #224680; text-decoration: none; font-size: 1.1rem; font-weight: 500;">

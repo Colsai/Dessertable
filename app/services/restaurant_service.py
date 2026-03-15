@@ -425,6 +425,10 @@ class RestaurantService:
                     restaurant_name=restaurant.name,
                     reviews=details['reviews']
                 )
+                restaurant.long_description = self.deepseek_service.generate_long_description(
+                    restaurant_name=restaurant.name,
+                    reviews=details['reviews']
+                )
 
         # Try to extract opening date
         # Note: Google doesn't directly provide opening date in standard API

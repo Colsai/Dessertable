@@ -89,3 +89,70 @@ Respond with ONLY the sentence, nothing else."""
         except Exception as e:
             print(f"Warning: Failed to generate AI description for {restaurant_name}: {e}")
             return None
+
+    def generate_long_description(self, restaurant_name: str, reviews: List[Dict]) -> Optional[str]:
+        """
+        Generate a 2-3 sentence description (40-60 words) for hover overlay
+
+        Args:
+            restaurant_name: Name of the restaurant
+            reviews: List of review dictionaries from Google Places API
+
+        Returns:
+            2-3 sentence description or None if generation fails
+        """
+        if not reviews:
+            return None
+
+        review_texts = []
+        for review in reviews[:5]:
+            if 'text' in review:
+                review_texts.append(review['text'])
+
+        if not review_texts:
+            return None
+
+        combined_reviews = "\n\n".join(review_texts)
+
+        prompt = f"""Based on these reviews for {restaurant_name}, write exactly 2-3 sentences (40-60 words) describing the standout desserts and what makes the experience special. Be specific and evocative. Do not mention service wait times or non-dessert items. Do not repeat the restaurant name. Return only the sentences, nothing else.
+
+Reviews:
+{combined_reviews}"""
+
+        try:
+            response = self.client.chat.completions.create(
+                model="deepseek-chat",
+                messages=[
+                    {"role": "system", "content": "You are a knowledgeable food writer creating vivid 2-3 sentence descriptions for a dessert discovery guide."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=120,
+                temperature=0.7
+            )
+
+            description = response.choices[0].message.content.strip()
+
+            # Strip surrounding quotes if the model added them
+            if description.startswith('"') and description.endswith('"'):
+                description = description[1:-1].strip()
+
+            if not description:
+                return None
+
+            # Truncate to last sentence boundary within 60 words if over 70 words
+            words = description.split()
+            if len(words) > 70:
+                truncated = ' '.join(words[:60])
+                for marker in ('!', '?', '.'):
+                    idx = truncated.rfind(marker)
+                    if idx != -1:
+                        description = truncated[:idx + 1]
+                        break
+                else:
+                    description = truncated
+
+            return description
+
+        except Exception as e:
+            print(f"Warning: Failed to generate long description for {restaurant_name}: {e}")
+            return None

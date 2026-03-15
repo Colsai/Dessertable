@@ -68,9 +68,9 @@ def search():
         except Exception as e:
             print(f"Warning: Failed to save search to database: {e}")
 
-        # Limit to top 3 results for display
+        # Limit to top 9 results for display (3 pages of 3)
         total_found = len(restaurants)
-        top_restaurants = restaurants[:3]
+        top_restaurants = restaurants[:9]
 
         # Prepare search parameters for display (minimal for zen design)
         search_params = {

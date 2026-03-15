@@ -23,6 +23,7 @@ class Restaurant:
     user_review_count: Optional[int] = None  # Total number of Google reviews
     opening_hours: Optional[List[str]] = None  # Weekday text like ["Monday: 9:00 AM – 5:00 PM", ...]
     ai_description: Optional[str] = None  # AI-generated short description from DeepSeek
+    long_description: Optional[str] = None  # AI-generated 2-3 sentence hover description
 
     def to_dict(self):
         """Convert to dictionary for JSON serialization"""
@@ -42,7 +43,8 @@ class Restaurant:
             'lng': self.lng,
             'user_review_count': self.user_review_count,
             'opening_hours': self.opening_hours,
-            'ai_description': self.ai_description
+            'ai_description': self.ai_description,
+            'long_description': self.long_description
         }
 
     def get_google_maps_url(self):

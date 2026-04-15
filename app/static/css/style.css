@@ -1253,3 +1253,140 @@ h2 {
 #search-screen .back-link a:hover {
     color: var(--pixel-ink);
 }
+
+/* ========================================
+   MAP VIEW — RESULTS PAGE
+   ======================================== */
+
+/* View toggle buttons */
+.view-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+}
+
+.view-toggle .btn {
+    min-width: 110px;
+    border-radius: 0;
+}
+
+.view-toggle .btn + .btn {
+    border-left: none;
+}
+
+/* Map container */
+#map-container {
+    height: 520px;
+    width: 100%;
+    border: 3px solid var(--pixel-ink);
+    box-shadow: 4px 4px 0px var(--pixel-ink);
+    /* Desaturate to Game Boy B&W */
+    filter: grayscale(1) contrast(1.25);
+}
+
+/* NES-style square marker pin */
+.map-marker {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    background: var(--pixel-ink);
+    color: #ffffff;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--pixel-ink);
+    box-shadow: 3px 3px 0 var(--pixel-blue);
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Downward triangle pointer */
+.map-marker-arrow {
+    position: absolute;
+    bottom: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 9px solid var(--pixel-ink);
+    display: block;
+}
+
+/* Leaflet popup overrides */
+.leaflet-popup-content-wrapper {
+    border-radius: 0 !important;
+    border: 3px solid var(--pixel-ink) !important;
+    box-shadow: 4px 4px 0 var(--pixel-ink) !important;
+    padding: 0 !important;
+    background: var(--pixel-surface) !important;
+}
+
+.leaflet-popup-content {
+    margin: 0 !important;
+    width: auto !important;
+}
+
+.leaflet-popup-tip-container {
+    display: none; /* hide default tip — our marker has a built-in arrow */
+}
+
+.leaflet-popup-close-button {
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 10px !important;
+    color: var(--pixel-ink) !important;
+    top: 6px !important;
+    right: 6px !important;
+}
+
+/* Popup content */
+.map-popup {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    line-height: 1.8;
+    padding: 1rem;
+    min-width: 160px;
+}
+
+.map-popup-name {
+    font-size: 9px;
+    color: var(--pixel-ink);
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.map-popup-meta {
+    color: var(--pixel-gray);
+    margin-bottom: 0.75rem;
+}
+
+.map-popup-link {
+    display: inline-block;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--pixel-blue) !important;
+    text-decoration: none;
+    border-bottom: 1px solid var(--pixel-blue);
+    min-height: auto !important;
+    padding: 0 !important;
+}
+
+.map-popup-link:hover {
+    color: var(--pixel-ink) !important;
+    border-color: var(--pixel-ink);
+}
+
+/* Leaflet zoom controls — pixel style */
+.leaflet-control-zoom a {
+    font-family: 'Press Start 2P', monospace !important;
+    border-radius: 0 !important;
+    border: 2px solid var(--pixel-ink) !important;
+    color: var(--pixel-ink) !important;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+    border-radius: 0 !important;
+}

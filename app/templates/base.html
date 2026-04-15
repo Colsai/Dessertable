@@ -18,6 +18,8 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
     <!-- Navigation -->

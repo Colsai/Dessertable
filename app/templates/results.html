@@ -2,137 +2,127 @@
 
 {% block title %}Results - DessertAble{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="results-container" style="max-width: 1400px; margin: 3rem auto; padding: 0 2rem;">
 
-    <div class="results-timestamp" style="text-align: right; margin-bottom: 2rem; padding: 0.5rem 1rem; color: #666; font-size: 0.9rem;">
+    <div class="results-timestamp" style="text-align: right; margin-bottom: 1.5rem; padding: 0.5rem 1rem; color: #666; font-size: 0.9rem;">
         {{ now.strftime('%A, %B %d') }} · {{ now.strftime('%I:%M %p') }}
     </div>
 
-    <div class="results-grid" id="resultsGrid">
-    {% set sprite_map = ['sprite_13.png', 'sprite_14.png', 'sprite_16.png'] %}
-    {% for restaurant in restaurants %}
-    <div class="restaurant-card horizontal-card" data-index="{{ loop.index0 }}" style="display: {% if loop.index0 < 3 %}block{% else %}none{% endif %}; grid-column: {{ (loop.index0 % 3) + 1 }}; transition: opacity 0.3s; position: relative; cursor: pointer;">
-
-    <!-- Full-card link overlay (mouse only — excluded from keyboard tab order) -->
-    <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" rel="noopener noreferrer" class="card-link-overlay" tabindex="-1" aria-hidden="true"></a>
-
-    <!-- Heart icon - only show if logged in -->
-    {% if current_user.is_authenticated %}
-    <button class="favorite-btn"
-            data-place-id="{{ restaurant.place_id }}"
-            data-favorited="false"
-            onclick="toggleFavorite(this, {{ loop.index0 }})"
-            style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.5rem; z-index: 10; transition: transform 0.2s, color 0.2s; color: #000;">
-        <span class="heart-icon">♡</span>
-    </button>
-    {% endif %}
-
-    <!-- Sprite -->
-    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
-        <img src="{{ url_for('static', filename='sprites/' + sprite_map[loop.index0 % 3]) }}" class="result-sprite" alt="">
+    <!-- View toggle -->
+    <div class="view-toggle">
+        <button id="cardsViewBtn" class="btn btn-primary view-btn">&#9654; CARDS</button>
+        <button id="mapViewBtn" class="btn view-btn">MAP</button>
     </div>
 
-    <!-- 1. Title (fixed height for consistency) -->
-    <h2 class="restaurant-name" style="margin: 0 0 1.5rem 0; min-height: 70px; display: flex; align-items: center; justify-content: center; text-align: center;">
-        <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" rel="noopener noreferrer" class="card-name-link">
-            {{ restaurant.name }}
-        </a>
-    </h2>
+    <!-- ═══ CARDS VIEW ═══ -->
+    <div id="cards-view">
+        <div class="results-grid" id="resultsGrid">
+        {% set sprite_map = ['sprite_13.png', 'sprite_14.png', 'sprite_16.png'] %}
+        {% for restaurant in restaurants %}
+        <div class="restaurant-card horizontal-card" data-index="{{ loop.index0 }}" style="display: {% if loop.index0 < 3 %}block{% else %}none{% endif %}; grid-column: {{ (loop.index0 % 3) + 1 }}; transition: opacity 0.3s; position: relative; cursor: pointer;">
 
-    <!-- 2. Restaurant Type + Rating (moved here, centered) -->
-    <div class="restaurant-meta" style="margin-bottom: 1.5rem; text-align: center;">
-        {% if restaurant.cuisine_type %}
-            {{ restaurant.cuisine_type }}
+        <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" rel="noopener noreferrer" class="card-link-overlay" tabindex="-1" aria-hidden="true"></a>
+
+        {% if current_user.is_authenticated %}
+        <button class="favorite-btn"
+                data-place-id="{{ restaurant.place_id }}"
+                data-favorited="false"
+                onclick="toggleFavorite(this, {{ loop.index0 }})"
+                style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.5rem; z-index: 10; transition: transform 0.2s, color 0.2s; color: #000;">
+            <span class="heart-icon">&#9825;</span>
+        </button>
         {% endif %}
 
-        {% if restaurant.rating %}
-            {% if restaurant.cuisine_type %} · {% endif %}
-            {{ restaurant.rating }} / 5
-        {% endif %}
-    </div>
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+            <img src="{{ url_for('static', filename='sprites/' + sprite_map[loop.index0 % 3]) }}" class="result-sprite" alt="">
+        </div>
 
-    <!-- 3. Open/Closed Status Box with Hours (fixed height for consistency) -->
-    {% set is_open = restaurant.is_open_now() %}
-    <div style="text-align: center; margin-bottom: 1.5rem; min-height: 4.5rem; display: flex; flex-direction: column; justify-content: flex-start; align-items: center;">
-        {% if is_open == True %}
-            <div style="background: #000; color: #fff; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.5px; display: inline-block; margin-bottom: 0.5rem;">
-                OPEN
-            </div>
-        {% elif is_open == False %}
-            <div style="background: #fff; color: #000; border: 2px solid #000; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.5px; display: inline-block; margin-bottom: 0.5rem;">
-                CLOSED
-            </div>
-        {% endif %}
+        <h2 class="restaurant-name" style="margin: 0 0 1.5rem 0; min-height: 70px; display: flex; align-items: center; justify-content: center; text-align: center;">
+            <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" rel="noopener noreferrer" class="card-name-link">
+                {{ restaurant.name }}
+            </a>
+        </h2>
 
-        {% if restaurant.opening_hours %}
-            <div style="font-size: 0.9rem; color: #666; font-weight: 500;">
-                {% set current_day_index = restaurant.get_current_day_index() %}
-                {% for hours in restaurant.opening_hours %}
-                    {% if loop.index0 == current_day_index %}
-                        {{ hours }}
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% elif restaurant.opening_hours == None %}
-            <div style="font-size: 0.9rem; color: #999; font-style: italic;">
-                Hours not available
-            </div>
-        {% endif %}
-    </div>
+        <div class="restaurant-meta" style="margin-bottom: 1.5rem; text-align: center;">
+            {% if restaurant.cuisine_type %}{{ restaurant.cuisine_type }}{% endif %}
+            {% if restaurant.rating %}{% if restaurant.cuisine_type %} · {% endif %}{{ restaurant.rating }} / 5{% endif %}
+        </div>
 
-    <!-- 4. Description (centered, fixed height for consistency) -->
-    <div style="margin-bottom: 1.5rem; min-height: 5rem; text-align: center;">
-        <div class="dessert-description" style="font-size: 0.85rem; overflow: hidden; color: #000; font-style: italic; line-height: 1.4;">
-            {% if restaurant.ai_description %}
-                "{{ restaurant.ai_description }}"
-            {% else %}
-                {{ restaurant.get_dessert_description() }}
+        {% set is_open = restaurant.is_open_now() %}
+        <div style="text-align: center; margin-bottom: 1.5rem; min-height: 4.5rem; display: flex; flex-direction: column; justify-content: flex-start; align-items: center;">
+            {% if is_open == True %}
+                <div style="background: #000; color: #fff; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.5px; display: inline-block; margin-bottom: 0.5rem;">OPEN</div>
+            {% elif is_open == False %}
+                <div style="background: #fff; color: #000; border: 2px solid #000; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.5px; display: inline-block; margin-bottom: 0.5rem;">CLOSED</div>
+            {% endif %}
+            {% if restaurant.opening_hours %}
+                <div style="font-size: 0.9rem; color: #666; font-weight: 500;">
+                    {% set current_day_index = restaurant.get_current_day_index() %}
+                    {% for hours in restaurant.opening_hours %}{% if loop.index0 == current_day_index %}{{ hours }}{% endif %}{% endfor %}
+                </div>
+            {% elif restaurant.opening_hours == None %}
+                <div style="font-size: 0.9rem; color: #999; font-style: italic;">Hours not available</div>
             {% endif %}
         </div>
-    </div>
 
-    {% if restaurant.long_description %}
-    <div class="card-long-desc-overlay" aria-hidden="true">
-        <p class="card-long-desc-text">{{ restaurant.long_description }}</p>
-    </div>
-    {% endif %}
-
-    <!-- 5. Drive Time with car emoji (centered) -->
-    {% if restaurant.distance %}
-    <div class="restaurant-distance" style="color: #000; font-size: 1rem; font-weight: 600; text-align: center;">
-        🚗 {{ restaurant.get_driving_time_estimate() }} drive ({{ restaurant.get_distance_display() }})
-    </div>
-    {% endif %}
-    </div>
-    {% endfor %}
-    </div>
-
-    <!-- Next button + page counter (only shown when there are multiple pages) -->
-    {% set total_pages = ((restaurants | length) + 2) // 3 %}
-    {% if total_pages > 1 %}
-    <div id="paginationControls" style="text-align: center; margin-top: 2rem;">
-        <button id="nextBtn" onclick="nextPage()"
-                style="background: none; border: 2px solid #000; font-size: 1rem;
-                       font-weight: 600; letter-spacing: 0.5px; padding: 0.75rem 2.5rem;
-                       cursor: pointer; transition: background 0.2s, color 0.2s;">
-            NEXT
-        </button>
-        <div id="pageCounter" style="margin-top: 0.75rem; color: #666; font-size: 0.9rem;">
-            1 of {{ total_pages }}
+        <div style="margin-bottom: 1.5rem; min-height: 5rem; text-align: center;">
+            <div class="dessert-description" style="font-size: 0.85rem; overflow: hidden; color: #000; font-style: italic; line-height: 1.4;">
+                {% if restaurant.ai_description %}"{{ restaurant.ai_description }}"{% else %}{{ restaurant.get_dessert_description() }}{% endif %}
+            </div>
         </div>
+
+        {% if restaurant.long_description %}
+        <div class="card-long-desc-overlay" aria-hidden="true">
+            <p class="card-long-desc-text">{{ restaurant.long_description }}</p>
+        </div>
+        {% endif %}
+
+        {% if restaurant.distance %}
+        <div class="restaurant-distance" style="color: #000; font-size: 1rem; font-weight: 600; text-align: center;">
+            &#128663; {{ restaurant.get_driving_time_estimate() }} drive ({{ restaurant.get_distance_display() }})
+        </div>
+        {% endif %}
+        </div>
+        {% endfor %}
+        </div>
+
+        {% set total_pages = ((restaurants | length) + 2) // 3 %}
+        {% if total_pages > 1 %}
+        <div id="paginationControls" style="text-align: center; margin-top: 2rem;">
+            <button id="nextBtn" onclick="nextPage()"
+                    style="background: none; border: 2px solid #000; font-size: 1rem;
+                           font-weight: 600; letter-spacing: 0.5px; padding: 0.75rem 2.5rem;
+                           cursor: pointer; transition: background 0.2s, color 0.2s;">
+                NEXT
+            </button>
+            <div id="pageCounter" style="margin-top: 0.75rem; color: #666; font-size: 0.9rem;">
+                1 of {{ total_pages }}
+            </div>
+        </div>
+        {% endif %}
+    </div><!-- /#cards-view -->
+
+    <!-- ═══ MAP VIEW ═══ -->
+    <div id="map-view" style="display:none;">
+        <div id="map-container"></div>
     </div>
-    {% endif %}
 
     <div style="text-align: center; margin-top: 4rem;">
         <a href="{{ url_for('main.index') }}"
            style="color: #666; text-decoration: none; font-size: 1.1rem; font-weight: 500;">
-            ← New search
+            &#8592; New search
         </a>
     </div>
 </div>
 
 <script>
+// ── Carousel pagination ─────────────────────────────────────────
 let currentIndex = 0;
 const totalCards = {{ restaurants | length }};
 const cardsPerPage = 3;
@@ -141,87 +131,129 @@ const totalPages = Math.ceil(totalCards / cardsPerPage);
 function nextPage() {
     const cards = document.querySelectorAll('.restaurant-card');
     cards.forEach(card => { card.style.display = 'none'; });
-
     currentIndex = (currentIndex + 1) % totalPages;
-
     const startIndex = currentIndex * cardsPerPage;
     const endIndex = Math.min(startIndex + cardsPerPage, totalCards);
     for (let i = startIndex; i < endIndex; i++) {
         cards[i].style.display = 'block';
         cards[i].style.gridColumn = (i - startIndex) + 1;
     }
-
     const counter = document.getElementById('pageCounter');
     if (counter) counter.textContent = (currentIndex + 1) + ' of ' + totalPages;
 }
 
-// ========== FAVORITES FUNCTIONALITY ==========
-
+// ── Favorites ───────────────────────────────────────────────────
 function toggleFavorite(button, index) {
     const placeId = button.dataset.placeId;
     const isFavorited = button.dataset.favorited === 'true';
-
-    if (isFavorited) {
-        // Remove from favorites
-        removeFavoriteFromResults(placeId, button);
-    } else {
-        // Add to favorites
-        addFavoriteFromResults(placeId, button, index);
-    }
+    if (isFavorited) { removeFavoriteFromResults(placeId, button); }
+    else             { addFavoriteFromResults(placeId, button, index); }
 }
 
 function addFavoriteFromResults(placeId, button, index) {
-    // Get restaurant data from the results
     const restaurants = {{ restaurants | tojson }};
     const restaurant = restaurants[index];
-
     fetch('/api/favorites/add', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(restaurant)
     })
-    .then(response => response.json())
+    .then(r => r.json())
     .then(data => {
         if (data.success) {
             button.dataset.favorited = 'true';
-            button.querySelector('.heart-icon').textContent = '♥';
+            button.querySelector('.heart-icon').textContent = '\u2665';
             button.style.color = '#224680';
             button.style.transform = 'scale(1.2)';
             setTimeout(() => button.style.transform = 'scale(1)', 200);
-        } else {
-            showToast('Error: ' + data.error);
-        }
+        } else { showToast('Error: ' + data.error); }
     })
-    .catch(error => {
-        showToast('Failed to add favorite');
-        console.error(error);
-    });
+    .catch(err => { showToast('Failed to add favorite'); console.error(err); });
 }
 
 function removeFavoriteFromResults(placeId, button) {
     fetch('/api/favorites/remove', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ place_id: placeId })
     })
-    .then(response => response.json())
+    .then(r => r.json())
     .then(data => {
         if (data.success) {
             button.dataset.favorited = 'false';
-            button.querySelector('.heart-icon').textContent = '♡';
+            button.querySelector('.heart-icon').textContent = '\u2661';
             button.style.color = '#000';
-        } else {
-            showToast('Error: ' + data.error);
-        }
+        } else { showToast('Error: ' + data.error); }
     })
-    .catch(error => {
-        showToast('Failed to remove favorite');
-        console.error(error);
-    });
+    .catch(err => { showToast('Failed to remove favorite'); console.error(err); });
 }
+
+// ── Map ─────────────────────────────────────────────────────────
+var mapRestaurants = [
+    {% for r in restaurants %}{% if r.lat and r.lng %}{
+        lat: {{ r.lat }},
+        lng: {{ r.lng }},
+        name: {{ r.name | tojson }},
+        rating: {{ r.rating if r.rating else 'null' }},
+        cuisine: {{ (r.cuisine_type or '') | tojson }},
+        mapsUrl: {{ r.get_google_maps_url() | tojson }},
+        rank: {{ loop.index }}
+    },{% endif %}{% endfor %}
+];
+
+var map = null;
+
+function initMap() {
+    if (map) return;
+    map = L.map('map-container', { zoomControl: true });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        maxZoom: 18
+    }).addTo(map);
+
+    var bounds = [];
+    mapRestaurants.forEach(function(r) {
+        var icon = L.divIcon({
+            html: '<div class="map-marker">' + r.rank + '<span class="map-marker-arrow"></span></div>',
+            className: '',
+            iconSize: [36, 44],
+            iconAnchor: [18, 44],
+            popupAnchor: [0, -46]
+        });
+        var popupHtml = '<div class="map-popup">'
+            + '<div class="map-popup-name">' + r.name + '</div>'
+            + (r.rating ? '<div class="map-popup-meta">' + r.rating + ' / 5'
+                + (r.cuisine ? ' &middot; ' + r.cuisine : '') + '</div>' : '')
+            + '<a href="' + r.mapsUrl + '" target="_blank" rel="noopener noreferrer" class="map-popup-link">Open in Maps &rarr;</a>'
+            + '</div>';
+        L.marker([r.lat, r.lng], { icon: icon }).addTo(map).bindPopup(popupHtml, { maxWidth: 260 });
+        bounds.push([r.lat, r.lng]);
+    });
+
+    if (bounds.length > 1)      { map.fitBounds(bounds, { padding: [48, 48] }); }
+    else if (bounds.length === 1) { map.setView(bounds[0], 15); }
+}
+
+// ── View toggle ─────────────────────────────────────────────────
+var cardsViewBtn = document.getElementById('cardsViewBtn');
+var mapViewBtn   = document.getElementById('mapViewBtn');
+var cardsView    = document.getElementById('cards-view');
+var mapView      = document.getElementById('map-view');
+
+cardsViewBtn.addEventListener('click', function() {
+    cardsView.style.display = '';
+    mapView.style.display   = 'none';
+    cardsViewBtn.classList.add('btn-primary');
+    mapViewBtn.classList.remove('btn-primary');
+});
+
+mapViewBtn.addEventListener('click', function() {
+    cardsView.style.display = 'none';
+    mapView.style.display   = '';
+    mapViewBtn.classList.add('btn-primary');
+    cardsViewBtn.classList.remove('btn-primary');
+    initMap();
+    setTimeout(function() { if (map) map.invalidateSize(); }, 50);
+});
 </script>
 {% endblock %}

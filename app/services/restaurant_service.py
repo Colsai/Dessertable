@@ -4,6 +4,8 @@ import re
 from collections import Counter
 
 from app.models.restaurant import Restaurant
+
+FIVE_MILES_METERS = 8046.72
 from app.services.places_api import PlacesAPI, PlacesAPIError
 from app.services.deepseek_service import DeepSeekService
 
@@ -164,10 +166,9 @@ class RestaurantService:
             score += (restaurant.rating / 5.0) * 60 if restaurant.rating else 0
         elif sort_preference == 'distance':
             # Convert distance to score (closer = higher score)
-            # Cap at 5 miles (8046.72 meters), scale to 0-60
+            # Cap at 5 miles, scale to 0-60
             if restaurant.distance:
-                max_distance = 8046.72  # 5 miles in meters
-                normalized = 1 - min(restaurant.distance / max_distance, 1.0)
+                normalized = 1 - min(restaurant.distance / FIVE_MILES_METERS, 1.0)
                 score += normalized * 60
 
         # Cuisine match bonus (15%)
@@ -189,9 +190,8 @@ class RestaurantService:
 
         # Proximity bonus (5%) - closer is better
         if restaurant.distance:
-            # Cap at 5 miles (8046.72 meters), scale to 0-5
-            max_distance = 8046.72  # 5 miles in meters
-            normalized = 1 - min(restaurant.distance / max_distance, 1.0)
+            # Cap at 5 miles, scale to 0-5
+            normalized = 1 - min(restaurant.distance / FIVE_MILES_METERS, 1.0)
             proximity_score = normalized * 5
             score += proximity_score
 

@@ -1,4 +1,5 @@
 from flask import Flask
+from app.models.restaurant import METERS_TO_MILES
 
 
 def register_filters(app: Flask):
@@ -18,7 +19,7 @@ def register_filters(app: Flask):
         """Convert meters to miles with 1 decimal place"""
         if distance_meters is None:
             return "N/A"
-        miles = distance_meters * 0.000621371
+        miles = distance_meters * METERS_TO_MILES
         return f"{miles:.1f} mi"
 
     @app.template_filter('rating_stars')
@@ -37,13 +38,6 @@ def register_filters(app: Flask):
         stars += "☆" * empty_stars
 
         return f"{stars} ({rating:.1f})"
-
-    @app.template_filter('format_phone')
-    def format_phone(phone):
-        """Format phone number"""
-        if not phone:
-            return "N/A"
-        return phone
 
     @app.template_filter('truncate_address')
     def truncate_address(address, max_length=50):

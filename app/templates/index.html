@@ -3,60 +3,140 @@
 {% block title %}DessertAble{% endblock %}
 
 {% block content %}
-<div class="search-container auth-container" style="max-width: 600px; margin: 5rem auto;">
-    <h1 style="font-weight: 700; font-size: 3rem; margin-bottom: 3rem; color: #000; letter-spacing: -1px; line-height: 1.1; text-align: center;">
-        Find <span class="brand-text">dessert</span> near you
-    </h1>
+<div class="crt-bezel">
+    <div class="crt-screen">
 
-    <form method="POST" action="{{ url_for('main.search') }}" id="searchForm">
-        <div class="mb-4 search-input-wrapper">
-            <input type="text"
-                   class="form-control form-control-lg"
-                   id="addressInput"
-                   name="address"
-                   required
-                   placeholder="Enter your address"
-                   autocomplete="street-address"
-                   style="padding-right: 3rem;">
-            <button type="button" class="input-clear-btn" id="clearBtn" aria-label="Clear address">×</button>
+        <!-- ═══ TITLE SCREEN ═══ -->
+        <div id="title-screen" class="crt-panel">
+            <div class="game-title">DESSERTABLE</div>
+            <div class="title-divider"></div>
+            <img src="{{ url_for('static', filename='sprites/sprite_13.png') }}"
+                 class="title-sprite" alt="">
+            <button id="pressStartBtn" class="press-start-btn" aria-label="Press start to search">
+                PRESS START
+            </button>
+            <div class="title-footer">© 2026 DESSERTCO</div>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100 btn-lg" id="searchBtn">
-            <span class="btn-label">Search</span>
-        </button>
-    </form>
-</div>
+        <!-- ═══ SEARCH SCREEN ═══ -->
+        <div id="search-screen" class="crt-panel" style="display:none;">
+            <h1 style="text-align:center; margin-bottom:2rem;">
+                ENTER COORDINATES
+            </h1>
 
-<div id="loadingMessage" style="display: none; text-align: center; margin-top: 3rem;">
-    <p style="font-size: 1.05rem; color: #666; letter-spacing: 0.5px; font-weight: 400;">
-        looking for your desserts<span id="loadingDots"></span>
-    </p>
-</div>
+            <form method="POST" action="{{ url_for('main.search') }}" id="searchForm" style="width:100%; max-width:460px;">
+                <div class="mb-4 search-input-wrapper">
+                    <input type="text"
+                           class="form-control form-control-lg"
+                           id="addressInput"
+                           name="address"
+                           required
+                           placeholder="Enter your address"
+                           autocomplete="street-address">
+                    <button type="button" class="input-clear-btn" id="clearBtn" aria-label="Clear address">X</button>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 btn-lg" id="searchBtn">
+                    <span class="btn-label">SEARCH</span>
+                </button>
+            </form>
+
+            <div id="loadingMessage" style="display:none; text-align:center; margin-top:1.5rem;">
+                <p>looking for your desserts<span id="loadingDots"></span></p>
+            </div>
+
+            <div class="back-link" style="margin-top:1.5rem;">
+                <a href="#" id="backToTitle">← BACK</a>
+            </div>
+        </div>
+
+    </div><!-- /.crt-screen -->
+
+    <div class="crt-chin">
+        <div class="crt-power" title="POWER ON"></div>
+    </div>
+</div><!-- /.crt-bezel -->
 
 <script>
+var titleScreen  = document.getElementById('title-screen');
+var searchScreen = document.getElementById('search-screen');
 var addressInput = document.getElementById('addressInput');
-var clearBtn = document.getElementById('clearBtn');
+var clearBtn     = document.getElementById('clearBtn');
 
-addressInput.addEventListener('input', function() {
-    clearBtn.style.display = this.value ? 'block' : 'none';
+function showSearchScreen() {
+    titleScreen.style.transition = 'opacity 250ms ease, transform 250ms ease';
+    titleScreen.style.opacity    = '0';
+    titleScreen.style.transform  = 'translateY(-16px)';
+    setTimeout(function () {
+        titleScreen.style.display  = 'none';
+        searchScreen.style.display = 'flex';
+        searchScreen.style.transition = 'none';
+        searchScreen.style.opacity    = '0';
+        searchScreen.style.transform  = 'translateY(16px)';
+        void searchScreen.offsetHeight; // force reflow so transition fires
+        searchScreen.style.transition = 'opacity 250ms ease, transform 250ms ease';
+        searchScreen.style.opacity    = '1';
+        searchScreen.style.transform  = 'translateY(0)';
+        addressInput.focus();
+    }, 260);
+}
+
+function showTitleScreen() {
+    searchScreen.style.transition = 'opacity 250ms ease, transform 250ms ease';
+    searchScreen.style.opacity    = '0';
+    searchScreen.style.transform  = 'translateY(16px)';
+    setTimeout(function () {
+        searchScreen.style.display = 'none';
+        titleScreen.style.display  = 'flex';
+        titleScreen.style.transition = 'none';
+        titleScreen.style.opacity    = '0';
+        titleScreen.style.transform  = 'translateY(-16px)';
+        void titleScreen.offsetHeight;
+        titleScreen.style.transition = 'opacity 250ms ease, transform 250ms ease';
+        titleScreen.style.opacity    = '1';
+        titleScreen.style.transform  = 'translateY(0)';
+    }, 260);
+}
+
+document.getElementById('pressStartBtn').addEventListener('click', showSearchScreen);
+
+document.getElementById('backToTitle').addEventListener('click', function (e) {
+    e.preventDefault();
+    showTitleScreen();
 });
 
-clearBtn.addEventListener('click', function() {
+// Keyboard: Space/Enter on unfocused body triggers PRESS START; Escape returns to title
+document.addEventListener('keydown', function (e) {
+    var titleVisible  = titleScreen.style.display  !== 'none';
+    var searchVisible = searchScreen.style.display !== 'none';
+    if ((e.key === 'Enter' || e.key === ' ') && titleVisible && document.activeElement === document.body) {
+        e.preventDefault();
+        showSearchScreen();
+    }
+    if (e.key === 'Escape' && searchVisible) {
+        showTitleScreen();
+    }
+});
+
+// Clear button
+addressInput.addEventListener('input', function () {
+    clearBtn.style.display = this.value ? 'block' : 'none';
+});
+clearBtn.addEventListener('click', function () {
     addressInput.value = '';
     clearBtn.style.display = 'none';
     addressInput.focus();
 });
 
-document.getElementById('searchForm').addEventListener('submit', function() {
+// Loading state on submit
+document.getElementById('searchForm').addEventListener('submit', function () {
     var btn = document.getElementById('searchBtn');
     btn.disabled = true;
     document.getElementById('loadingMessage').style.display = 'block';
-
     var dots = ['', '.', '..', '...'];
-    var dotIndex = 0;
-    setInterval(function() {
-        dotIndex = (dotIndex + 1) % dots.length;
-        document.getElementById('loadingDots').textContent = dots[dotIndex];
+    var i = 0;
+    setInterval(function () {
+        i = (i + 1) % dots.length;
+        document.getElementById('loadingDots').textContent = dots[i];
     }, 400);
 });
 </script>

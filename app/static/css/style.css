@@ -1,14 +1,15 @@
-/* Dessertable - Japanese Zen Minimal Design */
+/* DessertAble - Game Boy / 8-bit Pixel Design */
 
-/* Color Palette - Bold Minimalism */
+/* Color Palette - Game Boy Monochrome + Blue */
 :root {
-    --zen-white: #ffffff;
-    --zen-offwhite: #fafafa;
-    --zen-lightgray: #e0e0e0;
-    --zen-gray: #666666;
-    --zen-darkgray: #1a1a1a;
-    --zen-black: #000000;
-    --zen-blue: #224680;
+    --pixel-bg: #f0f0f0;
+    --pixel-surface: #ffffff;
+    --pixel-lightgray: #aaaaaa;
+    --pixel-gray: #555555;
+    --pixel-ink: #0a0a0a;
+    --pixel-black: #000000;
+    --pixel-blue: #224680;
+    --pixel-blue-bright: #4a90d9;
 }
 
 /* Base */
@@ -25,56 +26,96 @@
 }
 
 body {
-    background-color: var(--zen-white);
-    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background-color: var(--pixel-bg);
+    font-family: 'Press Start 2P', monospace;
     font-weight: 400;
-    color: var(--zen-black);
-    line-height: 1.6;
+    color: var(--pixel-ink);
+    line-height: 1.8;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    font-size: 18px;
+    font-size: 9px;
     /* Safe area insets for notched phones */
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     animation: fadeIn 0.25s ease-in;
 }
 
+/* Scanline overlay - subtle retro texture */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 2px,
+        rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+    );
+}
+
 main {
     flex: 1;
 }
 
+/* ========================================
+   HEADINGS - NES Title Screen Style
+   ======================================== */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Press Start 2P', monospace !important;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+h1 {
+    font-size: 18px !important;
+    color: var(--pixel-ink);
+    letter-spacing: 1px;
+}
+
+h1::before {
+    content: '> ';
+    color: var(--pixel-blue);
+    animation: pixelBlink 1s step-end infinite;
+}
+
+h2 {
+    font-size: 14px !important;
+}
+
 /* Navbar */
 .navbar {
-    background: var(--zen-white);
-    border-bottom: 2px solid var(--zen-black);
+    background: var(--pixel-surface);
+    border-bottom: 3px solid var(--pixel-ink);
     padding: 2rem 0;
 }
 
 .navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: var(--zen-black) !important;
-    letter-spacing: -0.5px;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 14px;
+    color: var(--pixel-ink) !important;
+    letter-spacing: 1px;
     text-decoration: none;
 }
 
 .navbar-brand:hover {
-    color: var(--zen-blue) !important;
+    color: var(--pixel-blue) !important;
 }
 
 .brand-text {
-    font-weight: 800;
-    color: #1a3a6b !important;
-    letter-spacing: -0.5px;
+    font-family: 'Press Start 2P', monospace !important;
+    color: var(--pixel-blue) !important;
 }
 
 .navbar-brand.brand-text {
-    font-size: 1.5rem;
+    font-size: 14px;
+    color: var(--pixel-ink) !important;
 }
 
 .footer .brand-text {
-    font-size: 1rem;
+    font-size: 9px;
 }
 
 .navbar-nav {
@@ -89,132 +130,117 @@ main {
 }
 
 .nav-link {
-    font-weight: 500;
-    font-size: 1rem;
-    color: var(--zen-gray) !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-weight: 400;
+    font-size: 8px !important;
+    color: var(--pixel-gray) !important;
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .nav-link:hover {
-    color: var(--zen-black) !important;
+    color: var(--pixel-ink) !important;
 }
 
 /* Buttons */
 .btn {
-    font-weight: 600;
+    font-family: 'Press Start 2P', monospace !important;
+    font-weight: 400;
     border-radius: 0;
-    transition: all 0.2s;
-    font-size: 1.1rem;
-    letter-spacing: 0.5px;
+    font-size: 9px !important;
+    letter-spacing: 1px;
+    border: 3px solid var(--pixel-ink);
+    box-shadow: 4px 4px 0px var(--pixel-ink);
+    min-height: 44px;
+    padding: 0.875rem 1.5rem;
+    transition: transform 0.05s, box-shadow 0.05s, background 0.15s, color 0.15s;
 }
 
 .btn-primary {
-    background: var(--zen-black);
-    border: 2px solid var(--zen-black);
-    color: white;
-    padding: 1rem 2.5rem;
+    background: var(--pixel-ink);
+    border: 3px solid var(--pixel-ink);
+    color: #ffffff;
+    box-shadow: 4px 4px 0px var(--pixel-blue);
 }
 
 .btn-primary:hover {
-    background: var(--zen-white);
-    border-color: var(--zen-black);
-    color: var(--zen-black);
+    background: var(--pixel-blue);
+    border-color: var(--pixel-blue);
+    color: #ffffff;
+    box-shadow: 4px 4px 0px var(--pixel-black);
+}
+
+/* Button press-down animation */
+.btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 1px 1px 0px var(--pixel-ink) !important;
+}
+
+.btn-primary:active {
+    box-shadow: 1px 1px 0px var(--pixel-blue) !important;
 }
 
 #nextBtn:hover {
-    background: var(--zen-black);
-    color: var(--zen-white);
+    background: var(--pixel-ink);
+    color: var(--pixel-surface);
 }
 
 .btn-lg {
     padding: 1.25rem 3rem;
-    font-size: 1.25rem;
+    font-size: 10px !important;
 }
 
 /* Forms */
 .form-control {
-    border: 2px solid var(--zen-black);
+    font-family: 'Press Start 2P', monospace !important;
+    border: 3px solid var(--pixel-ink);
     border-radius: 0;
     padding: 1rem 1.25rem;
-    font-size: 1.25rem;
+    font-size: 9px !important;
     font-weight: 400;
-    color: var(--zen-black);
-    background: var(--zen-white);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--pixel-ink);
+    background: var(--pixel-surface);
+    transition: box-shadow 0.2s, border-color 0.2s;
     position: relative;
-    animation: breatheBorder 4s ease-in-out infinite;
-}
-
-@keyframes breatheBorder {
-    0%, 100% {
-        border-width: 2px;
-        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
-    }
-    50% {
-        border-width: 2px;
-        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
-    }
+    min-height: 52px;
 }
 
 .form-control:hover {
-    border-color: var(--zen-black);
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
-    animation: none;
+    border-color: var(--pixel-ink);
+    box-shadow: 4px 4px 0px var(--pixel-ink);
 }
 
 .form-control:focus {
-    border-color: var(--zen-black);
+    border-color: var(--pixel-ink);
     border-width: 3px;
-    box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 0 0 3px var(--pixel-blue);
     outline: none;
-    background: var(--zen-white);
+    background: var(--pixel-surface);
     animation: focusPulse 0.6s ease-out;
-    padding: calc(1rem - 1px) calc(1.25rem - 1px);
 }
 
 @keyframes focusPulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
+        box-shadow: 0 0 0 0 rgba(34, 70, 128, 0.4);
     }
     100% {
-        box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 0 0 3px var(--pixel-blue);
     }
 }
 
 .form-control::placeholder {
-    color: var(--zen-gray);
-    opacity: 0.6;
-    transition: opacity 0.3s;
+    color: var(--pixel-lightgray);
+    opacity: 1;
 }
 
 .form-control:focus::placeholder {
-    opacity: 0.4;
-    animation: placeholderShift 0.5s ease-out;
-}
-
-@keyframes placeholderShift {
-    0% {
-        transform: translateX(0);
-        opacity: 0.6;
-    }
-    50% {
-        transform: translateX(4px);
-        opacity: 0.2;
-    }
-    100% {
-        transform: translateX(0);
-        opacity: 0.4;
-    }
+    opacity: 0.6;
 }
 
 .form-control-lg {
     padding: 1.25rem 1.5rem;
-    font-size: 1.5rem;
-}
-
-.form-control-lg:focus {
-    padding: calc(1.25rem - 1px) calc(1.5rem - 1px);
+    font-size: 10px !important;
+    min-height: 58px;
 }
 
 /* Results Grid */
@@ -243,69 +269,76 @@ main {
 }
 
 .card-name-link:focus {
-    outline: 2px solid var(--zen-black);
+    outline: 2px solid var(--pixel-ink);
     outline-offset: 3px;
 }
 
 /* Restaurant Cards */
 .restaurant-card {
-    border: 2px solid var(--zen-black);
+    border: 3px solid var(--pixel-ink);
     padding: 2.5rem;
     margin-bottom: 2rem;
     border-radius: 0;
-    transition: all 0.2s;
+    background: var(--pixel-surface);
+    box-shadow: 4px 4px 0px var(--pixel-ink);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+    position: relative;
 }
 
 .restaurant-card.horizontal-card {
     margin-bottom: 0;
-    border: none;
-    border-left: 1px solid #fefefe;
+    border: 3px solid var(--pixel-ink);
+    border-left: 1px solid #cccccc;
     min-height: 500px;
     display: flex;
     flex-direction: column;
 }
 
 .restaurant-card.horizontal-card:first-child {
-    border-left: none;
+    border-left: 3px solid var(--pixel-ink);
 }
 
 .restaurant-card.horizontal-card:last-child {
-    border-right: none;
+    border-right: 3px solid var(--pixel-ink);
 }
 
 .restaurant-card:hover {
-    box-shadow: 0 0 0 3px var(--zen-black);
-    transition: box-shadow 0.15s ease;
+    box-shadow: 6px 6px 0px var(--pixel-ink);
+    transform: translate(-1px, -1px);
     z-index: 1;
 }
 
 .restaurant-card a {
-    color: var(--zen-black);
+    color: var(--pixel-ink);
     text-decoration: none;
     transition: color 0.2s;
-    font-weight: 600;
-    font-size: 1.5rem;
+    font-weight: 400;
+    font-size: 12px;
     display: block;
-    line-height: 1.2;
+    line-height: 1.4;
 }
 
 .restaurant-card .restaurant-name {
-    color: var(--zen-black);
-    font-weight: 600;
-    font-size: 1.5rem;
-    line-height: 1.2;
+    font-family: 'Press Start 2P', monospace !important;
+    color: var(--pixel-ink);
+    font-weight: 400;
+    font-size: 12px !important;
+    line-height: 1.4;
 }
 
 .restaurant-card .restaurant-meta {
-    color: var(--zen-gray);
-    font-size: 0.95rem;
+    font-family: 'Press Start 2P', monospace !important;
+    color: var(--pixel-gray);
+    font-size: 8px !important;
     margin-top: 0.75rem;
 }
 
 .restaurant-card .dessert-description {
     opacity: 1;
-    max-height: 100px;
+    max-height: 120px;
     overflow: hidden;
+    font-size: 8px;
+    line-height: 1.8;
 }
 
 /* Long-description hover overlay */
@@ -313,7 +346,7 @@ main {
     position: absolute;
     inset: 0;
     z-index: 3;
-    background: rgba(0, 0, 0, 0.82);
+    background: rgba(10, 10, 10, 0.92);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -329,8 +362,8 @@ main {
 
 .card-long-desc-text {
     color: #ffffff;
-    font-size: 0.95rem;
-    line-height: 1.65;
+    font-size: 8px;
+    line-height: 1.8;
     text-align: center;
     font-style: normal;
     font-weight: 400;
@@ -352,7 +385,7 @@ main {
     }
 
     .restaurant-card.horizontal-card {
-        border-right: 2px solid var(--zen-black);
+        border-right: 3px solid var(--pixel-ink);
         margin-bottom: 0;
         min-height: auto;
     }
@@ -364,40 +397,43 @@ main {
 
 /* Alerts */
 .alert {
-    border-radius: 4px;
-    border: 1px solid;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 9px;
+    border-radius: 0;
+    border: 3px solid var(--pixel-ink);
     padding: 1rem 1.25rem;
     margin-bottom: 1rem;
+    line-height: 1.8;
 }
 
 .alert-danger {
-    background: #fff5f5;
-    border-color: #fed7d7;
-    color: #c53030;
+    background: var(--pixel-surface);
+    border-color: var(--pixel-ink);
+    color: var(--pixel-ink);
 }
 
 .alert-success {
-    background: #f0fff4;
-    border-color: #c6f6d5;
-    color: #276749;
+    background: var(--pixel-blue);
+    border-color: var(--pixel-blue);
+    color: #ffffff;
 }
 
 .alert-info {
-    background: #ebf8ff;
-    border-color: #bee3f8;
-    color: #2c5282;
+    background: var(--pixel-surface);
+    border-color: var(--pixel-blue);
+    color: var(--pixel-ink);
 }
 
 /* Footer */
 .footer {
     margin-top: auto;
     padding: 2rem 0;
-    border-top: 2px solid var(--zen-black);
+    border-top: 3px solid var(--pixel-ink);
 }
 
 .text-muted {
-    color: var(--zen-gray) !important;
-    font-size: 1rem;
+    color: var(--pixel-gray) !important;
+    font-size: 8px;
 }
 
 /* Utility */
@@ -524,9 +560,9 @@ main {
     display: block;
     width: 28px;
     height: 3px;
-    background-color: var(--zen-black);
+    background-color: var(--pixel-ink);
     transition: all 0.3s ease;
-    border-radius: 2px;
+    border-radius: 0;
 }
 
 .hamburger-menu.active span:nth-child(1) {
@@ -568,8 +604,8 @@ main {
     width: 75%;
     max-width: 300px;
     height: 100vh;
-    background: var(--zen-white);
-    border-left: 2px solid var(--zen-black);
+    background: var(--pixel-surface);
+    border-left: 3px solid var(--pixel-ink);
     z-index: 1000;
     transition: right 0.3s ease;
     flex-direction: column !important;
@@ -584,7 +620,7 @@ main {
 
 .navbar-nav.mobile-menu .nav-item {
     width: 100%;
-    border-bottom: 1px solid var(--zen-lightgray);
+    border-bottom: 1px solid var(--pixel-lightgray);
 }
 
 .navbar-nav.mobile-menu .nav-link,
@@ -592,13 +628,14 @@ main {
     display: block;
     width: 100%;
     padding: 1.25rem 2rem !important;
-    font-size: 1.1rem !important;
-    color: var(--zen-black) !important;
+    font-size: 9px !important;
+    color: var(--pixel-ink) !important;
     text-align: left;
+    line-height: 1.8;
 }
 
 .navbar-nav.mobile-menu .nav-link:hover {
-    background: var(--zen-offwhite);
+    background: var(--pixel-bg);
 }
 
 /* Mobile Breakpoint: 480px and below */
@@ -619,12 +656,12 @@ main {
     }
 
     .navbar-brand {
-        font-size: 1.25rem;
+        font-size: 11px;
     }
 
-    /* Body font size */
+    /* Body font size - keep pixel scale */
     body {
-        font-size: 16px;
+        font-size: 9px;
     }
 
     /* Container padding */
@@ -634,7 +671,7 @@ main {
 
     /* Hero heading on index page */
     h1 {
-        font-size: 1.75rem !important;
+        font-size: 13px !important;
         margin-bottom: 1.5rem !important;
     }
 
@@ -651,31 +688,23 @@ main {
 
     /* Form controls */
     .form-control {
-        font-size: 1rem;
+        font-size: 9px !important;
         padding: 0.875rem 1rem;
     }
 
     .form-control-lg {
-        font-size: 1.1rem;
+        font-size: 9px !important;
         padding: 1rem 1.25rem;
-    }
-
-    .form-control:focus {
-        padding: calc(0.875rem - 1px) calc(1rem - 1px);
-    }
-
-    .form-control-lg:focus {
-        padding: calc(1rem - 1px) calc(1.25rem - 1px);
     }
 
     /* Buttons */
     .btn {
-        font-size: 1rem;
+        font-size: 9px !important;
         padding: 0.875rem 1.5rem;
     }
 
     .btn-lg {
-        font-size: 1.1rem;
+        font-size: 9px !important;
         padding: 1rem 2rem;
     }
 
@@ -697,12 +726,12 @@ main {
 
     /* Timestamp on results page */
     .results-timestamp {
-        font-size: 0.85rem !important;
+        font-size: 8px !important;
         padding: 0.5rem 0.5rem !important;
         text-align: center !important;
     }
 
-    /* Restaurant cards - already stack to 1 column at 1024px */
+    /* Restaurant cards */
     .restaurant-card {
         padding: 1.75rem 1.25rem;
     }
@@ -714,12 +743,12 @@ main {
 
     /* Restaurant card text sizing */
     .restaurant-card a {
-        font-size: 1.25rem;
-        line-height: 1.3;
+        font-size: 11px;
+        line-height: 1.5;
     }
 
     .restaurant-meta {
-        font-size: 0.9rem;
+        font-size: 8px;
     }
 
     /* Better touch targets for links */
@@ -761,7 +790,7 @@ main {
     }
 
     .text-muted {
-        font-size: 0.9rem;
+        font-size: 8px;
     }
 
     /* Login/Register forms */
@@ -794,7 +823,7 @@ main {
 
     /* Note textarea - better mobile UX */
     .note-textarea {
-        font-size: 1rem !important;
+        font-size: 9px !important;
         min-height: 100px !important;
     }
 
@@ -806,7 +835,7 @@ main {
 
     /* Alert messages */
     .alert {
-        font-size: 0.9rem;
+        font-size: 9px;
         padding: 0.875rem 1rem;
         margin: 1rem 0;
     }
@@ -814,7 +843,6 @@ main {
 
 /* Extra small screens: 375px and below (iPhone SE) */
 @media (max-width: 375px) {
-    /* Tighter spacing for small screens */
     .container {
         padding: 0 0.875rem;
     }
@@ -824,24 +852,24 @@ main {
     }
 
     .navbar-brand {
-        font-size: 1.15rem;
+        font-size: 10px;
     }
 
     h1 {
-        font-size: 1.6rem !important;
-        line-height: 1.2 !important;
+        font-size: 11px !important;
+        line-height: 1.6 !important;
     }
 
     .form-control,
     .form-control-lg {
-        font-size: 1rem;
+        font-size: 9px !important;
         padding: 0.875rem 1rem;
     }
 
     .btn,
     .btn-lg,
     .btn-primary {
-        font-size: 1rem;
+        font-size: 9px !important;
         padding: 0.875rem 1.5rem;
     }
 
@@ -850,19 +878,17 @@ main {
     }
 
     .restaurant-card a {
-        font-size: 1.15rem;
+        font-size: 10px;
     }
 
     .result-sprite {
         height: 40px;
     }
 
-    /* Even tighter spacing for auth pages */
     .auth-container {
         margin: 1.5rem auto 2rem !important;
     }
 
-    /* Smaller page sprites on tiny screens */
     .page-sprite {
         height: 50px;
     }
@@ -870,12 +896,10 @@ main {
 
 /* Tablet adjustments: 481px to 768px */
 @media (min-width: 481px) and (max-width: 768px) {
-    /* Keep desktop navigation on tablets */
     .hamburger-menu {
         display: none;
     }
 
-    /* Adjust grid to 2 columns on tablets */
     .results-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 1rem;
@@ -899,7 +923,7 @@ main {
     }
 
     h1 {
-        font-size: 1.75rem !important;
+        font-size: 14px !important;
         margin-bottom: 1.5rem !important;
     }
 
@@ -936,7 +960,7 @@ main {
 .carousel-dot {
     width: 10px;
     height: 10px;
-    border: 2px solid var(--zen-black);
+    border: 3px solid var(--pixel-ink);
     background: transparent;
     cursor: pointer;
     padding: 0;
@@ -946,11 +970,11 @@ main {
 }
 
 .carousel-dot.active {
-    background: var(--zen-black);
+    background: var(--pixel-ink);
 }
 
 .carousel-dot:hover:not(.active) {
-    background: var(--zen-lightgray);
+    background: var(--pixel-lightgray);
 }
 
 /* ========================================
@@ -970,8 +994,9 @@ main {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.25rem;
-    color: var(--zen-gray);
+    font-size: 12px;
+    font-family: 'Press Start 2P', monospace;
+    color: var(--pixel-gray);
     line-height: 1;
     padding: 0.25rem;
     transition: color 0.2s;
@@ -979,12 +1004,11 @@ main {
 }
 
 .input-clear-btn:hover {
-    color: var(--zen-black);
+    color: var(--pixel-ink);
 }
 
 /* Touch device optimizations */
 @media (hover: none) and (pointer: coarse) {
-    /* Larger touch targets */
     .nav-link,
     .btn,
     a {
@@ -995,9 +1019,9 @@ main {
         padding: 0.5rem;
     }
 
-    /* Remove hover effects on touch devices */
     .restaurant-card:hover {
-        box-shadow: none;
+        box-shadow: 4px 4px 0px var(--pixel-ink);
+        transform: none;
     }
 
     .restaurant-card:hover .result-sprite {
@@ -1005,18 +1029,16 @@ main {
         transform: scale(1);
     }
 
-    /* Active state for touch - provides haptic-like feedback */
     .restaurant-card:active {
-        background: var(--zen-offwhite);
+        background: var(--pixel-bg);
         transform: scale(0.99);
         transition: transform 0.1s;
     }
 
     .btn:active {
-        transform: scale(0.98);
+        transform: translate(3px, 3px);
     }
 
-    /* Better touch feedback for favorite button */
     .favorite-btn:active {
         transform: scale(1.15) !important;
     }
@@ -1024,4 +1046,210 @@ main {
     .remove-favorite-btn:active {
         transform: scale(1.1);
     }
+}
+
+/* ========================================
+   NES PIXEL ANIMATIONS
+   ======================================== */
+
+@keyframes pixelBlink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+@keyframes pixelBurst {
+    0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+    60%  { opacity: 0.8; transform: translate(calc(var(--dx) * 0.7), calc(var(--dy) * 0.7)) scale(0.9); }
+    100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.5); }
+}
+
+@keyframes screenFlash {
+    0%   { opacity: 0; }
+    15%  { opacity: 0.6; }
+    100% { opacity: 0; }
+}
+
+/* Pixel burst particles — created and destroyed by retro.js */
+.pixel-burst-particle {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    pointer-events: none;
+    z-index: 99998;
+    border-radius: 0;
+    animation: pixelBurst 500ms ease-out forwards;
+}
+
+/* Screen flash overlay — always in DOM, toggled by retro.js */
+#screen-flash {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    pointer-events: none;
+    z-index: 99999;
+    opacity: 0;
+}
+
+#screen-flash.flash-active {
+    animation: screenFlash 250ms ease-out forwards;
+}
+
+/* ========================================
+   CRT TV BEZEL — INDEX PAGE
+   ======================================== */
+
+.crt-bezel {
+    background: #1c1c1c;
+    border-radius: 16px;
+    padding: 14px 14px 0 14px;
+    max-width: 680px;
+    margin: 2rem auto;
+    box-shadow:
+        0 0 0 3px #0a0a0a,
+        4px 6px 0 4px #111111,
+        0 20px 56px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.crt-screen {
+    background: var(--pixel-bg);
+    border: 3px solid #0a0a0a;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    min-height: 460px;
+}
+
+/* Corner vignette — CRT darkening effect */
+.crt-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.2) 100%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Scanlines inside the screen */
+.crt-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 2px,
+        rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 11;
+}
+
+/* Bezel chin strip with power LED */
+.crt-chin {
+    background: #1c1c1c;
+    padding: 10px 14px 14px;
+    border-radius: 0 0 16px 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.crt-power {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--pixel-blue);
+    box-shadow: 0 0 6px var(--pixel-blue);
+    animation: ledPulse 2s ease-in-out infinite;
+}
+
+@keyframes ledPulse {
+    0%, 100% { opacity: 0.55; box-shadow: 0 0 4px var(--pixel-blue); }
+    50%       { opacity: 1;    box-shadow: 0 0 10px var(--pixel-blue), 0 0 22px var(--pixel-blue-bright); }
+}
+
+/* Shared panel layout for both title and search screens */
+.crt-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 460px;
+    padding: 2.5rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ── Title screen ── */
+
+.game-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 28px;
+    color: var(--pixel-ink);
+    text-align: center;
+    letter-spacing: 3px;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.title-divider {
+    width: 75%;
+    border: none;
+    border-top: 3px solid var(--pixel-ink);
+    margin: 0 auto 2rem;
+}
+
+.title-sprite {
+    height: 80px;
+    width: auto;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    opacity: 0.9;
+    margin-bottom: 2.5rem;
+}
+
+.press-start-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 13px;
+    background: none;
+    border: none;
+    color: var(--pixel-ink);
+    cursor: pointer;
+    letter-spacing: 2px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    animation: pixelBlink 1s step-end infinite;
+}
+
+.press-start-btn:focus {
+    outline: 2px solid var(--pixel-blue);
+    outline-offset: 4px;
+    animation: none;
+    opacity: 1;
+}
+
+.title-footer {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--pixel-gray);
+    letter-spacing: 1px;
+    position: absolute;
+    bottom: 1.5rem;
+}
+
+/* ── Search screen ── */
+
+#search-screen .back-link a {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: var(--pixel-gray);
+    text-decoration: none;
+    display: inline;
+    min-height: auto;
+}
+
+#search-screen .back-link a:hover {
+    color: var(--pixel-ink);
 }

@@ -43,7 +43,7 @@ def search():
             flash('Google Places API key is not configured. Please set GOOGLE_PLACES_API_KEY in .env file', 'error')
             return render_template('index.html')
 
-        places_api = PlacesAPI(api_key)
+        places_api = PlacesAPI(api_key, cache_timeout=current_app.config.get('CACHE_TIMEOUT', 60))
         restaurant_service = RestaurantService(places_api)
 
         # Search for restaurants
@@ -115,39 +115,15 @@ def history():
 def view_search(search_id):
     """View results from a previous search"""
     try:
-        searches = db.get_search_history(limit=1000)
-        search_info = None
-        for s in searches:
-            if s['id'] == search_id:
-                search_info = s
-                break
-
+        search_info = db.get_search_by_id(search_id)
         if not search_info:
             flash('Search not found', 'error')
             return render_template('index.html')
 
         restaurants_data = db.get_search_results(search_id)
 
-        # Convert dict to Restaurant-like objects for template compatibility
         from app.models.restaurant import Restaurant
-
-        restaurants = []
-        for r in restaurants_data:
-            restaurant = Restaurant(
-                place_id=r['place_id'],
-                name=r['name'],
-                address=r['address'],
-                rating=r['rating'],
-                price_level=r['price_level'],
-                cuisine_type=r['cuisine_type'],
-                distance=r['distance'],
-                url=r['url'],
-                phone=r['phone'],
-                menu_items=r['menu_items'],
-                lat=r['lat'],
-                lng=r['lng']
-            )
-            restaurants.append(restaurant)
+        restaurants = [Restaurant.from_dict(r) for r in restaurants_data]
 
         # Limit to top 3 results for display
         total_found = len(restaurants)
@@ -291,32 +267,14 @@ def favorites():
     try:
         favorites = db.get_user_favorites(current_user.id)
 
-        # Convert to Restaurant objects for template compatibility
         from app.models.restaurant import Restaurant
 
         restaurants = []
         for fav in favorites:
-            restaurant = Restaurant(
-                place_id=fav['place_id'],
-                name=fav['name'],
-                address=fav['address'],
-                rating=fav['rating'],
-                price_level=fav['price_level'],
-                cuisine_type=fav['cuisine_type'],
-                distance=fav['distance'],
-                url=fav['url'],
-                phone=fav['phone'],
-                menu_items=fav['menu_items'],
-                lat=fav['lat'],
-                lng=fav['lng'],
-                opening_hours=fav['opening_hours'],
-                ai_description=fav['ai_description']
-            )
-            # Attach favorite metadata
+            restaurant = Restaurant.from_dict(fav)
             restaurant._favorite_id = fav['id']
             restaurant._note = fav['note']
             restaurant._favorited_at = fav['favorited_at']
-
             restaurants.append(restaurant)
 
         return render_template(
@@ -343,25 +301,8 @@ def add_favorite_api():
         if not all(field in data for field in required_fields):
             return jsonify({'success': False, 'error': 'Missing required fields'}), 400
 
-        # Create Restaurant object from data
         from app.models.restaurant import Restaurant
-
-        restaurant = Restaurant(
-            place_id=data['place_id'],
-            name=data['name'],
-            address=data.get('address'),
-            rating=data.get('rating'),
-            price_level=data.get('price_level'),
-            cuisine_type=data.get('cuisine_type'),
-            distance=data.get('distance'),
-            url=data.get('url'),
-            phone=data.get('phone'),
-            menu_items=data.get('menu_items', []),
-            lat=data.get('lat'),
-            lng=data.get('lng'),
-            opening_hours=data.get('opening_hours'),
-            ai_description=data.get('ai_description')
-        )
+        restaurant = Restaurant.from_dict(data)
 
         note = data.get('note')
 
@@ -438,7 +379,7 @@ def admin_login():
 
     if request.method == 'POST':
         password = request.form.get('password', '')
-        admin_password = current_app.config.get('ADMIN_PASSWORD') or os.getenv('ADMIN_PASSWORD')
+        admin_password = current_app.config.get('ADMIN_PASSWORD')
 
         if not admin_password:
             flash('Admin access is not configured. Set ADMIN_PASSWORD in environment variables.', 'error')

@@ -12,7 +12,7 @@ class PlacesAPIError(Exception):
 class PlacesAPI:
     """Google Places API wrapper"""
 
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, cache_timeout: int = 60):
         if not api_key:
             raise PlacesAPIError("Google Places API key is required")
 
@@ -23,7 +23,7 @@ class PlacesAPI:
 
         # Simple cache: {cache_key: (data, timestamp)}
         self._cache = {}
-        self._cache_timeout = 60  # seconds
+        self._cache_timeout = cache_timeout
 
     def _get_from_cache(self, cache_key: str) -> Optional[any]:
         """Get data from cache if not expired"""

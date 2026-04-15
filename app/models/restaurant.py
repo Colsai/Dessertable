@@ -3,6 +3,8 @@ from typing import List, Optional, Tuple
 from datetime import datetime
 import re
 
+METERS_TO_MILES = 0.000621371
+
 
 @dataclass
 class Restaurant:
@@ -24,6 +26,26 @@ class Restaurant:
     opening_hours: Optional[List[str]] = None  # Weekday text like ["Monday: 9:00 AM – 5:00 PM", ...]
     ai_description: Optional[str] = None  # AI-generated short description from DeepSeek
     long_description: Optional[str] = None  # AI-generated 2-3 sentence hover description
+
+    @classmethod
+    def from_dict(cls, d: dict) -> 'Restaurant':
+        """Construct a Restaurant from a dict (e.g. database row or JSON payload)"""
+        return cls(
+            place_id=d['place_id'],
+            name=d['name'],
+            address=d.get('address'),
+            rating=d.get('rating'),
+            price_level=d.get('price_level'),
+            cuisine_type=d.get('cuisine_type'),
+            distance=d.get('distance'),
+            url=d.get('url'),
+            phone=d.get('phone'),
+            menu_items=d.get('menu_items') or [],
+            lat=d.get('lat'),
+            lng=d.get('lng'),
+            opening_hours=d.get('opening_hours'),
+            ai_description=d.get('ai_description'),
+        )
 
     def to_dict(self):
         """Convert to dictionary for JSON serialization"""
@@ -63,21 +85,21 @@ class Restaurant:
         """Get distance in readable format (miles)"""
         if self.distance is None:
             return "N/A"
-        miles = self.distance * 0.000621371  # Convert meters to miles
+        miles = self.distance * METERS_TO_MILES
         return f"{miles:.1f} mi"
 
     def get_distance_miles(self):
         """Get distance in miles as a float"""
         if self.distance is None:
             return None
-        return self.distance * 0.000621371
+        return self.distance * METERS_TO_MILES
 
     def get_driving_time_estimate(self):
         """Estimate driving time based on distance (assumes 25 mph average city speed)"""
         if self.distance is None:
             return "N/A"
 
-        miles = self.distance * 0.000621371  # Convert meters to miles
+        miles = self.distance * METERS_TO_MILES
         avg_speed_mph = 25  # Average city driving speed
 
         time_hours = miles / avg_speed_mph

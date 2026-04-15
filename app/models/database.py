@@ -26,6 +26,10 @@ try:
 except ImportError:
     POSTGRES_AVAILABLE = False
 
+_integrity_errors = (sqlite3.IntegrityError,)
+if POSTGRES_AVAILABLE:
+    _integrity_errors += (psycopg2.IntegrityError,)
+
 
 class Database:
     """Database manager supporting both SQLite (development) and PostgreSQL (production)"""
@@ -373,6 +377,21 @@ class Database:
 
         return searches
 
+    def get_search_by_id(self, search_id: int) -> Optional[Dict]:
+        """Get a single search record by primary key"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        ph = self.placeholder()
+        cursor.execute(f'''
+            SELECT id, location, cuisine, price_range, sort_by,
+                   search_date, results_count
+            FROM searches
+            WHERE id = {ph}
+        ''', (search_id,))
+        row = cursor.fetchone()
+        conn.close()
+        return dict(row) if row else None
+
     def get_search_results(self, search_id: int) -> List[Dict]:
         """
         Get results for a specific search
@@ -499,9 +518,6 @@ class Database:
         # Date thresholds
         date_7_days = self.date_interval(7)
         date_30_days = self.date_interval(30)
-
-        # Date function for extracting date part
-        date_func = "DATE" if self.db_type == 'sqlite' else "DATE"
 
         # User statistics
         cursor.execute('SELECT COUNT(*) as cnt FROM users')
@@ -687,79 +703,36 @@ class Database:
             conn.commit()
             return user_id
 
-        except (sqlite3.IntegrityError, psycopg2.IntegrityError if POSTGRES_AVAILABLE else Exception):
+        except _integrity_errors:
             # Username already exists
             return None
         finally:
             conn.close()
 
-    def get_user_by_username(self, username: str):
-        """
-        Get user by username
-
-        Args:
-            username: Username to search for
-
-        Returns:
-            User object if found, None otherwise
-        """
+    def _fetch_user(self, column: str, value):
+        """Fetch a single user row by any indexed column"""
         from app.models.user import User
-
         conn = self.get_connection()
         cursor = conn.cursor()
-
         ph = self.placeholder()
-        cursor.execute(f'''
-            SELECT id, username, password_hash, created_at
-            FROM users
-            WHERE username = {ph}
-        ''', (username,))
-
+        cursor.execute(
+            f'SELECT id, username, password_hash, created_at FROM users WHERE {column} = {ph}',
+            (value,)
+        )
         row = cursor.fetchone()
         conn.close()
-
         if row:
-            return User(
-                id=row['id'],
-                username=row['username'],
-                password_hash=row['password_hash'],
-                created_at=row['created_at']
-            )
+            return User(id=row['id'], username=row['username'],
+                        password_hash=row['password_hash'], created_at=row['created_at'])
         return None
+
+    def get_user_by_username(self, username: str):
+        """Get user by username"""
+        return self._fetch_user('username', username)
 
     def get_user_by_id(self, user_id: int):
-        """
-        Get user by ID (required by Flask-Login)
-
-        Args:
-            user_id: User ID
-
-        Returns:
-            User object if found, None otherwise
-        """
-        from app.models.user import User
-
-        conn = self.get_connection()
-        cursor = conn.cursor()
-
-        ph = self.placeholder()
-        cursor.execute(f'''
-            SELECT id, username, password_hash, created_at
-            FROM users
-            WHERE id = {ph}
-        ''', (user_id,))
-
-        row = cursor.fetchone()
-        conn.close()
-
-        if row:
-            return User(
-                id=row['id'],
-                username=row['username'],
-                password_hash=row['password_hash'],
-                created_at=row['created_at']
-            )
-        return None
+        """Get user by ID (required by Flask-Login)"""
+        return self._fetch_user('id', user_id)
 
     # ========== FAVORITES MANAGEMENT METHODS ==========
 
@@ -813,7 +786,7 @@ class Database:
             conn.commit()
             return True
 
-        except (sqlite3.IntegrityError, psycopg2.IntegrityError if POSTGRES_AVAILABLE else Exception):
+        except _integrity_errors:
             # Already favorited
             return False
         finally:

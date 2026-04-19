@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, request, flash, current_app, redirect, url_for, jsonify, session
-import re
-import os
+import logging
+import secrets
 from datetime import datetime
+from urllib.parse import urlparse, urljoin
 from flask_login import login_user, logout_user, login_required, current_user
 
 from app.services.places_api import PlacesAPI, PlacesAPIError
@@ -9,9 +10,17 @@ from app.services.restaurant_service import RestaurantService
 from app.models.database import Database
 
 main_bp = Blueprint('main', __name__)
+logger = logging.getLogger(__name__)
 
 # Initialize database
 db = Database()
+
+
+def _is_safe_redirect(target: str) -> bool:
+    """Return True only if target is a relative path on the same host."""
+    ref = urlparse(request.host_url)
+    test = urlparse(urljoin(request.host_url, target))
+    return test.scheme in ('http', 'https') and ref.netloc == test.netloc
 
 
 @main_bp.route('/')
@@ -66,7 +75,7 @@ def search():
                 restaurants=restaurants
             )
         except Exception as e:
-            print(f"Warning: Failed to save search to database: {e}")
+            logger.warning("Failed to save search to database: %s", e)
 
         # Limit to top 9 results for display (3 pages of 3)
         total_found = len(restaurants)
@@ -87,10 +96,12 @@ def search():
         )
 
     except PlacesAPIError as e:
-        flash(f'Search error: {str(e)}', 'error')
+        logger.error("Places API error during search: %s", e)
+        flash('Search failed. Please check the address and try again.', 'error')
         return render_template('index.html')
     except Exception as e:
-        flash(f'An unexpected error occurred: {str(e)}', 'error')
+        logger.exception("Unexpected error during search")
+        flash('An unexpected error occurred. Please try again.', 'error')
         return render_template('index.html')
 
 
@@ -107,7 +118,8 @@ def history():
             stats=stats
         )
     except Exception as e:
-        flash(f'Error loading history: {str(e)}', 'error')
+        logger.error("Error loading history: %s", e)
+        flash('Error loading history. Please try again.', 'error')
         return render_template('index.html')
 
 
@@ -149,7 +161,8 @@ def view_search(search_id):
         )
 
     except Exception as e:
-        flash(f'Error loading search: {str(e)}', 'error')
+        logger.error("Error loading search %s: %s", search_id, e)
+        flash('Error loading search. Please try again.', 'error')
         return render_template('index.html')
 
 
@@ -240,9 +253,9 @@ def login():
         # Log in user
         login_user(user, remember=remember)
 
-        # Redirect to next page or index
+        # Redirect to next page or index (validate to prevent open redirect)
         next_page = request.args.get('next')
-        if next_page:
+        if next_page and _is_safe_redirect(next_page):
             return redirect(next_page)
         return redirect(url_for('main.index'))
 
@@ -285,7 +298,8 @@ def favorites():
         )
 
     except Exception as e:
-        flash(f'Error loading favorites: {str(e)}', 'error')
+        logger.error("Error loading favorites for user %s: %s", current_user.id, e)
+        flash('Error loading favorites. Please try again.', 'error')
         return redirect(url_for('main.index'))
 
 
@@ -315,7 +329,8 @@ def add_favorite_api():
             return jsonify({'success': False, 'error': 'Already in favorites'}), 409
 
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        logger.error("Error adding favorite: %s", e)
+        return jsonify({'success': False, 'error': 'Internal server error'}), 500
 
 
 @main_bp.route('/api/favorites/remove', methods=['POST'])
@@ -337,7 +352,8 @@ def remove_favorite_api():
             return jsonify({'success': False, 'error': 'Not found in favorites'}), 404
 
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        logger.error("Error removing favorite: %s", e)
+        return jsonify({'success': False, 'error': 'Internal server error'}), 500
 
 
 @main_bp.route('/api/favorites/note', methods=['POST'])
@@ -360,7 +376,8 @@ def update_favorite_note_api():
             return jsonify({'success': False, 'error': 'Favorite not found'}), 404
 
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        logger.error("Error updating favorite note: %s", e)
+        return jsonify({'success': False, 'error': 'Internal server error'}), 500
 
 
 # ========== ADMIN ROUTES ==========
@@ -385,7 +402,7 @@ def admin_login():
             flash('Admin access is not configured. Set ADMIN_PASSWORD in environment variables.', 'error')
             return render_template('admin_login.html')
 
-        if password == admin_password:
+        if secrets.compare_digest(password.encode(), admin_password.encode()):
             session['is_admin'] = True
             flash('Admin access granted', 'success')
             return redirect(url_for('main.admin_dashboard'))
@@ -428,5 +445,6 @@ def admin_dashboard():
         )
 
     except Exception as e:
-        flash(f'Error loading admin dashboard: {str(e)}', 'error')
+        logger.exception("Error loading admin dashboard")
+        flash('Error loading admin dashboard. Please try again.', 'error')
         return redirect(url_for('main.index'))

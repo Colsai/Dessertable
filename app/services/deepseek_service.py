@@ -1,6 +1,9 @@
 from typing import List, Dict, Optional
+import logging
 import os
 from openai import OpenAI
+
+logger = logging.getLogger(__name__)
 
 
 class DeepSeekService:
@@ -87,7 +90,7 @@ Respond with ONLY the sentence, nothing else."""
             return description
 
         except Exception as e:
-            print(f"Warning: Failed to generate AI description for {restaurant_name}: {e}")
+            logger.warning("Failed to generate AI description for %s: %s", restaurant_name, e)
             return None
 
     def generate_long_description(self, restaurant_name: str, reviews: List[Dict]) -> Optional[str]:
@@ -154,5 +157,5 @@ Reviews:
             return description
 
         except Exception as e:
-            print(f"Warning: Failed to generate long description for {restaurant_name}: {e}")
+            logger.warning("Failed to generate long description for %s: %s", restaurant_name, e)
             return None

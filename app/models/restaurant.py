@@ -73,7 +73,8 @@ class Restaurant:
         """Get Google Maps URL for this restaurant"""
         if self.url:
             return self.url
-        return f"https://www.google.com/maps/search/?api=1&query={self.name.replace(' ', '+')}&query_place_id={self.place_id}"
+        from urllib.parse import quote_plus
+        return f"https://www.google.com/maps/search/?api=1&query={quote_plus(self.name)}&query_place_id={self.place_id}"
 
     def get_price_display(self):
         """Get price level as dollar signs"""
@@ -187,8 +188,8 @@ class Restaurant:
             return None
 
         except Exception as e:
-            # Log error but don't break the app
-            print(f"Error checking if open: {e}")
+            import logging
+            logging.getLogger(__name__).warning("Error checking if open: %s", e)
             return None
 
     def get_current_day_index(self) -> int:

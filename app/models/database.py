@@ -518,6 +518,7 @@ class Database:
         # Date thresholds
         date_7_days = self.date_interval(7)
         date_30_days = self.date_interval(30)
+        date_func = 'DATE'  # both SQLite and PostgreSQL support DATE() for day truncation
 
         # User statistics
         cursor.execute('SELECT COUNT(*) as cnt FROM users')

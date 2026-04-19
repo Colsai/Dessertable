@@ -7,7 +7,14 @@ load_dotenv()
 
 class Config:
     """Base configuration"""
-    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+    _secret_key = os.getenv('SECRET_KEY')
+    if not _secret_key:
+        import warnings
+        warnings.warn(
+            "SECRET_KEY not set — sessions are insecure. Add SECRET_KEY to your .env file.",
+            stacklevel=2
+        )
+    SECRET_KEY = _secret_key or 'dev-secret-key-change-in-production'
     GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY')
     ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')  # Admin dashboard password
     INVITE_CODE = os.getenv('INVITE_CODE')  # Required for user registration

@@ -3,29 +3,30 @@
 {% block title %}DessertAble{% endblock %}
 
 {% block content %}
-<div class="crt-bezel">
-    <div class="crt-screen">
+<div class="home-collage-wrapper">
 
-        <!-- ═══ TITLE SCREEN ═══ -->
-        <div id="title-screen" class="crt-panel">
-            <div class="game-title">DESSERTABLE</div>
-            <div class="title-divider"></div>
-            <img src="{{ url_for('static', filename='sprites/sprite_13.png') }}"
-                 class="title-sprite" alt="">
-            <button id="pressStartBtn" class="press-start-btn" aria-label="Press start to search">
-                PRESS START
-            </button>
-            <div class="title-footer">© 2026 DESSERTCO</div>
+    <!-- Decorative paper collage blocks -->
+    <div class="collage-block collage-tan-tl"      aria-hidden="true"></div>
+    <div class="collage-block collage-dark-tr"     aria-hidden="true"></div>
+    <div class="collage-block collage-dark-bl"     aria-hidden="true"></div>
+    <div class="collage-block collage-tan-br"      aria-hidden="true"></div>
+    <div class="collage-block collage-dark-shadow" aria-hidden="true"></div>
+
+    <!-- Center floating card -->
+    <div class="home-card">
+
+        <!-- ══ TITLE SCREEN ══ -->
+        <div id="title-screen" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+            <p class="home-go-text">Go</p>
+            <button id="pressStartBtn" class="home-play-btn" aria-label="Begin search">▶</button>
         </div>
 
-        <!-- ═══ SEARCH SCREEN ═══ -->
-        <div id="search-screen" class="crt-panel" style="display:none;">
-            <h1 style="text-align:center; margin-bottom:2rem;">
-                ENTER COORDINATES
-            </h1>
-
-            <form method="POST" action="{{ url_for('main.search') }}" id="searchForm" style="width:100%; max-width:460px;">
-                <div class="mb-4 search-input-wrapper">
+        <!-- ══ SEARCH SCREEN ══ -->
+        <div id="search-screen" style="display:none; flex-direction:column; align-items:center; width:100%;">
+            <form method="POST" action="{{ url_for('main.search') }}"
+                  id="searchForm"
+                  style="width:100%; display:flex; flex-direction:column; align-items:center; gap:0.75rem;">
+                <div class="search-input-wrapper" style="width:100%; max-width:300px;">
                     <input type="text"
                            class="form-control form-control-lg"
                            id="addressInput"
@@ -33,28 +34,21 @@
                            required
                            placeholder="Enter your address"
                            autocomplete="street-address">
-                    <button type="button" class="input-clear-btn" id="clearBtn" aria-label="Clear address">X</button>
+                    <button type="button" class="input-clear-btn" id="clearBtn" aria-label="Clear address">×</button>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 btn-lg" id="searchBtn">
-                    <span class="btn-label">SEARCH</span>
-                </button>
+                <button type="submit" class="home-play-btn" id="searchBtn">▶</button>
             </form>
 
-            <div id="loadingMessage" style="display:none; text-align:center; margin-top:1.5rem;">
-                <p>looking for your desserts<span id="loadingDots"></span></p>
+            <div id="loadingMessage" style="display:none; margin-top:1rem; text-align:center;">
+                <p>finding your desserts<span id="loadingDots"></span></p>
             </div>
 
-            <div class="back-link" style="margin-top:1.5rem;">
-                <a href="#" id="backToTitle">← BACK</a>
-            </div>
+            <a href="#" id="backToTitle" class="home-back-link" style="margin-top:1rem;">← back</a>
         </div>
 
-    </div><!-- /.crt-screen -->
+    </div><!-- /.home-card -->
 
-    <div class="crt-chin">
-        <div class="crt-power" title="POWER ON"></div>
-    </div>
-</div><!-- /.crt-bezel -->
+</div><!-- /.home-collage-wrapper -->
 
 <script>
 var titleScreen  = document.getElementById('title-screen');
@@ -104,7 +98,7 @@ document.getElementById('backToTitle').addEventListener('click', function (e) {
     showTitleScreen();
 });
 
-// Keyboard: Space/Enter on unfocused body triggers PRESS START; Escape returns to title
+// Keyboard: Space/Enter on unfocused body triggers begin search; Escape returns to title
 document.addEventListener('keydown', function (e) {
     var titleVisible  = titleScreen.style.display  !== 'none';
     var searchVisible = searchScreen.style.display !== 'none';

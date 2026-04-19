@@ -8,118 +8,147 @@
 {% endblock %}
 
 {% block content %}
-<div class="results-container" style="max-width: 1400px; margin: 3rem auto; padding: 0 2rem;">
+<div class="results-frame">
 
-    <div class="results-timestamp" style="text-align: right; margin-bottom: 1.5rem; padding: 0.5rem 1rem; color: #666; font-size: 0.9rem;">
-        {{ now.strftime('%A, %B %d') }} · {{ now.strftime('%I:%M %p') }}
-    </div>
-
-    <!-- View toggle -->
-    <div class="view-toggle">
-        <button id="cardsViewBtn" class="btn btn-primary view-btn">&#9654; CARDS</button>
-        <button id="mapViewBtn" class="btn view-btn">MAP</button>
-    </div>
-
-    <!-- ═══ CARDS VIEW ═══ -->
-    <div id="cards-view">
-        <div class="results-grid" id="resultsGrid">
-        {% set sprite_map = ['sprite_13.png', 'sprite_14.png', 'sprite_16.png'] %}
-        {% for restaurant in restaurants %}
-        <div class="restaurant-card horizontal-card" data-index="{{ loop.index0 }}" style="display: {% if loop.index0 < 3 %}block{% else %}none{% endif %}; grid-column: {{ (loop.index0 % 3) + 1 }}; transition: opacity 0.3s; position: relative; cursor: pointer;">
-
-        <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" rel="noopener noreferrer" class="card-link-overlay" tabindex="-1" aria-hidden="true"></a>
-
-        {% if current_user.is_authenticated %}
-        <button class="favorite-btn"
-                data-place-id="{{ restaurant.place_id }}"
-                data-favorited="false"
-                onclick="toggleFavorite(this, {{ loop.index0 }})"
-                style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.5rem; z-index: 10; transition: transform 0.2s, color 0.2s; color: #000;">
-            <span class="heart-icon">&#9825;</span>
-        </button>
-        {% endif %}
-
-        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
-            <img src="{{ url_for('static', filename='sprites/' + sprite_map[loop.index0 % 3]) }}" class="result-sprite" alt="">
-        </div>
-
-        <h2 class="restaurant-name" style="margin: 0 0 1.5rem 0; min-height: 70px; display: flex; align-items: center; justify-content: center; text-align: center;">
-            <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" rel="noopener noreferrer" class="card-name-link">
-                {{ restaurant.name }}
-            </a>
-        </h2>
-
-        <div class="restaurant-meta" style="margin-bottom: 1.5rem; text-align: center;">
-            {% if restaurant.cuisine_type %}{{ restaurant.cuisine_type }}{% endif %}
-            {% if restaurant.rating %}{% if restaurant.cuisine_type %} · {% endif %}{{ restaurant.rating }} / 5{% endif %}
-        </div>
-
-        {% set is_open = restaurant.is_open_now() %}
-        <div style="text-align: center; margin-bottom: 1.5rem; min-height: 4.5rem; display: flex; flex-direction: column; justify-content: flex-start; align-items: center;">
-            {% if is_open == True %}
-                <div style="background: #000; color: #fff; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.5px; display: inline-block; margin-bottom: 0.5rem;">OPEN</div>
-            {% elif is_open == False %}
-                <div style="background: #fff; color: #000; border: 2px solid #000; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.5px; display: inline-block; margin-bottom: 0.5rem;">CLOSED</div>
+    <!-- ── Frame nav ── -->
+    <nav class="results-frame-nav">
+        <a href="{{ url_for('main.index') }}" class="results-frame-brand">DessertAble</a>
+        <span class="results-frame-timestamp">
+            {{ now.strftime('%A, %B %d') }} · {{ now.strftime('%I:%M %p') }}
+        </span>
+        <div class="results-frame-auth">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('main.favorites') }}">favorites</a>
+                <a href="{{ url_for('main.history') }}">history</a>
+                <a href="{{ url_for('main.logout') }}">logout</a>
+            {% else %}
+                <a href="{{ url_for('main.login') }}">login</a>
+                <a href="{{ url_for('main.register') }}">sign up</a>
             {% endif %}
-            {% if restaurant.opening_hours %}
-                <div style="font-size: 0.9rem; color: #666; font-weight: 500;">
-                    {% set current_day_index = restaurant.get_current_day_index() %}
-                    {% for hours in restaurant.opening_hours %}{% if loop.index0 == current_day_index %}{{ hours }}{% endif %}{% endfor %}
+        </div>
+    </nav>
+
+    <!-- ── Frame body ── -->
+    <div class="results-frame-body">
+
+        <!-- View toggle -->
+        <div class="view-toggle">
+            <button id="cardsViewBtn" class="btn btn-primary view-btn">cards</button>
+            <button id="mapViewBtn" class="btn view-btn">map</button>
+        </div>
+        <hr class="view-toggle-rule">
+
+        <!-- ═══ CARDS VIEW ═══ -->
+        <div id="cards-view">
+            <div class="results-grid" id="resultsGrid">
+            {% set emoji_map = ['🍵', '🏮', '🪭'] %}
+            {% for restaurant in restaurants %}
+            <div class="restaurant-card horizontal-card" data-index="{{ loop.index0 }}"
+                 style="display: {% if loop.index0 < 3 %}flex{% else %}none{% endif %}; flex-direction: column; grid-column: {{ (loop.index0 % 3) + 1 }}; transition: opacity 0.3s; position: relative; cursor: pointer;">
+
+                <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" rel="noopener noreferrer"
+                   class="card-link-overlay" tabindex="-1" aria-hidden="true"></a>
+
+                {% if current_user.is_authenticated %}
+                <button class="favorite-btn"
+                        data-place-id="{{ restaurant.place_id }}"
+                        data-favorited="false"
+                        onclick="toggleFavorite(this, {{ loop.index0 }})"
+                        style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.5rem; z-index: 10; transition: transform 0.2s, color 0.2s; color: var(--ink);">
+                    <span class="heart-icon">&#9825;</span>
+                </button>
+                {% endif %}
+
+                <!-- Emoji + name header row -->
+                <div class="card-header-row">
+                    <span class="card-emoji" aria-hidden="true">{{ emoji_map[loop.index0 % 3] }}</span>
+                    <div class="card-header-text">
+                        <h2 class="restaurant-name" style="margin: 0; min-height: auto;">
+                            <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" rel="noopener noreferrer"
+                               class="card-name-link">{{ restaurant.name }}</a>
+                        </h2>
+                        <div class="restaurant-meta" style="margin-top: 0.25rem; text-align: left;">
+                            {% if restaurant.cuisine_type %}{{ restaurant.cuisine_type }}{% endif %}
+                            {% if restaurant.rating %}{% if restaurant.cuisine_type %} · {% endif %}{{ restaurant.rating }} / 5{% endif %}
+                        </div>
+                    </div>
                 </div>
-            {% elif restaurant.opening_hours == None %}
-                <div style="font-size: 0.9rem; color: #999; font-style: italic;">Hours not available</div>
-            {% endif %}
-        </div>
 
-        <div style="margin-bottom: 1.5rem; min-height: 5rem; text-align: center;">
-            <div class="dessert-description" style="font-size: 0.85rem; overflow: hidden; color: #000; font-style: italic; line-height: 1.4;">
-                {% if restaurant.ai_description %}"{{ restaurant.ai_description }}"{% else %}{{ restaurant.get_dessert_description() }}{% endif %}
+                <!-- Hours -->
+                <div style="font-size: 0.875rem; color: var(--charcoal); margin-bottom: 0.5rem; min-height: 3rem;">
+                    {% set is_open = restaurant.is_open_now() %}
+                    {% if is_open == True %}
+                        <span style="font-weight: 600; color: var(--ink);">open</span>
+                    {% elif is_open == False %}
+                        <span style="font-weight: 600; color: var(--smoke);">closed</span>
+                    {% endif %}
+                    {% if restaurant.opening_hours %}
+                        {% set current_day_index = restaurant.get_current_day_index() %}
+                        {% for hours in restaurant.opening_hours %}{% if loop.index0 == current_day_index %}
+                            <span style="margin-left: 0.35rem;">{{ hours }}</span>
+                        {% endif %}{% endfor %}
+                    {% elif restaurant.opening_hours == None %}
+                        <span style="color: var(--smoke); font-style: italic;">Hours not available</span>
+                    {% endif %}
+                </div>
+
+                <hr class="card-rule">
+
+                <!-- Description -->
+                <div class="dessert-description" style="font-size: 0.85rem; color: var(--charcoal); font-style: italic; line-height: 1.75; flex: 1; min-height: 4rem;">
+                    {% if restaurant.ai_description %}"{{ restaurant.ai_description }}"{% else %}{{ restaurant.get_dessert_description() }}{% endif %}
+                </div>
+
+                {% if restaurant.long_description %}
+                <div class="card-long-desc-overlay" aria-hidden="true">
+                    <p class="card-long-desc-text">{{ restaurant.long_description }}</p>
+                </div>
+                {% endif %}
+
+                <hr class="card-rule">
+
+                <!-- Distance row -->
+                {% if restaurant.distance %}
+                <div class="card-distance-row">
+                    <span class="card-distance-emoji" aria-hidden="true">{{ emoji_map[loop.index0 % 3] }}</span>
+                    <span style="font-size: 0.875rem; color: var(--charcoal);">
+                        {{ restaurant.get_driving_time_estimate() }} drive ({{ restaurant.get_distance_display() }})
+                    </span>
+                </div>
+                {% endif %}
+
             </div>
+            {% endfor %}
+            </div>
+        </div><!-- /#cards-view -->
+
+        <!-- ═══ MAP VIEW ═══ -->
+        <div id="map-view" style="display:none;">
+            <div id="map-container"></div>
         </div>
 
-        {% if restaurant.long_description %}
-        <div class="card-long-desc-overlay" aria-hidden="true">
-            <p class="card-long-desc-text">{{ restaurant.long_description }}</p>
-        </div>
-        {% endif %}
+    </div><!-- /.results-frame-body -->
 
-        {% if restaurant.distance %}
-        <div class="restaurant-distance" style="color: #000; font-size: 1rem; font-weight: 600; text-align: center;">
-            &#128663; {{ restaurant.get_driving_time_estimate() }} drive ({{ restaurant.get_distance_display() }})
-        </div>
-        {% endif %}
-        </div>
-        {% endfor %}
-        </div>
-
-        {% set total_pages = ((restaurants | length) + 2) // 3 %}
-        {% if total_pages > 1 %}
-        <div id="paginationControls" style="text-align: center; margin-top: 2rem;">
-            <button id="nextBtn" onclick="nextPage()"
-                    style="background: none; border: 2px solid #000; font-size: 1rem;
-                           font-weight: 600; letter-spacing: 0.5px; padding: 0.75rem 2.5rem;
-                           cursor: pointer; transition: background 0.2s, color 0.2s;">
-                NEXT
+    <!-- ── Dark pagination bar ── -->
+    {% set total_pages = ((restaurants | length) + 2) // 3 %}
+    {% if total_pages > 1 %}
+    <div class="results-pagination-bar" id="paginationBar">
+        <div class="pagination-left-group">
+            <button class="pagination-bar-btn" id="prevBtn" onclick="prevPage()" disabled>
+                &lt; Previous
             </button>
-            <div id="pageCounter" style="margin-top: 0.75rem; color: #666; font-size: 0.9rem;">
-                1 of {{ total_pages }}
-            </div>
+            <span class="pagination-bar-counter" id="pageCounter">Page 1 of {{ total_pages }}</span>
+            <button class="pagination-bar-btn" id="nextBtnLeft" onclick="nextPage()">
+                Next &gt;
+            </button>
         </div>
-        {% endif %}
-    </div><!-- /#cards-view -->
-
-    <!-- ═══ MAP VIEW ═══ -->
-    <div id="map-view" style="display:none;">
-        <div id="map-container"></div>
+        <button class="pagination-bar-next-right" id="nextBtn" onclick="nextPage()">
+            Next &rarr;
+        </button>
     </div>
+    {% endif %}
 
-    <div style="text-align: center; margin-top: 4rem;">
-        <a href="{{ url_for('main.index') }}"
-           style="color: #666; text-decoration: none; font-size: 1.1rem; font-weight: 500;">
-            &#8592; New search
-        </a>
-    </div>
-</div>
+</div><!-- /.results-frame -->
 
 <script>
 // ── Carousel pagination ─────────────────────────────────────────
@@ -128,23 +157,46 @@ const totalCards = {{ restaurants | length }};
 const cardsPerPage = 3;
 const totalPages = Math.ceil(totalCards / cardsPerPage);
 
-function nextPage() {
+function updatePaginationState() {
+    const prevBtn    = document.getElementById('prevBtn');
+    const nextBtnLeft = document.getElementById('nextBtnLeft');
+    const nextBtn    = document.getElementById('nextBtn');
+    const counter    = document.getElementById('pageCounter');
+    if (prevBtn)     prevBtn.disabled     = currentIndex === 0;
+    if (nextBtnLeft) nextBtnLeft.disabled = currentIndex === totalPages - 1;
+    if (nextBtn)     nextBtn.disabled     = currentIndex === totalPages - 1;
+    if (counter)     counter.textContent  = 'Page ' + (currentIndex + 1) + ' of ' + totalPages;
+}
+
+function showPage(pageIndex) {
     const cards = document.querySelectorAll('.restaurant-card');
     cards.forEach(card => { card.style.display = 'none'; });
-    currentIndex = (currentIndex + 1) % totalPages;
-    const startIndex = currentIndex * cardsPerPage;
-    const endIndex = Math.min(startIndex + cardsPerPage, totalCards);
+    const startIndex = pageIndex * cardsPerPage;
+    const endIndex   = Math.min(startIndex + cardsPerPage, totalCards);
     for (let i = startIndex; i < endIndex; i++) {
-        cards[i].style.display = 'block';
+        cards[i].style.display = 'flex';
         cards[i].style.gridColumn = (i - startIndex) + 1;
     }
-    const counter = document.getElementById('pageCounter');
-    if (counter) counter.textContent = (currentIndex + 1) + ' of ' + totalPages;
+    updatePaginationState();
+}
+
+function nextPage() {
+    if (currentIndex < totalPages - 1) {
+        currentIndex++;
+        showPage(currentIndex);
+    }
+}
+
+function prevPage() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        showPage(currentIndex);
+    }
 }
 
 // ── Favorites ───────────────────────────────────────────────────
 function toggleFavorite(button, index) {
-    const placeId = button.dataset.placeId;
+    const placeId    = button.dataset.placeId;
     const isFavorited = button.dataset.favorited === 'true';
     if (isFavorited) { removeFavoriteFromResults(placeId, button); }
     else             { addFavoriteFromResults(placeId, button, index); }
@@ -152,7 +204,7 @@ function toggleFavorite(button, index) {
 
 function addFavoriteFromResults(placeId, button, index) {
     const restaurants = {{ restaurants | tojson }};
-    const restaurant = restaurants[index];
+    const restaurant  = restaurants[index];
     fetch('/api/favorites/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -163,7 +215,7 @@ function addFavoriteFromResults(placeId, button, index) {
         if (data.success) {
             button.dataset.favorited = 'true';
             button.querySelector('.heart-icon').textContent = '\u2665';
-            button.style.color = '#224680';
+            button.style.color = 'var(--slate)';
             button.style.transform = 'scale(1.2)';
             setTimeout(() => button.style.transform = 'scale(1)', 200);
         } else { showToast('Error: ' + data.error); }
@@ -182,7 +234,7 @@ function removeFavoriteFromResults(placeId, button) {
         if (data.success) {
             button.dataset.favorited = 'false';
             button.querySelector('.heart-icon').textContent = '\u2661';
-            button.style.color = '#000';
+            button.style.color = 'var(--ink)';
         } else { showToast('Error: ' + data.error); }
     })
     .catch(err => { showToast('Failed to remove favorite'); console.error(err); });
@@ -230,7 +282,7 @@ function initMap() {
         bounds.push([r.lat, r.lng]);
     });
 
-    if (bounds.length > 1)      { map.fitBounds(bounds, { padding: [48, 48] }); }
+    if (bounds.length > 1)       { map.fitBounds(bounds, { padding: [48, 48] }); }
     else if (bounds.length === 1) { map.setView(bounds[0], 15); }
 }
 
@@ -245,6 +297,7 @@ cardsViewBtn.addEventListener('click', function() {
     mapView.style.display   = 'none';
     cardsViewBtn.classList.add('btn-primary');
     mapViewBtn.classList.remove('btn-primary');
+    document.getElementById('paginationBar') && (document.getElementById('paginationBar').style.display = '');
 });
 
 mapViewBtn.addEventListener('click', function() {
@@ -252,6 +305,8 @@ mapViewBtn.addEventListener('click', function() {
     mapView.style.display   = '';
     mapViewBtn.classList.add('btn-primary');
     cardsViewBtn.classList.remove('btn-primary');
+    var bar = document.getElementById('paginationBar');
+    if (bar) bar.style.display = 'none';
     initMap();
     setTimeout(function() { if (map) map.invalidateSize(); }, 50);
 });

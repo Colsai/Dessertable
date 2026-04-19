@@ -1,15 +1,18 @@
-/* DessertAble - Game Boy / 8-bit Pixel Design */
+/* DessertAble — Woodblock Print / Paper Collage Aesthetic */
 
-/* Color Palette - Game Boy Monochrome + Blue */
+/* Color Palette — Warm linen, cream, near-black */
 :root {
-    --pixel-bg: #f0f0f0;
-    --pixel-surface: #ffffff;
-    --pixel-lightgray: #aaaaaa;
-    --pixel-gray: #555555;
-    --pixel-ink: #0a0a0a;
-    --pixel-black: #000000;
-    --pixel-blue: #224680;
-    --pixel-blue-bright: #4a90d9;
+    --ink:        #1a1815;   /* warm near-black (text, borders) */
+    --charcoal:   #3d3a35;   /* warm dark gray */
+    --smoke:      #8a8278;   /* warm mid gray */
+    --paper:      #e9e4d9;   /* warm linen background */
+    --paper-warm: #f0ebe2;   /* lightest cream card surface */
+    --paper-mid:  #d4ccc0;   /* medium tan collage block */
+    --paper-dark: #c2b9ab;   /* darker tan collage block */
+    --ink-block:  #1e1b17;   /* near-black collage block / footer */
+    --slate:      #2e4a6e;   /* retained for focus rings */
+    --mist:       #4a7098;
+    --fog:        #cac4ba;   /* warm light divider */
 }
 
 /* Base */
@@ -26,33 +29,20 @@
 }
 
 body {
-    background-color: var(--pixel-bg);
-    font-family: 'Press Start 2P', monospace;
+    background-color: var(--paper);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeBlend in='SourceGraphic' mode='multiply'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
     font-weight: 400;
-    color: var(--pixel-ink);
-    line-height: 1.8;
+    color: var(--ink);
+    line-height: 1.75;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    font-size: 9px;
-    /* Safe area insets for notched phones */
+    font-size: 16px;
+    letter-spacing: 0.02em;
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
-    animation: fadeIn 0.25s ease-in;
-}
-
-/* Scanline overlay - subtle retro texture */
-body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    background: repeating-linear-gradient(
-        0deg,
-        transparent, transparent 2px,
-        rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
-    );
+    animation: fadeIn 0.35s ease-in;
 }
 
 main {
@@ -60,62 +50,69 @@ main {
 }
 
 /* ========================================
-   HEADINGS - NES Title Screen Style
+   HEADINGS — Woodblock Print Style
    ======================================== */
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Press Start 2P', monospace !important;
-    font-weight: 400;
-    line-height: 1.6;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.03em;
+    color: var(--ink);
 }
 
 h1 {
-    font-size: 18px !important;
-    color: var(--pixel-ink);
-    letter-spacing: 1px;
-}
-
-h1::before {
-    content: '> ';
-    color: var(--pixel-blue);
-    animation: pixelBlink 1s step-end infinite;
+    font-size: 2rem;
 }
 
 h2 {
-    font-size: 14px !important;
+    font-size: 1.35rem;
+}
+
+h3 {
+    font-size: 1.15rem;
+}
+
+/* Section heading with left border accent */
+.section-heading {
+    border-left: 3px solid var(--slate);
+    padding-left: 0.875rem;
+    margin-bottom: 1.5rem;
 }
 
 /* Navbar */
 .navbar {
-    background: var(--pixel-surface);
-    border-bottom: 3px solid var(--pixel-ink);
-    padding: 2rem 0;
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--ink);
+    padding: 1.5rem 0;
 }
 
 .navbar-brand {
-    font-family: 'Press Start 2P', monospace !important;
-    font-size: 14px;
-    color: var(--pixel-ink) !important;
-    letter-spacing: 1px;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink) !important;
+    letter-spacing: 0.04em;
     text-decoration: none;
 }
 
 .navbar-brand:hover {
-    color: var(--pixel-blue) !important;
+    color: var(--slate) !important;
 }
 
 .brand-text {
-    font-family: 'Press Start 2P', monospace !important;
-    color: var(--pixel-blue) !important;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
+    font-weight: 700;
+    color: var(--slate) !important;
 }
 
 .navbar-brand.brand-text {
-    font-size: 14px;
-    color: var(--pixel-ink) !important;
+    font-size: 1.15rem;
+    color: var(--ink) !important;
 }
 
 .footer .brand-text {
-    font-size: 9px;
+    font-size: 0.9rem;
 }
 
 .navbar-nav {
@@ -130,117 +127,129 @@ h2 {
 }
 
 .nav-link {
-    font-family: 'Press Start 2P', monospace !important;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
     font-weight: 400;
-    font-size: 8px !important;
-    color: var(--pixel-gray) !important;
+    font-size: 0.95rem;
+    color: var(--charcoal) !important;
     text-decoration: none;
-    transition: color 0.2s;
+    letter-spacing: 0.03em;
+    transition: color 0.2s, border-color 0.2s;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
 }
 
 .nav-link:hover {
-    color: var(--pixel-ink) !important;
+    color: var(--ink) !important;
+    border-bottom-color: var(--ink);
 }
 
 /* Buttons */
 .btn {
-    font-family: 'Press Start 2P', monospace !important;
-    font-weight: 400;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
+    font-weight: 600;
     border-radius: 0;
-    font-size: 9px !important;
-    letter-spacing: 1px;
-    border: 3px solid var(--pixel-ink);
-    box-shadow: 4px 4px 0px var(--pixel-ink);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--ink);
+    box-shadow: none;
     min-height: 44px;
-    padding: 0.875rem 1.5rem;
-    transition: transform 0.05s, box-shadow 0.05s, background 0.15s, color 0.15s;
+    padding: 0.75rem 1.5rem;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.08s ease;
+    cursor: pointer;
 }
 
 .btn-primary {
-    background: var(--pixel-ink);
-    border: 3px solid var(--pixel-ink);
-    color: #ffffff;
-    box-shadow: 4px 4px 0px var(--pixel-blue);
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    color: var(--paper);
+    box-shadow: none;
 }
 
 .btn-primary:hover {
-    background: var(--pixel-blue);
-    border-color: var(--pixel-blue);
-    color: #ffffff;
-    box-shadow: 4px 4px 0px var(--pixel-black);
+    background: var(--slate);
+    border-color: var(--slate);
+    color: var(--paper);
+    box-shadow: none;
 }
 
-/* Button press-down animation */
 .btn:active {
-    transform: translate(3px, 3px);
-    box-shadow: 1px 1px 0px var(--pixel-ink) !important;
+    transform: scale(0.97);
+    box-shadow: none !important;
 }
 
 .btn-primary:active {
-    box-shadow: 1px 1px 0px var(--pixel-blue) !important;
+    background: var(--slate);
+    box-shadow: none !important;
+}
+
+.btn:not(.btn-primary) {
+    background: transparent;
+    color: var(--ink);
+}
+
+.btn:not(.btn-primary):hover {
+    background: var(--slate);
+    color: var(--paper);
+    border-color: var(--slate);
 }
 
 #nextBtn:hover {
-    background: var(--pixel-ink);
-    color: var(--pixel-surface);
+    background: var(--ink);
+    color: var(--paper-warm);
 }
 
 .btn-lg {
-    padding: 1.25rem 3rem;
-    font-size: 10px !important;
+    padding: 1rem 2.5rem;
+    font-size: 1.05rem;
 }
 
 /* Forms */
 .form-control {
-    font-family: 'Press Start 2P', monospace !important;
-    border: 3px solid var(--pixel-ink);
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
+    border: 1px solid var(--charcoal);
     border-radius: 0;
-    padding: 1rem 1.25rem;
-    font-size: 9px !important;
+    padding: 0.875rem 1.125rem;
+    font-size: 1rem;
     font-weight: 400;
-    color: var(--pixel-ink);
-    background: var(--pixel-surface);
-    transition: box-shadow 0.2s, border-color 0.2s;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    background: var(--paper-warm);
+    transition: border-color 0.2s, box-shadow 0.2s;
     position: relative;
-    min-height: 52px;
+    min-height: 48px;
 }
 
 .form-control:hover {
-    border-color: var(--pixel-ink);
-    box-shadow: 4px 4px 0px var(--pixel-ink);
+    border-color: var(--ink);
+    box-shadow: none;
 }
 
 .form-control:focus {
-    border-color: var(--pixel-ink);
-    border-width: 3px;
-    box-shadow: 0 0 0 3px var(--pixel-blue);
+    border-color: var(--slate);
+    border-width: 1px;
+    box-shadow: 0 0 0 2px rgba(46, 74, 110, 0.2);
     outline: none;
-    background: var(--pixel-surface);
-    animation: focusPulse 0.6s ease-out;
+    background: var(--paper-warm);
 }
 
 @keyframes focusPulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(34, 70, 128, 0.4);
-    }
-    100% {
-        box-shadow: 0 0 0 3px var(--pixel-blue);
-    }
+    0%   { box-shadow: 0 0 0 0 rgba(46, 74, 110, 0.3); }
+    100% { box-shadow: 0 0 0 2px rgba(46, 74, 110, 0.2); }
 }
 
 .form-control::placeholder {
-    color: var(--pixel-lightgray);
+    color: var(--smoke);
     opacity: 1;
 }
 
 .form-control:focus::placeholder {
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
 .form-control-lg {
-    padding: 1.25rem 1.5rem;
-    font-size: 10px !important;
-    min-height: 58px;
+    padding: 1rem 1.25rem;
+    font-size: 1.05rem;
+    min-height: 54px;
 }
 
 /* Results Grid */
@@ -251,7 +260,7 @@ h2 {
     margin-bottom: 2rem;
 }
 
-/* Full-card clickable overlay (mouse only, excluded from tab order) */
+/* Full-card clickable overlay */
 .card-link-overlay {
     position: absolute;
     inset: 0;
@@ -269,76 +278,80 @@ h2 {
 }
 
 .card-name-link:focus {
-    outline: 2px solid var(--pixel-ink);
+    outline: 2px solid var(--ink);
     outline-offset: 3px;
 }
 
 /* Restaurant Cards */
 .restaurant-card {
-    border: 3px solid var(--pixel-ink);
-    padding: 2.5rem;
-    margin-bottom: 2rem;
+    border: 1px solid var(--charcoal);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
     border-radius: 0;
-    background: var(--pixel-surface);
-    box-shadow: 4px 4px 0px var(--pixel-ink);
-    transition: box-shadow 0.15s ease, transform 0.15s ease;
+    background: var(--paper-warm);
+    box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     position: relative;
 }
 
 .restaurant-card.horizontal-card {
     margin-bottom: 0;
-    border: 3px solid var(--pixel-ink);
-    border-left: 1px solid #cccccc;
+    border: 1px solid var(--charcoal);
+    border-left: none;
     min-height: 500px;
     display: flex;
     flex-direction: column;
 }
 
 .restaurant-card.horizontal-card:first-child {
-    border-left: 3px solid var(--pixel-ink);
+    border-left: 1px solid var(--charcoal);
 }
 
 .restaurant-card.horizontal-card:last-child {
-    border-right: 3px solid var(--pixel-ink);
+    border-right: 1px solid var(--charcoal);
 }
 
 .restaurant-card:hover {
-    box-shadow: 6px 6px 0px var(--pixel-ink);
-    transform: translate(-1px, -1px);
+    box-shadow: inset 0 0 0 1px var(--slate);
+    border-color: var(--slate);
     z-index: 1;
 }
 
 .restaurant-card a {
-    color: var(--pixel-ink);
+    color: var(--ink);
     text-decoration: none;
     transition: color 0.2s;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 1rem;
     display: block;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
 .restaurant-card .restaurant-name {
-    font-family: 'Press Start 2P', monospace !important;
-    color: var(--pixel-ink);
-    font-weight: 400;
-    font-size: 12px !important;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1.05rem;
     line-height: 1.4;
+    letter-spacing: 0.02em;
 }
 
 .restaurant-card .restaurant-meta {
-    font-family: 'Press Start 2P', monospace !important;
-    color: var(--pixel-gray);
-    font-size: 8px !important;
-    margin-top: 0.75rem;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    color: var(--charcoal);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    letter-spacing: 0.03em;
 }
 
 .restaurant-card .dessert-description {
     opacity: 1;
     max-height: 120px;
     overflow: hidden;
-    font-size: 8px;
-    line-height: 1.8;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    font-style: italic;
+    color: var(--charcoal);
 }
 
 /* Long-description hover overlay */
@@ -346,14 +359,14 @@ h2 {
     position: absolute;
     inset: 0;
     z-index: 3;
-    background: rgba(10, 10, 10, 0.92);
+    background: rgba(13, 15, 20, 0.90);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2rem;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.3s ease;
 }
 
 .restaurant-card:hover .card-long-desc-overlay {
@@ -361,11 +374,11 @@ h2 {
 }
 
 .card-long-desc-text {
-    color: #ffffff;
-    font-size: 8px;
+    color: var(--paper);
+    font-size: 0.9rem;
     line-height: 1.8;
     text-align: center;
-    font-style: normal;
+    font-style: italic;
     font-weight: 400;
     max-width: 28ch;
     margin: 0;
@@ -385,7 +398,8 @@ h2 {
     }
 
     .restaurant-card.horizontal-card {
-        border-right: 3px solid var(--pixel-ink);
+        border-right: 1px solid var(--charcoal);
+        border-left: 1px solid var(--charcoal);
         margin-bottom: 0;
         min-height: auto;
     }
@@ -397,43 +411,54 @@ h2 {
 
 /* Alerts */
 .alert {
-    font-family: 'Press Start 2P', monospace !important;
-    font-size: 9px;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
+    font-size: 0.95rem;
     border-radius: 0;
-    border: 3px solid var(--pixel-ink);
+    border: 1px solid var(--ink);
+    border-left: 3px solid var(--slate);
     padding: 1rem 1.25rem;
     margin-bottom: 1rem;
-    line-height: 1.8;
+    line-height: 1.75;
+    background: var(--paper-warm);
 }
 
 .alert-danger {
-    background: var(--pixel-surface);
-    border-color: var(--pixel-ink);
-    color: var(--pixel-ink);
+    background: var(--paper-warm);
+    border-color: var(--ink);
+    border-left-color: var(--charcoal);
+    color: var(--ink);
 }
 
 .alert-success {
-    background: var(--pixel-blue);
-    border-color: var(--pixel-blue);
-    color: #ffffff;
+    background: var(--paper-warm);
+    border-color: var(--slate);
+    border-left-color: var(--slate);
+    color: var(--ink);
 }
 
 .alert-info {
-    background: var(--pixel-surface);
-    border-color: var(--pixel-blue);
-    color: var(--pixel-ink);
+    background: var(--paper-warm);
+    border-color: var(--mist);
+    border-left-color: var(--mist);
+    color: var(--ink);
 }
 
-/* Footer */
+/* Footer — dark bar */
 .footer {
     margin-top: auto;
-    padding: 2rem 0;
-    border-top: 3px solid var(--pixel-ink);
+    padding: 1.5rem 0;
+    background: var(--ink-block);
+    border-top: none;
 }
 
 .text-muted {
-    color: var(--pixel-gray) !important;
-    font-size: 8px;
+    color: var(--paper) !important;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+}
+
+.footer .brand-text {
+    color: var(--paper) !important;
 }
 
 /* Utility */
@@ -476,15 +501,16 @@ h2 {
     all: unset;
 }
 
-/* Sprite Styling */
+/* Sprite Styling — desaturated for woodblock compatibility */
 .page-sprite {
     height: 80px;
     width: auto;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
-    opacity: 0.85;
+    opacity: 0.2;
     display: inline-block;
+    filter: grayscale(1) contrast(0.5);
 }
 
 .result-sprite {
@@ -493,19 +519,19 @@ h2 {
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
-    opacity: 0.9;
+    opacity: 0.18;
     flex-shrink: 0;
-    transition: opacity 0.2s, transform 0.2s;
+    filter: grayscale(1) contrast(0.5);
+    transition: opacity 0.2s;
 }
 
 .restaurant-card:hover .result-sprite {
-    opacity: 1;
-    transform: scale(1.08);
+    opacity: 0.32;
 }
 
 /* Favorite button styling */
 .favorite-btn {
-    opacity: 0.6;
+    opacity: 0.55;
     transition: opacity 0.2s, transform 0.2s, color 0.2s;
 }
 
@@ -518,17 +544,14 @@ h2 {
     display: inline-block;
 }
 
-/* Show heart more prominently on card hover */
 .restaurant-card:hover .favorite-btn {
-    opacity: 1;
+    opacity: 0.85;
 }
 
 /* ========================================
    MOBILE RESPONSIVE STYLES
-   Target: Modern phones (375px-430px)
    ======================================== */
 
-/* Mobile-specific utility classes */
 .mobile-stack {
     display: flex;
     flex-direction: column;
@@ -559,8 +582,8 @@ h2 {
 .hamburger-menu span {
     display: block;
     width: 28px;
-    height: 3px;
-    background-color: var(--pixel-ink);
+    height: 2px;
+    background-color: var(--ink);
     transition: all 0.3s ease;
     border-radius: 0;
 }
@@ -585,7 +608,7 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(13, 15, 20, 0.5);
     z-index: 999;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -604,8 +627,8 @@ h2 {
     width: 75%;
     max-width: 300px;
     height: 100vh;
-    background: var(--pixel-surface);
-    border-left: 3px solid var(--pixel-ink);
+    background: var(--paper-warm);
+    border-left: 1px solid var(--ink);
     z-index: 1000;
     transition: right 0.3s ease;
     flex-direction: column !important;
@@ -620,7 +643,7 @@ h2 {
 
 .navbar-nav.mobile-menu .nav-item {
     width: 100%;
-    border-bottom: 1px solid var(--pixel-lightgray);
+    border-bottom: 1px solid var(--fog);
 }
 
 .navbar-nav.mobile-menu .nav-link,
@@ -628,54 +651,48 @@ h2 {
     display: block;
     width: 100%;
     padding: 1.25rem 2rem !important;
-    font-size: 9px !important;
-    color: var(--pixel-ink) !important;
+    font-size: 1rem !important;
+    color: var(--ink) !important;
     text-align: left;
-    line-height: 1.8;
+    line-height: 1.75;
+    border-bottom: none;
 }
 
 .navbar-nav.mobile-menu .nav-link:hover {
-    background: var(--pixel-bg);
+    background: var(--paper);
 }
 
 /* Mobile Breakpoint: 480px and below */
 @media (max-width: 480px) {
-    /* Show hamburger menu */
     .hamburger-menu {
         display: flex;
     }
 
-    /* Hide desktop navigation */
     .navbar-nav:not(.mobile-menu) {
         display: none !important;
     }
 
-    /* Navbar adjustments */
     .navbar {
         padding: 1.25rem 0;
     }
 
     .navbar-brand {
-        font-size: 11px;
+        font-size: 1rem;
     }
 
-    /* Body font size - keep pixel scale */
     body {
-        font-size: 9px;
+        font-size: 0.95rem;
     }
 
-    /* Container padding */
     .container {
         padding: 0 1rem;
     }
 
-    /* Hero heading on index page */
     h1 {
-        font-size: 13px !important;
+        font-size: 1.5rem !important;
         margin-bottom: 1.5rem !important;
     }
 
-    /* Page headers with sprites - stack on mobile */
     .page-header-mobile {
         flex-direction: column !important;
         text-align: center !important;
@@ -686,25 +703,23 @@ h2 {
         height: 60px;
     }
 
-    /* Form controls */
     .form-control {
-        font-size: 9px !important;
+        font-size: 0.95rem !important;
         padding: 0.875rem 1rem;
     }
 
     .form-control-lg {
-        font-size: 9px !important;
+        font-size: 0.95rem !important;
         padding: 1rem 1.25rem;
     }
 
-    /* Buttons */
     .btn {
-        font-size: 9px !important;
+        font-size: 0.9rem !important;
         padding: 0.875rem 1.5rem;
     }
 
     .btn-lg {
-        font-size: 9px !important;
+        font-size: 0.9rem !important;
         padding: 1rem 2rem;
     }
 
@@ -712,26 +727,22 @@ h2 {
         padding: 0.875rem 1.5rem;
     }
 
-    /* Search container */
     .search-container {
         margin: 3rem auto !important;
         padding: 0 1rem;
     }
 
-    /* Results page adjustments */
     .results-container {
         padding: 0 1rem !important;
         margin: 2rem auto !important;
     }
 
-    /* Timestamp on results page */
     .results-timestamp {
-        font-size: 8px !important;
+        font-size: 0.85rem !important;
         padding: 0.5rem 0.5rem !important;
         text-align: center !important;
     }
 
-    /* Restaurant cards */
     .restaurant-card {
         padding: 1.75rem 1.25rem;
     }
@@ -741,17 +752,15 @@ h2 {
         padding: 1.75rem 1.25rem;
     }
 
-    /* Restaurant card text sizing */
     .restaurant-card a {
-        font-size: 11px;
+        font-size: 0.95rem;
         line-height: 1.5;
     }
 
     .restaurant-meta {
-        font-size: 8px;
+        font-size: 0.8rem;
     }
 
-    /* Better touch targets for links */
     .restaurant-card a,
     .nav-link,
     a {
@@ -761,22 +770,18 @@ h2 {
         justify-content: center;
     }
 
-    /* Hide pagination controls on mobile (all cards shown stacked) */
     #paginationControls {
         display: none;
     }
 
-    /* Show all cards on mobile (no carousel) */
     .restaurant-card.horizontal-card {
         display: block !important;
     }
 
-    /* Result sprites */
     .result-sprite {
         height: 48px;
     }
 
-    /* Favorite button - larger touch target */
     .favorite-btn {
         font-size: 1.75rem !important;
         padding: 0.5rem;
@@ -784,34 +789,29 @@ h2 {
         right: 0.75rem !important;
     }
 
-    /* Footer */
     .footer {
         padding: 1.5rem 0;
     }
 
     .text-muted {
-        font-size: 8px;
+        font-size: 0.85rem;
     }
 
-    /* Login/Register forms */
     .auth-container {
         margin: 2rem auto 3rem !important;
         padding: 0 1rem !important;
     }
 
-    /* Favorites grid - stack on mobile */
     .favorites-grid {
         grid-template-columns: 1fr !important;
         gap: 1.5rem !important;
     }
 
-    /* History page spacing */
     .history-container {
         padding: 0 1rem !important;
         margin: 2rem auto !important;
     }
 
-    /* Remove button on favorites - bigger touch target */
     .remove-favorite-btn {
         font-size: 1.75rem !important;
         min-width: 44px !important;
@@ -821,27 +821,24 @@ h2 {
         justify-content: center !important;
     }
 
-    /* Note textarea - better mobile UX */
     .note-textarea {
-        font-size: 9px !important;
+        font-size: 0.9rem !important;
         min-height: 100px !important;
     }
 
-    /* Remember me checkbox */
     input[type="checkbox"] {
         width: 20px !important;
         height: 20px !important;
     }
 
-    /* Alert messages */
     .alert {
-        font-size: 9px;
+        font-size: 0.9rem;
         padding: 0.875rem 1rem;
         margin: 1rem 0;
     }
 }
 
-/* Extra small screens: 375px and below (iPhone SE) */
+/* Extra small screens: 375px and below */
 @media (max-width: 375px) {
     .container {
         padding: 0 0.875rem;
@@ -852,24 +849,24 @@ h2 {
     }
 
     .navbar-brand {
-        font-size: 10px;
+        font-size: 0.9rem;
     }
 
     h1 {
-        font-size: 11px !important;
-        line-height: 1.6 !important;
+        font-size: 1.3rem !important;
+        line-height: 1.5 !important;
     }
 
     .form-control,
     .form-control-lg {
-        font-size: 9px !important;
+        font-size: 0.9rem !important;
         padding: 0.875rem 1rem;
     }
 
     .btn,
     .btn-lg,
     .btn-primary {
-        font-size: 9px !important;
+        font-size: 0.85rem !important;
         padding: 0.875rem 1.5rem;
     }
 
@@ -878,7 +875,7 @@ h2 {
     }
 
     .restaurant-card a {
-        font-size: 10px;
+        font-size: 0.9rem;
     }
 
     .result-sprite {
@@ -894,7 +891,7 @@ h2 {
     }
 }
 
-/* Tablet adjustments: 481px to 768px */
+/* Tablet: 481px to 768px */
 @media (min-width: 481px) and (max-width: 768px) {
     .hamburger-menu {
         display: none;
@@ -923,7 +920,7 @@ h2 {
     }
 
     h1 {
-        font-size: 14px !important;
+        font-size: 1.5rem !important;
         margin-bottom: 1.5rem !important;
     }
 
@@ -958,23 +955,24 @@ h2 {
 }
 
 .carousel-dot {
-    width: 10px;
-    height: 10px;
-    border: 3px solid var(--pixel-ink);
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--charcoal);
     background: transparent;
     cursor: pointer;
     padding: 0;
     transition: background 0.2s;
-    border-radius: 0;
+    border-radius: 50%;
     flex-shrink: 0;
 }
 
 .carousel-dot.active {
-    background: var(--pixel-ink);
+    background: var(--slate);
+    border-color: var(--slate);
 }
 
 .carousel-dot:hover:not(.active) {
-    background: var(--pixel-lightgray);
+    background: var(--fog);
 }
 
 /* ========================================
@@ -994,9 +992,9 @@ h2 {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 12px;
-    font-family: 'Press Start 2P', monospace;
-    color: var(--pixel-gray);
+    font-size: 1.1rem;
+    font-family: 'Shippori Mincho', Georgia, serif;
+    color: var(--smoke);
     line-height: 1;
     padding: 0.25rem;
     transition: color 0.2s;
@@ -1004,7 +1002,7 @@ h2 {
 }
 
 .input-clear-btn:hover {
-    color: var(--pixel-ink);
+    color: var(--ink);
 }
 
 /* Touch device optimizations */
@@ -1020,23 +1018,22 @@ h2 {
     }
 
     .restaurant-card:hover {
-        box-shadow: 4px 4px 0px var(--pixel-ink);
-        transform: none;
+        box-shadow: none;
+        border-color: var(--charcoal);
     }
 
     .restaurant-card:hover .result-sprite {
-        opacity: 0.9;
-        transform: scale(1);
+        opacity: 0.18;
     }
 
     .restaurant-card:active {
-        background: var(--pixel-bg);
+        background: var(--paper);
         transform: scale(0.99);
         transition: transform 0.1s;
     }
 
     .btn:active {
-        transform: translate(3px, 3px);
+        transform: scale(0.97);
     }
 
     .favorite-btn:active {
@@ -1049,216 +1046,187 @@ h2 {
 }
 
 /* ========================================
-   NES PIXEL ANIMATIONS
+   INK WASH ANIMATIONS
    ======================================== */
 
-@keyframes pixelBlink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0; }
+@keyframes inkDrop {
+    0%   { opacity: 0.55; transform: scale(0.3); }
+    60%  { opacity: 0.25; transform: scale(1.2); }
+    100% { opacity: 0;    transform: scale(1.8); }
 }
 
-@keyframes pixelBurst {
-    0%   { opacity: 1; transform: translate(0, 0) scale(1); }
-    60%  { opacity: 0.8; transform: translate(calc(var(--dx) * 0.7), calc(var(--dy) * 0.7)) scale(0.9); }
-    100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.5); }
-}
-
-@keyframes screenFlash {
-    0%   { opacity: 0; }
-    15%  { opacity: 0.6; }
-    100% { opacity: 0; }
-}
-
-/* Pixel burst particles — created and destroyed by retro.js */
-.pixel-burst-particle {
-    position: fixed;
-    width: 8px;
-    height: 8px;
-    pointer-events: none;
-    z-index: 99998;
-    border-radius: 0;
-    animation: pixelBurst 500ms ease-out forwards;
-}
-
-/* Screen flash overlay — always in DOM, toggled by retro.js */
+/* Screen flash — kept in DOM via base.html but invisible */
 #screen-flash {
-    position: fixed;
-    inset: 0;
-    background: #ffffff;
-    pointer-events: none;
-    z-index: 99999;
-    opacity: 0;
-}
-
-#screen-flash.flash-active {
-    animation: screenFlash 250ms ease-out forwards;
+    display: none;
 }
 
 /* ========================================
-   CRT TV BEZEL — INDEX PAGE
+   HOME PAGE — Paper Collage Layout
    ======================================== */
 
-.crt-bezel {
-    background: #1c1c1c;
-    border-radius: 16px;
-    padding: 14px 14px 0 14px;
-    max-width: 680px;
-    margin: 2rem auto;
-    box-shadow:
-        0 0 0 3px #0a0a0a,
-        4px 6px 0 4px #111111,
-        0 20px 56px rgba(0, 0, 0, 0.65),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.crt-screen {
-    background: var(--pixel-bg);
-    border: 3px solid #0a0a0a;
-    border-radius: 4px;
-    overflow: hidden;
+/* Full-viewport collage container */
+.home-collage-wrapper {
     position: relative;
-    min-height: 460px;
-}
-
-/* Corner vignette — CRT darkening effect */
-.crt-screen::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.2) 100%);
-    pointer-events: none;
-    z-index: 10;
-}
-
-/* Scanlines inside the screen */
-.crt-screen::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        transparent, transparent 2px,
-        rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px
-    );
-    pointer-events: none;
-    z-index: 11;
-}
-
-/* Bezel chin strip with power LED */
-.crt-chin {
-    background: #1c1c1c;
-    padding: 10px 14px 14px;
-    border-radius: 0 0 16px 16px;
+    min-height: calc(100vh - 73px);
+    overflow: hidden;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 }
 
-.crt-power {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--pixel-blue);
-    box-shadow: 0 0 6px var(--pixel-blue);
-    animation: ledPulse 2s ease-in-out infinite;
+/* Decorative paper blocks */
+.collage-block {
+    position: absolute;
+    pointer-events: none;
 }
 
-@keyframes ledPulse {
-    0%, 100% { opacity: 0.55; box-shadow: 0 0 4px var(--pixel-blue); }
-    50%       { opacity: 1;    box-shadow: 0 0 10px var(--pixel-blue), 0 0 22px var(--pixel-blue-bright); }
+.collage-tan-tl {
+    background: var(--paper-mid);
+    width: 28%;
+    height: 38%;
+    top: 14%;
+    left: 8%;
 }
 
-/* Shared panel layout for both title and search screens */
-.crt-panel {
+.collage-dark-tr {
+    background: var(--ink-block);
+    width: 14%;
+    height: 46%;
+    top: 18%;
+    right: 7%;
+}
+
+.collage-dark-bl {
+    background: var(--ink-block);
+    width: 13%;
+    height: 42%;
+    bottom: 12%;
+    left: 11%;
+}
+
+.collage-tan-br {
+    background: var(--paper-mid);
+    width: 24%;
+    height: 28%;
+    bottom: 10%;
+    right: 6%;
+}
+
+.collage-dark-shadow {
+    background: var(--ink-block);
+    width: 46%;
+    height: 10%;
+    top: 62%;
+    left: 27%;
+}
+
+/* Center floating card */
+.home-card {
+    position: relative;
+    z-index: 10;
+    background: var(--paper-warm);
+    padding: 4rem 5rem;
+    width: 46%;
+    max-width: 600px;
+    min-width: 340px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 460px;
-    padding: 2.5rem;
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* ── Title screen ── */
-
-.game-title {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 28px;
-    color: var(--pixel-ink);
     text-align: center;
-    letter-spacing: 3px;
-    margin-bottom: 1.5rem;
-    line-height: 1.4;
+    box-shadow: 6px 6px 0 rgba(10, 8, 5, 0.18);
 }
 
-.title-divider {
-    width: 75%;
+/* "Go" heading */
+.home-go-text {
+    font-size: 3.5rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin-bottom: 2rem;
+    line-height: 1.1;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
+}
+
+/* Wide play/submit button */
+.home-play-btn {
+    width: 100%;
+    max-width: 240px;
+    background: var(--ink);
     border: none;
-    border-top: 3px solid var(--pixel-ink);
-    margin: 0 auto 2rem;
-}
-
-.title-sprite {
-    height: 80px;
-    width: auto;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    opacity: 0.9;
-    margin-bottom: 2.5rem;
-}
-
-.press-start-btn {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 13px;
-    background: none;
-    border: none;
-    color: var(--pixel-ink);
+    padding: 1rem 2rem;
     cursor: pointer;
-    letter-spacing: 2px;
-    padding: 0.75rem 1rem;
-    margin-bottom: 1rem;
-    animation: pixelBlink 1s step-end infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper);
+    font-size: 1rem;
+    font-family: 'Shippori Mincho', Georgia, serif;
+    letter-spacing: 0.04em;
+    transition: background 0.18s ease, transform 0.08s ease;
+    margin-bottom: 1.25rem;
 }
 
-.press-start-btn:focus {
-    outline: 2px solid var(--pixel-blue);
-    outline-offset: 4px;
-    animation: none;
-    opacity: 1;
+.home-play-btn:hover  { background: var(--charcoal); }
+.home-play-btn:active { transform: scale(0.98); }
+
+/* Address input inside home-card */
+.home-card .form-control {
+    background: var(--paper-warm);
+    width: 100%;
+    max-width: 300px;
+    text-align: left;
+    margin-bottom: 0;
 }
 
-.title-footer {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 7px;
-    color: var(--pixel-gray);
-    letter-spacing: 1px;
-    position: absolute;
-    bottom: 1.5rem;
-}
-
-/* ── Search screen ── */
-
-#search-screen .back-link a {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    color: var(--pixel-gray);
+/* Back link */
+.home-back-link {
+    font-size: 0.9rem;
+    color: var(--charcoal);
     text-decoration: none;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
     display: inline;
     min-height: auto;
 }
 
-#search-screen .back-link a:hover {
-    color: var(--pixel-ink);
+.home-back-link:hover {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+}
+
+/* Loading message */
+#loadingMessage {
+    font-style: italic;
+    color: var(--charcoal);
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+}
+
+/* Mobile: hide collage blocks, card goes full-width */
+@media (max-width: 640px) {
+    .collage-block { display: none; }
+
+    .home-card {
+        width: 100%;
+        min-width: auto;
+        padding: 3rem 2rem;
+        box-shadow: none;
+        border: 1px solid var(--fog);
+        margin: 2rem 1rem;
+    }
+
+    .home-collage-wrapper {
+        align-items: flex-start;
+        padding: 0;
+        min-height: auto;
+    }
 }
 
 /* ========================================
    MAP VIEW — RESULTS PAGE
    ======================================== */
 
-/* View toggle buttons */
 .view-toggle {
     display: flex;
     gap: 0;
@@ -1274,54 +1242,51 @@ h2 {
     border-left: none;
 }
 
-/* Map container */
 #map-container {
     height: 520px;
     width: 100%;
-    border: 3px solid var(--pixel-ink);
-    box-shadow: 4px 4px 0px var(--pixel-ink);
-    /* Desaturate to Game Boy B&W */
-    filter: grayscale(1) contrast(1.25);
+    border: 1px solid var(--charcoal);
+    box-shadow: none;
+    filter: grayscale(1) contrast(1.1) brightness(0.97);
 }
 
-/* NES-style square marker pin */
+/* Ink block marker */
 .map-marker {
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
     font-size: 11px;
-    background: var(--pixel-ink);
-    color: #ffffff;
-    width: 36px;
-    height: 36px;
+    background: var(--ink);
+    color: var(--paper);
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid var(--pixel-ink);
-    box-shadow: 3px 3px 0 var(--pixel-blue);
+    border: 1px solid var(--ink);
+    box-shadow: none;
     position: relative;
     box-sizing: border-box;
 }
 
-/* Downward triangle pointer */
 .map-marker-arrow {
     position: absolute;
-    bottom: -9px;
+    bottom: -7px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 9px solid var(--pixel-ink);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid var(--ink);
     display: block;
 }
 
-/* Leaflet popup overrides */
+/* Leaflet popup */
 .leaflet-popup-content-wrapper {
     border-radius: 0 !important;
-    border: 3px solid var(--pixel-ink) !important;
-    box-shadow: 4px 4px 0 var(--pixel-ink) !important;
+    border: 1px solid var(--charcoal) !important;
+    box-shadow: none !important;
     padding: 0 !important;
-    background: var(--pixel-surface) !important;
+    background: var(--paper-warm) !important;
 }
 
 .leaflet-popup-content {
@@ -1330,63 +1295,386 @@ h2 {
 }
 
 .leaflet-popup-tip-container {
-    display: none; /* hide default tip — our marker has a built-in arrow */
+    display: none;
 }
 
 .leaflet-popup-close-button {
-    font-family: 'Press Start 2P', monospace !important;
-    font-size: 10px !important;
-    color: var(--pixel-ink) !important;
+    font-family: 'Shippori Mincho', Georgia, serif !important;
+    font-size: 1rem !important;
+    color: var(--ink) !important;
     top: 6px !important;
     right: 6px !important;
 }
 
-/* Popup content */
 .map-popup {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    line-height: 1.8;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
+    font-size: 0.85rem;
+    line-height: 1.6;
     padding: 1rem;
     min-width: 160px;
 }
 
 .map-popup-name {
-    font-size: 9px;
-    color: var(--pixel-ink);
-    margin-bottom: 0.5rem;
-    line-height: 1.6;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
 }
 
 .map-popup-meta {
-    color: var(--pixel-gray);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 0.78rem;
+    color: var(--charcoal);
     margin-bottom: 0.75rem;
+    letter-spacing: 0.03em;
 }
 
 .map-popup-link {
     display: inline-block;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 7px;
-    color: var(--pixel-blue) !important;
+    font-family: 'Shippori Mincho', Georgia, serif;
+    font-size: 0.85rem;
+    color: var(--slate) !important;
     text-decoration: none;
-    border-bottom: 1px solid var(--pixel-blue);
+    border-bottom: 1px solid var(--mist);
     min-height: auto !important;
     padding: 0 !important;
+    transition: color 0.2s, border-color 0.2s;
 }
 
 .map-popup-link:hover {
-    color: var(--pixel-ink) !important;
-    border-color: var(--pixel-ink);
+    color: var(--ink) !important;
+    border-color: var(--ink);
 }
 
-/* Leaflet zoom controls — pixel style */
 .leaflet-control-zoom a {
-    font-family: 'Press Start 2P', monospace !important;
+    font-family: 'Shippori Mincho', Georgia, serif !important;
     border-radius: 0 !important;
-    border: 2px solid var(--pixel-ink) !important;
-    color: var(--pixel-ink) !important;
+    border: 1px solid var(--charcoal) !important;
+    color: var(--ink) !important;
 }
 
 .leaflet-control-zoom-in,
 .leaflet-control-zoom-out {
     border-radius: 0 !important;
+}
+
+/* ========================================
+   WOODBLOCK UTILITIES
+   ======================================== */
+
+hr,
+.ink-divider {
+    border: none;
+    border-top: 1px solid var(--charcoal);
+    opacity: 0.4;
+    margin: 1.5rem 0;
+}
+
+.ink-divider-bold {
+    border: none;
+    border-top: 2px solid var(--ink);
+    opacity: 0.25;
+    width: 40%;
+    margin: 2rem auto;
+}
+
+.ink-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--slate);
+    border-radius: 50%;
+    vertical-align: middle;
+    margin: 0 0.5rem;
+    opacity: 0.7;
+}
+
+.meta-mono {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--charcoal);
+}
+
+.vr-sep {
+    display: inline-block;
+    width: 1px;
+    height: 1em;
+    background: var(--smoke);
+    vertical-align: middle;
+    margin: 0 0.75rem;
+    opacity: 0.6;
+}
+
+#toast {
+    background: var(--ink) !important;
+    color: var(--paper) !important;
+    border: 1px solid var(--charcoal);
+    font-family: 'Shippori Mincho', Georgia, serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+}
+
+/* ========================================
+   RESULTS PAGE — Framed Layout
+   ======================================== */
+
+/* Gray "desk" behind the frame */
+body:has(.results-frame) {
+    background: #d0ccc8;
+    padding: 2.5rem 2rem;
+    min-height: 100vh;
+}
+
+/* Hide global nav and footer — frame has its own */
+body:has(.results-frame) > .navbar,
+body:has(.results-frame) > footer {
+    display: none;
+}
+
+body:has(.results-frame) main {
+    padding: 0;
+}
+
+/* The bordered frame container */
+.results-frame {
+    background: var(--paper);
+    border: 1px solid var(--charcoal);
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+/* Frame nav row */
+.results-frame-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 2rem;
+    border-bottom: 1px solid var(--ink);
+    gap: 1rem;
+    background: var(--paper);
+}
+
+.results-frame-brand {
+    font-family: 'Shippori Mincho', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    display: inline;
+    min-height: auto;
+}
+
+.results-frame-timestamp {
+    font-size: 0.875rem;
+    color: var(--charcoal);
+    letter-spacing: 0.02em;
+    flex: 1;
+    text-align: right;
+}
+
+.results-frame-auth {
+    display: flex;
+    gap: 1.5rem;
+    flex-shrink: 0;
+    margin-left: 1.5rem;
+}
+
+.results-frame-auth a {
+    font-size: 0.9rem;
+    color: var(--charcoal);
+    text-decoration: none;
+    transition: color 0.2s;
+    display: inline;
+    min-height: auto;
+    border-bottom: 1px solid transparent;
+}
+
+.results-frame-auth a:hover {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+}
+
+/* Frame content area */
+.results-frame-body {
+    padding: 1.75rem 2rem 0;
+}
+
+/* Toggle rule beneath cards/map buttons */
+.view-toggle-rule {
+    border: none;
+    border-top: 1px solid var(--ink);
+    margin: 0 0 1.5rem 0;
+    opacity: 0.5;
+}
+
+/* ── DARK PAGINATION BAR ── */
+
+.results-pagination-bar {
+    background: var(--ink-block);
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.pagination-left-group {
+    display: flex;
+    align-items: stretch;
+}
+
+.pagination-bar-btn {
+    background: none;
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--paper);
+    padding: 1rem 1.5rem;
+    font-family: 'Shippori Mincho', Georgia, serif;
+    font-size: 0.875rem;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    min-height: auto;
+}
+
+.pagination-bar-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.07); }
+.pagination-bar-btn:disabled { opacity: 0.35; cursor: default; }
+
+.pagination-bar-counter {
+    color: var(--paper);
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.03em;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.pagination-bar-next-right {
+    background: none;
+    border: none;
+    color: var(--paper);
+    padding: 1rem 2rem;
+    font-family: 'Shippori Mincho', Georgia, serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: inline-flex;
+    align-items: center;
+    min-height: auto;
+}
+
+.pagination-bar-next-right:hover:not(:disabled) { background: rgba(255, 255, 255, 0.07); }
+.pagination-bar-next-right:disabled { opacity: 0.35; cursor: default; }
+
+/* ── EMOJI CARD HEADER ── */
+
+.card-header-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.card-emoji {
+    font-size: 2rem;
+    line-height: 1.1;
+    flex-shrink: 0;
+}
+
+.card-header-text {
+    flex: 1;
+    text-align: left;
+}
+
+.card-header-text .restaurant-name {
+    text-align: left;
+    font-size: 1.05rem;
+    margin-bottom: 0;
+    min-height: auto;
+    display: block;
+    align-items: unset;
+    justify-content: unset;
+}
+
+.card-header-text .restaurant-meta {
+    margin-top: 0.25rem;
+    text-align: left;
+    margin-bottom: 0;
+}
+
+.card-distance-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+}
+
+.card-distance-emoji {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+/* Card divider lines */
+.card-rule {
+    border: none;
+    border-top: 1px solid var(--fog);
+    margin: 0.875rem 0;
+    opacity: 1;
+}
+
+/* Card layout overrides when inside results frame */
+.results-frame .restaurant-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+}
+
+.results-frame .restaurant-card a {
+    display: inline;
+    min-height: auto;
+}
+
+.results-frame .card-name-link {
+    font-weight: 700;
+    font-size: 1.05rem;
+    display: inline;
+    min-height: auto;
+}
+
+/* Results frame mobile */
+@media (max-width: 640px) {
+    body:has(.results-frame) {
+        padding: 0;
+    }
+    .results-frame {
+        border-left: none;
+        border-right: none;
+        border-top: none;
+    }
+    .results-frame-nav {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+    .results-frame-timestamp {
+        text-align: left;
+        flex: 0 0 100%;
+        order: 3;
+        font-size: 0.8rem;
+    }
+    .results-frame-auth { margin-left: 0; }
+    .results-frame-body { padding: 1rem 1rem 0; }
+    .results-pagination-bar { flex-direction: column; }
+    .pagination-left-group { justify-content: center; }
+    .pagination-bar-next-right { justify-content: center; padding: 0.75rem; border-top: 1px solid rgba(255,255,255,0.12); }
 }

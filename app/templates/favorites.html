@@ -11,7 +11,7 @@
                 My Favorites
             </h1>
         </div>
-        <div style="color: #666; font-size: 1rem;">
+        <div style="color: var(--charcoal); font-size: 1rem;">
             {{ count }} favorite{% if count != 1 %}s{% endif %}
         </div>
     </div>
@@ -19,11 +19,11 @@
     {% if restaurants %}
         <div class="favorites-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
         {% for restaurant in restaurants %}
-        <div class="restaurant-card" style="position: relative; padding: 2rem; border: 2px solid #000;" data-place-id="{{ restaurant.place_id }}">
+        <div class="restaurant-card" style="position: relative; padding: 2rem;" data-place-id="{{ restaurant.place_id }}">
 
             <!-- Remove button -->
             <button class="remove-favorite-btn" onclick="removeFavorite('{{ restaurant.place_id }}', '{{ restaurant.name | replace("'", "\\'") }}')"
-                    style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.5rem; opacity: 0.5; transition: opacity 0.2s; font-weight: bold; color: #000;"
+                    style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.5rem; opacity: 0.5; transition: opacity 0.2s; font-weight: bold; color: var(--ink);"
                     onmouseover="this.style.opacity='1'"
                     onmouseout="this.style.opacity='0.5'"
                     title="Remove from favorites">
@@ -31,13 +31,13 @@
             </button>
 
             <!-- Restaurant Info -->
-            <h2 style="font-weight: 600; font-size: 1.5rem; margin-bottom: 1rem; padding-right: 2rem;">
-                <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" style="color: #000; text-decoration: none;">
+            <h2 class="restaurant-name" style="margin-bottom: 1rem; padding-right: 2rem;">
+                <a href="{{ restaurant.get_google_maps_url() }}" target="_blank" style="color: var(--ink); text-decoration: none; display: inline; min-height: auto;">
                     {{ restaurant.name }}
                 </a>
             </h2>
 
-            <div class="restaurant-meta" style="margin-bottom: 1rem; color: #666; font-size: 0.95rem;">
+            <div class="restaurant-meta" style="margin-bottom: 1rem;">
                 {% if restaurant.cuisine_type %}
                     {{ restaurant.cuisine_type }}
                 {% endif %}
@@ -49,31 +49,31 @@
             </div>
 
             {% if restaurant.address %}
-            <div style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
+            <div style="color: var(--charcoal); font-size: 0.9rem; margin-bottom: 1rem;">
                 {{ restaurant.address }}
             </div>
             {% endif %}
 
             {% if restaurant.ai_description %}
-            <div style="font-size: 0.9rem; font-style: italic; color: #000; margin-bottom: 1.5rem; line-height: 1.4;">
+            <div style="font-size: 0.9rem; font-style: italic; color: var(--charcoal); margin-bottom: 1.5rem; line-height: 1.75;">
                 "{{ restaurant.ai_description }}"
             </div>
             {% endif %}
 
             <!-- Note Section -->
-            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; color: #000;">
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--fog);">
+                <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--ink);">
                     My Notes:
                 </div>
                 <textarea
                     class="note-textarea"
                     placeholder="Add a note..."
-                    style="width: 100%; min-height: 80px; padding: 0.75rem; border: 1px solid #e0e0e0; font-family: inherit; font-size: 0.9rem; resize: vertical;"
+                    style="width: 100%; min-height: 80px; padding: 0.75rem; border: 1px solid var(--fog); background: var(--paper-warm); font-family: inherit; font-size: 0.9rem; resize: vertical;"
                     oninput="updateNote('{{ restaurant.place_id }}', this.value)"
                 >{{ restaurant._note if restaurant._note else '' }}</textarea>
             </div>
 
-            <div style="color: #999; font-size: 0.8rem; margin-top: 1rem;">
+            <div style="color: var(--smoke); font-size: 0.8rem; margin-top: 1rem;">
                 Added {{ restaurant._favorited_at[:10] }}
             </div>
         </div>
@@ -82,13 +82,11 @@
 
     {% else %}
         <div style="padding: 4rem 0; text-align: center;">
-            <img src="{{ url_for('static', filename='sprites/sprite_13.png') }}" class="page-sprite" alt=""
-                 style="height: 100px; opacity: 0.4; margin-bottom: 2rem; display: block; margin-left: auto; margin-right: auto;">
-            <p style="color: #666; margin-bottom: 2rem; font-size: 1.2rem;">
+            <p style="color: var(--charcoal); margin-bottom: 2rem; font-size: 1.1rem;">
                 No favorites yet
             </p>
             <a href="{{ url_for('main.index') }}"
-               style="color: #224680; text-decoration: none; font-size: 1.1rem; font-weight: 500;">
+               style="color: var(--slate); text-decoration: none; font-size: 1rem; font-weight: 500;">
                 Start searching →
             </a>
         </div>
@@ -96,8 +94,8 @@
 
     <div style="text-align: center; margin-top: 4rem;">
         <a href="{{ url_for('main.index') }}"
-           style="color: #666; text-decoration: none; font-size: 1.1rem; font-weight: 500;">
-            ← New search
+           style="color: var(--charcoal); text-decoration: none; font-size: 1rem; font-weight: 500;">
+            ← new search
         </a>
     </div>
 </div>

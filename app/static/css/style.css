@@ -1074,46 +1074,153 @@ h3 {
     justify-content: center;
 }
 
-/* Decorative paper blocks */
+/* ── WASHI PAPER COLLAGE BLOCKS ── */
+
 .collage-block {
     position: absolute;
     pointer-events: none;
+    overflow: hidden;
+    box-shadow:
+        2px 4px 14px rgba(15, 12, 8, 0.16),
+        0 1px 4px rgba(15, 12, 8, 0.10);
 }
 
+/* Shared horizontal-fiber washi texture (pseudo-element sits on top) */
+.collage-block::before {
+    content: '';
+    position: absolute;
+    inset: -5%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='washi'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.016 0.52' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23washi)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 320px 320px;
+    mix-blend-mode: overlay;
+    opacity: 0.24;
+    pointer-events: none;
+}
+
+/* Soft inward vignette on all blocks — makes edges slightly darker */
+.collage-block::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 95% 95% at 50% 50%, transparent 38%, rgba(0,0,0,0.09) 100%);
+    pointer-events: none;
+}
+
+/* Tan blocks — warm cream-to-parchment gradient + fine diagonal grain */
 .collage-tan-tl {
-    background: var(--paper-mid);
+    background-image:
+        repeating-linear-gradient(
+            83deg,
+            transparent 0px,
+            transparent 3px,
+            rgba(160, 148, 128, 0.045) 3px,
+            rgba(160, 148, 128, 0.045) 4px
+        ),
+        linear-gradient(
+            132deg,
+            #e4dccb 0%,
+            #d0c6b2 18%,
+            #ddd4c2 40%,
+            #c8bea8 65%,
+            #d4cab6 85%,
+            #c6bba6 100%
+        );
     width: 28%;
     height: 38%;
     top: 14%;
     left: 8%;
+    transform: rotate(-1.3deg);
+}
+
+/* Dark blocks — slightly lighter fiber overlay so it reads as ink-washed paper */
+.collage-dark-tr::before,
+.collage-dark-bl::before,
+.collage-dark-shadow::before {
+    mix-blend-mode: soft-light;
+    opacity: 0.15;
 }
 
 .collage-dark-tr {
-    background: var(--ink-block);
+    background-image:
+        repeating-linear-gradient(
+            78deg,
+            transparent 0px,
+            transparent 4px,
+            rgba(255, 248, 235, 0.025) 4px,
+            rgba(255, 248, 235, 0.025) 5px
+        ),
+        linear-gradient(
+            160deg,
+            #242019 0%,
+            #2e2921 26%,
+            #201d17 52%,
+            #28231c 76%,
+            #1c1915 100%
+        );
     width: 14%;
     height: 46%;
     top: 18%;
     right: 7%;
+    transform: rotate(0.9deg);
 }
 
 .collage-dark-bl {
-    background: var(--ink-block);
+    background-image:
+        repeating-linear-gradient(
+            -82deg,
+            transparent 0px,
+            transparent 4px,
+            rgba(255, 248, 235, 0.022) 4px,
+            rgba(255, 248, 235, 0.022) 5px
+        ),
+        linear-gradient(
+            -150deg,
+            #211e18 0%,
+            #2c2720 34%,
+            #1e1b15 58%,
+            #26221a 82%,
+            #1b1813 100%
+        );
     width: 13%;
     height: 42%;
     bottom: 12%;
     left: 11%;
+    transform: rotate(-0.7deg);
 }
 
 .collage-tan-br {
-    background: var(--paper-mid);
+    background-image:
+        repeating-linear-gradient(
+            -86deg,
+            transparent 0px,
+            transparent 3px,
+            rgba(155, 142, 120, 0.04) 3px,
+            rgba(155, 142, 120, 0.04) 4px
+        ),
+        linear-gradient(
+            118deg,
+            #d2c9b6 0%,
+            #dfd7c5 20%,
+            #cbc1ae 48%,
+            #d8cfbc 74%,
+            #c3b9a5 100%
+        );
     width: 24%;
     height: 28%;
     bottom: 10%;
     right: 6%;
+    transform: rotate(1.5deg);
 }
 
 .collage-dark-shadow {
-    background: var(--ink-block);
+    background-image:
+        linear-gradient(
+            92deg,
+            rgba(30, 25, 18, 0.87) 0%,
+            rgba(38, 32, 24, 0.93) 32%,
+            rgba(33, 27, 20, 0.91) 62%,
+            rgba(26, 21, 15, 0.84) 100%
+        );
     width: 46%;
     height: 10%;
     top: 62%;
@@ -1124,7 +1231,9 @@ h3 {
 .home-card {
     position: relative;
     z-index: 10;
-    background: var(--paper-warm);
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.022 0.48' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeBlend in='SourceGraphic' mode='multiply'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23p)' opacity='0.028'/%3E%3C/svg%3E"),
+        linear-gradient(158deg, #f4efe4 0%, #ede6d8 45%, #f0ebe0 100%);
     padding: 4rem 5rem;
     width: 46%;
     max-width: 600px;
@@ -1133,7 +1242,9 @@ h3 {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    box-shadow: 6px 6px 0 rgba(10, 8, 5, 0.18);
+    box-shadow:
+        6px 8px 0 rgba(10, 8, 5, 0.22),
+        0 2px 20px rgba(10, 8, 5, 0.10);
 }
 
 /* "Go" heading */

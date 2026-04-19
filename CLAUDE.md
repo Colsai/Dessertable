@@ -184,16 +184,27 @@ This ensures users always get results while preferring well-reviewed nearby opti
 - Limits detailed fetches to top 20 candidates only
 - DeepSeek gracefully degrades without breaking functionality
 
+### Visual Design — Washi Paper / Paper Collage Aesthetic
+- **Color palette**: Warm linen variables — `--ink` (#1a1815), `--paper` (#e9e4d9), `--paper-warm` (#f0ebe2), `--paper-mid` (#d4ccc0), `--ink-block` (#1e1b17), `--fog` (#cac4ba). No blue accents except `--slate` for focus rings.
+- **Body background**: `washi_bg.png` (1536×1024, served from `/static/`) tiled at 768×512 with `background-blend-mode: multiply` over the warm linen base — gives a subtle paper-fiber texture across all pages.
+- **Typography**: Shippori Mincho (wght 400/500/700) as the primary serif; JetBrains Mono for meta/mono labels.
+- **Home page**: Full-viewport collage of 5 CSS-drawn paper blocks (`.collage-tan-tl`, `.collage-dark-tr`, `.collage-dark-bl`, `.collage-tan-br`, `.collage-dark-shadow`) with diagonal multi-stop gradients, SVG `feTurbulence` fiber overlays on `::before`, and subtle rotations (−1.3° to +1.5°). Center `.home-card` floats above with a drop shadow.
+- **Home card (single-screen)**: "Go" heading + address input (always visible) + circular 54px ▶ play/submit button. No two-screen toggle — input is immediately visible on load.
+- **Results page frame**: `body:has(.results-frame)` hides the global navbar/footer and sets a washi-textured gray background (#c8c3bc). The `.results-frame` container is semi-transparent (`rgba(233,228,217,0.82)`) with a 1px `--fog` border so the washi shows through faintly.
+- **Results frame nav**: Brand link (left) · timestamp (center-right) · auth links (far right) · 1px `--fog` separator.
+- **Results cards**: 3-column grid with 1.25rem gap; each card fully bordered in `--fog`; emoji header row (🍵/🏮/🪭 cycling) with name + cuisine·rating; `card-rule` dividers between hours / description / distance.
+- **Pagination bar**: Dark `--ink-block` bar spanning the full frame width. Left group: `< Previous | Page N of M | Next >` (thin vertical separators). Right: `Next >`.
+
 ### UI / UX Design Decisions
 - **Full-card click**: result cards use an overlay `<a>` link to the restaurant website (no nested links)
 - **Toast notifications**: `alert()` replaced with toast messages across all pages for non-blocking feedback; defined globally in `base.html` as `showToast(message, duration)` with slide-in / fade-out CSS animations
 - **Search loading state**: button disables and an animated dot-ellipsis loading message appears during API calls to prevent double-submit
 - **Search input clear button**: an `×` clear button (`.input-clear-btn`) appears inside the address field when text is present
-- **Results carousel**: results page shows up to 3 cards at a time in a CSS grid with prev/next arrow buttons and dot indicators; carousel hides on mobile (all cards shown stacked)
+- **Results carousel**: results page shows up to 9 results, 3 per page, with Previous/Next pagination in the dark bar; page counter shows "Page N of M"
 - **Hamburger nav**: mobile (≤480px) replaces desktop nav with a slide-out drawer (`mobile-menu`), a dark overlay (`mobile-nav-overlay`), and closes on link click / overlay tap / Escape key / window resize above 480px
 - **Mobile-first CSS**: 44×44px minimum touch targets, `safe-area-inset` support for notched phones; breakpoints at 375px (iPhone SE), 480px (phone), 481–768px (tablet, 2-col grid), 1024px (stack cards to 1-col)
 - **Touch device block**: `@media (hover: none) and (pointer: coarse)` removes hover effects and adds active-state scale feedback for touch devices
-- **CSS animations**: `breatheBorder` (idle input pulse), `focusPulse` (focus ring expand), `placeholderShift` (placeholder nudge on focus), `fadeIn` (page entrance), `toastSlideIn` / `toastFadeOut`
+- **CSS animations**: `fadeIn` (page entrance), `toastSlideIn` / `toastFadeOut`, ink-drop click burst via `retro.js`
 - **AI descriptions**: DeepSeek generates ≤10-word personal sentences (e.g., "The croissants here changed my mornings.")
 
 ## Environment Variables
@@ -261,22 +272,26 @@ score += (restaurant.rating / 5.0) * 60  # Adjust 60
 ```
 app/
   __init__.py           # Application factory, Flask-Login setup
-  routes.py             # All routes (main blueprint + admin routes)
+  routes.py             # All routes (main blueprint + admin routes); _is_safe_redirect helper
   models/
     database.py         # Dual-database manager (SQLite/PostgreSQL)
-    restaurant.py       # Restaurant data model
+    restaurant.py       # Restaurant data model; get_google_maps_url uses quote_plus
     user.py             # User model with authentication
   services/
     places_api.py       # Google Places API wrapper
-    deepseek_service.py # DeepSeek AI integration
+    deepseek_service.py # DeepSeek AI integration (graceful degradation; structured logging)
     restaurant_service.py # Core business logic & scoring
   utils/
     filters.py          # Jinja2 template filters
-  static/               # CSS, JS, images
+  static/
+    css/style.css       # All styles — washi palette, collage blocks, results frame, cards
+    js/retro.js         # Ink-drop click burst animation
+    washi_bg.png        # Washi paper texture tile (1536×1024, served at /static/)
+    sprites/            # Legacy sprite images (not used on results page)
   templates/
     base.html             # Base layout: navbar, toast JS, hamburger menu JS
-    index.html            # Search form with clear button and loading state
-    results.html          # Carousel results (up to 5, 3 per page) with favorites AJAX
+    index.html            # Single-screen search: "Go" heading + input + circular ▶ button
+    results.html          # Results frame: frame nav, emoji cards (🍵/🏮/🪭), dark pagination bar
     favorites.html        # Favorites grid with inline note editing (debounced)
     history.html          # Past searches list with links to view_search
     login.html            # Login form
@@ -284,12 +299,13 @@ app/
     admin_dashboard.html  # Admin analytics dashboard (stats, trends, users, export)
     admin_login.html      # Admin session login
 
-config.py              # Config classes (Dev, Prod, Test) — includes ADMIN_PASSWORD, INVITE_CODE
+config.py              # Config classes (Dev, Prod, Test); warns if SECRET_KEY unset
 run.py                 # Application entry point
 render.yaml            # Render deployment config (web service + PostgreSQL DB)
 requirements.txt       # Python dependencies
 tests/                 # Pytest test suite
 data/                  # SQLite database location (auto-created, dev only)
+design/                # Design mockups (main_page.png, results.png, washi_bg.png source)
 infrastructure/
   ARCHITECTURE.md      # Deployment architecture documentation
 ```
@@ -298,9 +314,13 @@ infrastructure/
 
 - Passwords hashed with werkzeug security (PBKDF2)
 - Session cookies: HttpOnly + SameSite=Lax
-- SECRET_KEY required for session security (change from default in production)
+- SECRET_KEY required for session security; `config.py` emits a `warnings.warn` at startup if unset
 - API keys loaded from environment variables (never committed)
-- SQL injection prevented via parameterized queries
+- SQL injection prevented via parameterized queries (`self.placeholder()` helper)
+- **Open redirect prevention**: `_is_safe_redirect()` in `routes.py` validates the `next=` parameter using `urlparse` — only same-host relative paths are followed after login
+- **Timing-safe admin auth**: admin password comparison uses `secrets.compare_digest` to prevent timing attacks
+- **Error message hygiene**: flash messages and JSON error responses never surface internal exception details to the client; raw errors go to the logger only
+- **URL encoding**: `restaurant.get_google_maps_url()` uses `urllib.parse.quote_plus` to safely encode restaurant names in query strings
 
 ## Deployment
 

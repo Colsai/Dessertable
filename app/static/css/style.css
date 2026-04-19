@@ -30,7 +30,10 @@
 
 body {
     background-color: var(--paper);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeBlend in='SourceGraphic' mode='multiply'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    background-image: url('../washi_bg.png');
+    background-size: 768px 512px;
+    background-repeat: repeat;
+    background-blend-mode: multiply;
     font-family: 'Shippori Mincho', 'Noto Serif JP', Georgia, serif;
     font-weight: 400;
     color: var(--ink);
@@ -1532,7 +1535,11 @@ hr,
 
 /* Gray "desk" behind the frame */
 body:has(.results-frame) {
-    background: #d0ccc8;
+    background-color: #c8c3bc;
+    background-image: url('../washi_bg.png');
+    background-size: 768px 512px;
+    background-repeat: repeat;
+    background-blend-mode: multiply;
     padding: 2.5rem 2rem;
     min-height: 100vh;
 }

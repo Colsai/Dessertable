@@ -15,35 +15,26 @@
     <!-- Center floating card -->
     <div class="home-card">
 
-        <!-- ══ TITLE SCREEN ══ -->
-        <div id="title-screen" style="display:flex; flex-direction:column; align-items:center; width:100%;">
-            <p class="home-go-text">Go</p>
-            <button id="pressStartBtn" class="home-play-btn" aria-label="Begin search">▶</button>
-        </div>
+        <p class="home-go-text">Go</p>
 
-        <!-- ══ SEARCH SCREEN ══ -->
-        <div id="search-screen" style="display:none; flex-direction:column; align-items:center; width:100%;">
-            <form method="POST" action="{{ url_for('main.search') }}"
-                  id="searchForm"
-                  style="width:100%; display:flex; flex-direction:column; align-items:center; gap:0.75rem;">
-                <div class="search-input-wrapper" style="width:100%; max-width:300px;">
-                    <input type="text"
-                           class="form-control form-control-lg"
-                           id="addressInput"
-                           name="address"
-                           required
-                           placeholder="Enter your address"
-                           autocomplete="street-address">
-                    <button type="button" class="input-clear-btn" id="clearBtn" aria-label="Clear address">×</button>
-                </div>
-                <button type="submit" class="home-play-btn" id="searchBtn">▶</button>
-            </form>
-
-            <div id="loadingMessage" style="display:none; margin-top:1rem; text-align:center;">
-                <p>finding your desserts<span id="loadingDots"></span></p>
+        <form method="POST" action="{{ url_for('main.search') }}"
+              id="searchForm"
+              style="width:100%; display:flex; flex-direction:column; align-items:center; gap:0.75rem;">
+            <div class="search-input-wrapper" style="width:100%; max-width:300px;">
+                <input type="text"
+                       class="form-control form-control-lg"
+                       id="addressInput"
+                       name="address"
+                       required
+                       placeholder="Enter your address"
+                       autocomplete="street-address">
+                <button type="button" class="input-clear-btn" id="clearBtn" aria-label="Clear address">×</button>
             </div>
+            <button type="submit" class="home-play-btn" id="searchBtn" aria-label="Search">▶</button>
+        </form>
 
-            <a href="#" id="backToTitle" class="home-back-link" style="margin-top:1rem;">← back</a>
+        <div id="loadingMessage" style="display:none; margin-top:1rem; text-align:center;">
+            <p>finding your desserts<span id="loadingDots"></span></p>
         </div>
 
     </div><!-- /.home-card -->
@@ -51,65 +42,8 @@
 </div><!-- /.home-collage-wrapper -->
 
 <script>
-var titleScreen  = document.getElementById('title-screen');
-var searchScreen = document.getElementById('search-screen');
 var addressInput = document.getElementById('addressInput');
 var clearBtn     = document.getElementById('clearBtn');
-
-function showSearchScreen() {
-    titleScreen.style.transition = 'opacity 250ms ease, transform 250ms ease';
-    titleScreen.style.opacity    = '0';
-    titleScreen.style.transform  = 'translateY(-16px)';
-    setTimeout(function () {
-        titleScreen.style.display  = 'none';
-        searchScreen.style.display = 'flex';
-        searchScreen.style.transition = 'none';
-        searchScreen.style.opacity    = '0';
-        searchScreen.style.transform  = 'translateY(16px)';
-        void searchScreen.offsetHeight; // force reflow so transition fires
-        searchScreen.style.transition = 'opacity 250ms ease, transform 250ms ease';
-        searchScreen.style.opacity    = '1';
-        searchScreen.style.transform  = 'translateY(0)';
-        addressInput.focus();
-    }, 260);
-}
-
-function showTitleScreen() {
-    searchScreen.style.transition = 'opacity 250ms ease, transform 250ms ease';
-    searchScreen.style.opacity    = '0';
-    searchScreen.style.transform  = 'translateY(16px)';
-    setTimeout(function () {
-        searchScreen.style.display = 'none';
-        titleScreen.style.display  = 'flex';
-        titleScreen.style.transition = 'none';
-        titleScreen.style.opacity    = '0';
-        titleScreen.style.transform  = 'translateY(-16px)';
-        void titleScreen.offsetHeight;
-        titleScreen.style.transition = 'opacity 250ms ease, transform 250ms ease';
-        titleScreen.style.opacity    = '1';
-        titleScreen.style.transform  = 'translateY(0)';
-    }, 260);
-}
-
-document.getElementById('pressStartBtn').addEventListener('click', showSearchScreen);
-
-document.getElementById('backToTitle').addEventListener('click', function (e) {
-    e.preventDefault();
-    showTitleScreen();
-});
-
-// Keyboard: Space/Enter on unfocused body triggers begin search; Escape returns to title
-document.addEventListener('keydown', function (e) {
-    var titleVisible  = titleScreen.style.display  !== 'none';
-    var searchVisible = searchScreen.style.display !== 'none';
-    if ((e.key === 'Enter' || e.key === ' ') && titleVisible && document.activeElement === document.body) {
-        e.preventDefault();
-        showSearchScreen();
-    }
-    if (e.key === 'Escape' && searchVisible) {
-        showTitleScreen();
-    }
-});
 
 // Clear button
 addressInput.addEventListener('input', function () {

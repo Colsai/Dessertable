@@ -259,7 +259,7 @@ h3 {
 .results-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
+    gap: 1.25rem;
     margin-bottom: 2rem;
 }
 
@@ -287,7 +287,7 @@ h3 {
 
 /* Restaurant Cards */
 .restaurant-card {
-    border: 1px solid var(--charcoal);
+    border: 1px solid var(--fog);
     padding: 2rem;
     margin-bottom: 1.5rem;
     border-radius: 0;
@@ -299,19 +299,19 @@ h3 {
 
 .restaurant-card.horizontal-card {
     margin-bottom: 0;
-    border: 1px solid var(--charcoal);
-    border-left: none;
-    min-height: 500px;
+    border: 1px solid var(--fog);
+    border-left: 1px solid var(--fog);
+    min-height: 300px;
     display: flex;
     flex-direction: column;
 }
 
 .restaurant-card.horizontal-card:first-child {
-    border-left: 1px solid var(--charcoal);
+    border-left: 1px solid var(--fog);
 }
 
 .restaurant-card.horizontal-card:last-child {
-    border-right: 1px solid var(--charcoal);
+    border-right: 1px solid var(--fog);
 }
 
 .restaurant-card:hover {
@@ -1343,7 +1343,7 @@ h3 {
 
 .view-toggle {
     display: flex;
-    gap: 0;
+    gap: 0.5rem;
     margin-bottom: 1.5rem;
 }
 
@@ -1353,7 +1353,7 @@ h3 {
 }
 
 .view-toggle .btn + .btn {
-    border-left: none;
+    border-left: 1px solid var(--charcoal);
 }
 
 #map-container {
@@ -1556,8 +1556,8 @@ body:has(.results-frame) main {
 
 /* The bordered frame container */
 .results-frame {
-    background: var(--paper);
-    border: 1px solid var(--charcoal);
+    background: rgba(233, 228, 217, 0.82);
+    border: 1px solid var(--fog);
     max-width: 1280px;
     margin: 0 auto;
     overflow: hidden;
@@ -1569,9 +1569,9 @@ body:has(.results-frame) main {
     align-items: center;
     justify-content: space-between;
     padding: 1.1rem 2rem;
-    border-bottom: 1px solid var(--ink);
+    border-bottom: 1px solid var(--fog);
     gap: 1rem;
-    background: var(--paper);
+    background: transparent;
 }
 
 .results-frame-brand {
@@ -1624,9 +1624,9 @@ body:has(.results-frame) main {
 /* Toggle rule beneath cards/map buttons */
 .view-toggle-rule {
     border: none;
-    border-top: 1px solid var(--ink);
+    border-top: 1px solid var(--fog);
     margin: 0 0 1.5rem 0;
-    opacity: 0.5;
+    opacity: 1;
 }
 
 /* ── DARK PAGINATION BAR ── */
@@ -1703,7 +1703,7 @@ body:has(.results-frame) main {
 }
 
 .card-emoji {
-    font-size: 2rem;
+    font-size: 2.5rem;
     line-height: 1.1;
     flex-shrink: 0;
 }
@@ -1754,7 +1754,7 @@ body:has(.results-frame) main {
 .results-frame .restaurant-card {
     display: flex;
     flex-direction: column;
-    min-height: 320px;
+    min-height: 280px;
 }
 
 .results-frame .restaurant-card a {

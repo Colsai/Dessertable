@@ -1263,25 +1263,27 @@ h3 {
 
 /* Wide play/submit button */
 .home-play-btn {
-    width: 100%;
-    max-width: 240px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
     background: var(--ink);
     border: none;
-    padding: 1rem 2rem;
+    padding: 0;
+    padding-left: 3px; /* visually centre the ▶ glyph */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--paper);
-    font-size: 1rem;
-    font-family: 'Shippori Mincho', Georgia, serif;
-    letter-spacing: 0.04em;
-    transition: background 0.18s ease, transform 0.08s ease;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    transition: background 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
     margin-bottom: 1.25rem;
+    box-shadow: 0 2px 10px rgba(10, 8, 5, 0.22);
 }
 
-.home-play-btn:hover  { background: var(--charcoal); }
-.home-play-btn:active { transform: scale(0.98); }
+.home-play-btn:hover  { background: var(--charcoal); box-shadow: 0 4px 16px rgba(10, 8, 5, 0.28); }
+.home-play-btn:active { transform: scale(0.94); box-shadow: 0 1px 4px rgba(10, 8, 5, 0.18); }
 
 /* Address input inside home-card */
 .home-card .form-control {
